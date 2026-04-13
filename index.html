@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NBA en ESPAÑOL</title>
+<title>NBA INTEL</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -303,14 +303,15 @@ const TEAM_NAMES = {ATL:'Atlanta Hawks',BOS:'Boston Celtics',BKN:'Brooklyn Nets'
 // FEEDS DE NOTICIAS
 // pay: true → muestra 🔒
 const NEWS_FEEDS = [
-  {id:'gigantes',  label:'Gigantes del Basket', url:'https://gigantes.com/feed/rss/nba',                        pay:false,  lang:'es', enabled:true},
+  {id:'gigantes',  label:'Gigantes del Basket', url:'https://gigantes.com/feed/',                               pay:true,  lang:'es', enabled:true},
   {id:'md_nba',   label:'Mundo Deportivo NBA',  url:'https://www.mundodeportivo.com/feed/rss/baloncesto/nba',   pay:false, lang:'es', enabled:true},
-  {id:'as_nba',   label:'AS NBA',               url:'https://feeds.as.com/mrss-s/pages/as/site/as.com/section/baloncesto/subsection/nba/,                    pay:false, lang:'es', enabled:true},
+  {id:'as_nba',   label:'AS NBA',               url:'https://as.com/baloncesto/nba/rss.xml',                    pay:false, lang:'es', enabled:true},
   {id:'marca_nba',label:'Marca NBA',            url:'https://www.marca.com/baloncesto/nba/rss.xml',             pay:false, lang:'es', enabled:true},
   {id:'sport_nba',label:'Sport NBA',            url:'https://www.sport.es/es/noticias/baloncesto/nba/rss.xml',  pay:false, lang:'es', enabled:true},
-  {id:'agaitan',  label:'Alejandro Gaitán',     url:'https://alejandroggo.com/feed',                            pay:true, lang:'es', enabled:true},
-  {id:'kike',     label:'Kike García',          url:'https://www.nbaconcontexto.com/feed',                  pay:true, lang:'es', enabled:true},
+  {id:'agaitan',  label:'Alejandro Gaitán',     url:'https://alejandroggo.com/feed',                            pay:false, lang:'es', enabled:true},
+  {id:'kike',     label:'Kike García',          url:'https://kikegarcianba.substack.com/feed',                  pay:false, lang:'es', enabled:true},
   {id:'maniacs',  label:'NBA Maniacs',          url:'https://www.nbamaniacs.com/feed/',                         pay:false, lang:'es', enabled:true},
+  {id:'contexto', label:'NBA Con Contexto',     url:'https://www.nbaconcontexto.com/feed/',                     pay:false, lang:'es', enabled:true},
   {id:'espn',     label:'ESPN NBA',             url:'https://www.espn.com/espn/rss/nba/news',                   pay:false, lang:'en', enabled:true},
   {id:'br',       label:'Bleacher Report',      url:'https://bleacherreport.com/articles/feed?tag_id=9',        pay:false, lang:'en', enabled:true},
   {id:'nba_com',  label:'NBA.com',              url:'https://www.nba.com/news/rss.xml',                         pay:false, lang:'en', enabled:true},
@@ -320,7 +321,7 @@ const NEWS_FEEDS = [
 const YT_CHANNELS = [
   {id:'UCTJNmeP0HiOU4-qOMNVNoGA', label:'Drafteados'},
   {id:'UCev6qJYN5x_OD3YuQepnyNQ', label:'Leo Carranza'},
-  {id:'UCz5kABFOoIJlSx_jo2QPXLA', label:'Planeta NBA'},
+  {id:'UCz5kABFOoIJlSx_jo2QPXLA', label:'Planeta NBA TV'},
   // handles — se resuelven vía proxy
   {id:'@Gigantesbasket',           label:'Gigantes del Basket'},
   {id:'@sergiorabinal',            label:'Sergio Rabinal'},
