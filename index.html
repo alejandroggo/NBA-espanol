@@ -1,11 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NBA EN ESPAÑOL</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg:#0a0a0f;--bg2:#0f0f16;--panel:#13131a;--panel-header:#16161f;
@@ -20,202 +21,190 @@
   --col1:1fr;--col2:1fr;--col3:1fr;--row1:1fr;--row2:1fr;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;height:100vh;width:100vw;overflow:hidden;user-select:none;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;height:100vh;width:100vw;overflow:hidden;user-select:none;}
 
 /* TOPBAR */
-#topbar{position:fixed;top:0;left:0;right:0;height:var(--topbar-h);background:var(--panel);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 14px;gap:8px;z-index:1000;box-shadow:0 1px 10px rgba(0,0,0,0.6);}
-#logo{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;color:var(--gold);letter-spacing:2px;flex-shrink:0;text-transform:uppercase;}
-.tb-sep{width:1px;height:20px;background:var(--border);margin:0 2px;}
-.tb-btn{background:transparent;border:1px solid var(--border);color:var(--text2);font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:11px;padding:4px 10px;cursor:pointer;border-radius:4px;letter-spacing:1px;transition:all .15s;flex-shrink:0;text-transform:uppercase;}
-.tb-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-bg);}
-.tb-btn.active{border-color:var(--live-red);color:var(--live-red);background:var(--live-red-bg);}
-.tb-label{font-size:9px;color:var(--text3);letter-spacing:.8px;flex-shrink:0;}
-.tb-slider{-webkit-appearance:none;appearance:none;width:60px;height:3px;background:var(--border);border-radius:2px;outline:none;cursor:pointer;flex-shrink:0;}
-.tb-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;background:var(--gold);border-radius:50%;}
-select.tb-select{background:var(--panel);border:1px solid var(--border);color:var(--text2);font-family:'Barlow Condensed',sans-serif;font-size:11px;padding:3px 7px;cursor:pointer;border-radius:4px;outline:none;flex-shrink:0;}
-#clock{margin-left:auto;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:13px;color:var(--gold);letter-spacing:1.5px;flex-shrink:0;}
+#topbar{position:fixed;top:0;left:0;right:0;height:var(–topbar-h);background:var(–panel);border-bottom:1px solid var(–border);display:flex;align-items:center;padding:0 14px;gap:8px;z-index:1000;box-shadow:0 1px 10px rgba(0,0,0,0.6);}
+#logo{font-family:‘Inter’,sans-serif;font-weight:700;font-size:17px;color:var(–gold);letter-spacing:2px;flex-shrink:0;text-transform:uppercase;}
+.tb-sep{width:1px;height:20px;background:var(–border);margin:0 2px;}
+.tb-btn{background:transparent;border:1px solid var(–border);color:var(–text2);font-family:‘Inter’,sans-serif;font-weight:600;font-size:11px;padding:4px 10px;cursor:pointer;border-radius:4px;letter-spacing:.5px;transition:all .15s;flex-shrink:0;text-transform:uppercase;}
+.tb-btn:hover{border-color:var(–gold);color:var(–gold);background:var(–gold-bg);}
+.tb-btn.active{border-color:var(–live-red);color:var(–live-red);background:var(–live-red-bg);}
+.tb-label{font-size:9px;color:var(–text3);letter-spacing:.8px;flex-shrink:0;}
+.tb-slider{-webkit-appearance:none;appearance:none;width:60px;height:3px;background:var(–border);border-radius:2px;outline:none;cursor:pointer;flex-shrink:0;}
+.tb-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;background:var(–gold);border-radius:50%;}
+select.tb-select{background:var(–panel);border:1px solid var(–border);color:var(–text2);font-family:‘Inter’,sans-serif;font-size:11px;padding:3px 7px;cursor:pointer;border-radius:4px;outline:none;flex-shrink:0;}
+#clock{margin-left:auto;font-family:‘Inter’,sans-serif;font-weight:600;font-size:13px;color:var(–gold);letter-spacing:1px;flex-shrink:0;}
 #search-wrap{position:relative;flex-shrink:0;}
-#global-search{background:var(--bg2);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:11px;padding:4px 8px 4px 26px;width:150px;border-radius:4px;outline:none;transition:border-color .15s;}
-#global-search:focus{border-color:var(--gold);}
-#global-search::placeholder{color:var(--text3);}
-#search-icon{position:absolute;left:7px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text3);pointer-events:none;}
+#global-search{background:var(–bg2);border:1px solid var(–border);color:var(–text);font-family:‘Inter’,sans-serif;font-size:11px;padding:4px 8px 4px 26px;width:150px;border-radius:4px;outline:none;transition:border-color .15s;}
+#global-search:focus{border-color:var(–gold);}
+#global-search::placeholder{color:var(–text3);}
+#search-icon{position:absolute;left:7px;top:50%;transform:translateY(-50%);font-size:11px;color:var(–text3);pointer-events:none;}
 
 /* CANVAS */
 #canvas{
-  position:fixed;top:var(--topbar-h);left:0;right:0;bottom:0;
-  display:grid;
-  grid-template-columns:var(--col1) 6px var(--col2) 6px var(--col3);
-  grid-template-rows:var(--row1) 6px var(--row2);
-  padding:8px;overflow:hidden;
+position:fixed;top:var(–topbar-h);left:0;right:0;bottom:0;
+display:grid;
+grid-template-columns:var(–col1) 6px var(–col2) 6px var(–col3);
+grid-template-rows:var(–row1) 6px var(–row2);
+padding:8px;overflow:hidden;
 }
 .col-sep{cursor:col-resize;position:relative;z-index:10;}
-.col-sep::after{content:'';position:absolute;top:8px;bottom:8px;left:50%;transform:translateX(-50%);width:2px;background:var(--border);border-radius:2px;transition:background .2s;}
-.col-sep:hover::after,.col-sep.dragging::after{background:var(--gold);}
+.col-sep::after{content:’’;position:absolute;top:8px;bottom:8px;left:50%;transform:translateX(-50%);width:2px;background:var(–border);border-radius:2px;transition:background .2s;}
+.col-sep:hover::after,.col-sep.dragging::after{background:var(–gold);}
 .row-sep{cursor:row-resize;position:relative;z-index:10;grid-column:1/-1;}
-.row-sep::after{content:'';position:absolute;left:8px;right:8px;top:50%;transform:translateY(-50%);height:2px;background:var(--border);border-radius:2px;transition:background .2s;}
-.row-sep:hover::after,.row-sep.dragging::after{background:var(--gold);}
+.row-sep::after{content:’’;position:absolute;left:8px;right:8px;top:50%;transform:translateY(-50%);height:2px;background:var(–border);border-radius:2px;transition:background .2s;}
+.row-sep:hover::after,.row-sep.dragging::after{background:var(–gold);}
 
 /* PANELS */
-.panel{background:var(--panel);border-radius:var(--panel-radius);display:flex;flex-direction:column;overflow:hidden;box-shadow:var(--shadow);transition:box-shadow .15s;min-height:0;min-width:0;margin:3px;}
-.panel:hover{box-shadow:var(--shadow-hover);}
-.panel-header{height:var(--header-h);background:var(--panel-header);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 12px;flex-shrink:0;gap:7px;}
-.panel-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;flex:1;}
-.panel-badge{font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--text3);background:var(--bg);border:1px solid var(--border);padding:1px 7px;border-radius:10px;}
-.panel-btn{background:transparent;border:none;color:var(--text3);font-size:13px;cursor:pointer;padding:3px;transition:color .15s;line-height:1;}
-.panel-btn:hover{color:var(--gold);}
-.panel-updated{font-size:9px;color:var(--text3);font-family:'DM Sans',sans-serif;}
+.panel{background:var(–panel);border-radius:var(–panel-radius);display:flex;flex-direction:column;overflow:hidden;box-shadow:var(–shadow);transition:box-shadow .15s;min-height:0;min-width:0;margin:3px;}
+.panel:hover{box-shadow:var(–shadow-hover);}
+.panel-header{height:var(–header-h);background:var(–panel-header);border-bottom:1px solid var(–border);display:flex;align-items:center;padding:0 12px;flex-shrink:0;gap:7px;}
+.panel-title{font-family:‘Inter’,sans-serif;font-weight:700;font-size:12px;color:var(–gold);letter-spacing:1.5px;text-transform:uppercase;flex:1;}
+.panel-badge{font-family:‘Inter’,sans-serif;font-size:10px;color:var(–text3);background:var(–bg);border:1px solid var(–border);padding:1px 7px;border-radius:10px;}
+.panel-btn{background:transparent;border:none;color:var(–text3);font-size:13px;cursor:pointer;padding:3px;transition:color .15s;line-height:1;}
+.panel-btn:hover{color:var(–gold);}
+.panel-updated{font-size:9px;color:var(–text3);font-family:‘Inter’,sans-serif;}
 .panel-body{flex:1;overflow-y:auto;overflow-x:hidden;padding:10px;font-size:13px;min-height:0;}
 .panel-body::-webkit-scrollbar{width:3px;}
-.panel-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
-.panel-body::-webkit-scrollbar-thumb:hover{background:var(--border2);}
+.panel-body::-webkit-scrollbar-thumb{background:var(–border);border-radius:2px;}
+.panel-body::-webkit-scrollbar-thumb:hover{background:var(–border2);}
 
 /* FILTER BAR */
-.filter-bar{padding:5px 10px;border-bottom:1px solid var(--border);background:var(--bg2);position:relative;flex-shrink:0;}
-.filter-btn{background:transparent;border:1px solid var(--border);color:var(--text2);font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:3px 9px;border-radius:4px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px;width:100%;}
-.filter-btn:hover{border-color:var(--gold);color:var(--gold);}
-.filter-count{background:var(--live-red);color:#fff;font-size:9px;padding:1px 6px;border-radius:8px;margin-left:auto;display:none;}
+.filter-bar{padding:5px 10px;border-bottom:1px solid var(–border);background:var(–bg2);position:relative;flex-shrink:0;}
+.filter-btn{background:transparent;border:1px solid var(–border);color:var(–text2);font-family:‘Inter’,sans-serif;font-weight:600;font-size:11px;letter-spacing:.5px;text-transform:uppercase;padding:3px 9px;border-radius:4px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px;width:100%;}
+.filter-btn:hover{border-color:var(–gold);color:var(–gold);}
+.filter-count{background:var(–live-red);color:#fff;font-size:9px;padding:1px 6px;border-radius:8px;margin-left:auto;display:none;}
 .filter-count.has-exclusions{display:inline;}
-.filter-dropdown{display:none;position:absolute;top:calc(100% + 2px);left:10px;right:10px;background:var(--panel);border:1px solid var(--border);border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,0.6);z-index:200;max-height:220px;overflow-y:auto;}
+.filter-dropdown{display:none;position:absolute;top:calc(100% + 2px);left:10px;right:10px;background:var(–panel);border:1px solid var(–border);border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,0.6);z-index:200;max-height:220px;overflow-y:auto;}
 .filter-dropdown.open{display:block;}
 .filter-dropdown::-webkit-scrollbar{width:3px;}
-.filter-dropdown::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
-.filter-hint{padding:6px 10px;font-size:9px;color:var(--text3);border-bottom:1px solid var(--border);letter-spacing:.5px;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;}
-.filter-option{display:flex;align-items:center;gap:8px;padding:7px 10px;cursor:pointer;font-size:12px;color:var(--text2);transition:background .1s;border-bottom:1px solid var(--border);font-family:'DM Sans',sans-serif;}
+.filter-dropdown::-webkit-scrollbar-thumb{background:var(–border);border-radius:2px;}
+.filter-hint{padding:6px 10px;font-size:9px;color:var(–text3);border-bottom:1px solid var(–border);letter-spacing:.5px;font-family:‘Inter’,sans-serif;text-transform:uppercase;}
+.filter-option{display:flex;align-items:center;gap:8px;padding:7px 10px;cursor:pointer;font-size:12px;color:var(–text2);transition:background .1s;border-bottom:1px solid var(–border);font-family:‘Inter’,sans-serif;}
 .filter-option:last-child{border-bottom:none;}
-.filter-option:hover{background:var(--bg2);}
-.filter-option.excluded{color:var(--live-red);opacity:.7;}
-.filter-option .check{width:13px;height:13px;border:1px solid var(--border);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;color:var(--text);}
-.filter-option.excluded .check{background:var(--live-red-bg);border-color:var(--live-red);color:var(--live-red);}
-.filter-all{padding:5px 10px;font-size:9px;color:var(--text3);border-bottom:1px solid var(--border);display:flex;gap:8px;}
-.filter-all button{background:none;border:none;color:var(--gold);cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:.5px;padding:0;}
+.filter-option:hover{background:var(–bg2);}
+.filter-option.excluded{color:var(–live-red);opacity:.7;}
+.filter-option .check{width:13px;height:13px;border:1px solid var(–border);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;color:var(–text);}
+.filter-option.excluded .check{background:var(–live-red-bg);border-color:var(–live-red);color:var(–live-red);}
+.filter-all{padding:5px 10px;font-size:9px;color:var(–text3);border-bottom:1px solid var(–border);display:flex;gap:8px;}
+.filter-all button{background:none;border:none;color:var(–gold);cursor:pointer;font-family:‘Inter’,sans-serif;font-size:10px;font-weight:600;letter-spacing:.5px;padding:0;}
 
 /* ARTÍCULOS */
 .article-item{padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;transition:background .1s;}
-.article-item:hover{background:var(--gold-bg);margin:0 -10px;padding:8px 10px;}
+.article-item:hover{background:var(–gold-bg);margin:0 -10px;padding:8px 10px;}
 .article-item:last-child{border-bottom:none;}
 .article-meta{display:flex;align-items:center;gap:5px;margin-bottom:3px;flex-wrap:wrap;}
-.article-source{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:10px;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;}
-.article-title{font-family:'Barlow',sans-serif;font-weight:500;font-size:var(--fs-title);color:var(--text);line-height:1.4;margin-bottom:2px;}
-.article-date{font-size:10px;color:var(--text3);font-family:'DM Sans',sans-serif;}
+.article-source{font-family:‘Inter’,sans-serif;font-weight:700;font-size:10px;letter-spacing:.5px;color:var(–gold);text-transform:uppercase;}
+.article-title{font-family:‘Inter’,sans-serif;font-weight:500;font-size:var(–fs-title);color:var(–text);line-height:1.4;margin-bottom:2px;}
+.article-date{font-size:10px;color:var(–text3);font-family:‘Inter’,sans-serif;}
 .badge{font-size:8px;letter-spacing:.5px;padding:1px 5px;border-radius:3px;text-transform:uppercase;flex-shrink:0;}
-.badge-pay{background:rgba(224,80,80,.12);color:var(--live-red);border:1px solid rgba(224,80,80,.25);}
-.badge-new{background:rgba(76,175,130,.1);color:var(--green);border:1px solid rgba(76,175,130,.25);}
+.badge-pay{background:rgba(224,80,80,.12);color:var(–live-red);border:1px solid rgba(224,80,80,.25);}
+.badge-new{background:rgba(76,175,130,.1);color:var(–green);border:1px solid rgba(76,175,130,.25);}
 
-/* PANEL TABS */
-.panel-tabs{display:flex;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0;}
-.panel-tab{flex:1;text-align:center;padding:7px 0;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:11px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;color:var(--text3);border-bottom:2px solid transparent;transition:all .15s;}
-.panel-tab.active{color:var(--gold);border-bottom-color:var(--gold);}
-
-/* SCORES */
-.scores-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.score-card{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:10px;}
-.score-card.live{border-color:rgba(224,80,80,.45);background:rgba(224,80,80,.03);}
-.live-dot{display:inline-block;width:6px;height:6px;background:var(--live-red);border-radius:50%;animation:pulse 1.2s infinite;margin-right:4px;vertical-align:middle;}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
-.score-status{font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--text3);margin-bottom:7px;letter-spacing:.8px;text-transform:uppercase;}
-.score-teams{display:flex;flex-direction:column;gap:5px;}
-.score-team{display:flex;align-items:center;justify-content:space-between;}
-.score-team-info{display:flex;align-items:center;gap:6px;}
-.team-logo{width:22px;height:22px;object-fit:contain;}
-.team-abbr{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--text);}
-.team-score{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;color:var(--text);}
-.team-score.leader{color:var(--gold);}
-.score-divider{width:100%;height:1px;background:var(--border);}
-.no-games{text-align:center;color:var(--text3);font-size:12px;padding:20px;}
-
-/* CALENDARIO (tarjetas igual que scores) */
+/* SCORES / CALENDAR */
 .cal-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
-.cal-section-header{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;padding:8px 2px 4px;border-bottom:1px solid var(--border);margin-bottom:6px;}
-.cal-card{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:10px;}
+.cal-section-header{font-family:‘Inter’,sans-serif;font-weight:700;font-size:10px;color:var(–text3);letter-spacing:1.5px;text-transform:uppercase;padding:8px 2px 4px;border-bottom:1px solid var(–border);margin-bottom:6px;}
+.cal-card{background:var(–bg2);border:1px solid var(–border);border-radius:6px;padding:10px;}
 .cal-card.today-card{border-color:rgba(201,168,76,.3);}
 .cal-card.live-card{border-color:rgba(224,80,80,.45);background:rgba(224,80,80,.03);}
-.cal-status{font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--text3);letter-spacing:.8px;text-transform:uppercase;margin-bottom:7px;}
-.cal-status.live{color:var(--live-red);}
-.cal-status.final{color:var(--text3);}
-.cal-status.upcoming{color:var(--gold);}
+.cal-status{font-family:‘Inter’,sans-serif;font-weight:600;font-size:9px;color:var(–text3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:7px;display:flex;align-items:center;gap:4px;}
+.cal-status.live{color:var(–live-red);}
+.cal-status.final{color:var(–text3);}
+.cal-status.upcoming{color:var(–gold);}
 .cal-teams{display:flex;flex-direction:column;gap:5px;}
 .cal-team{display:flex;align-items:center;justify-content:space-between;}
 .cal-team-info{display:flex;align-items:center;gap:6px;}
-.cal-team-abbr{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--text);}
-.cal-score{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;color:var(--text);}
-.cal-score.final{color:var(--text2);}
-.cal-score.leader{color:var(--gold);}
-.cal-divider{width:100%;height:1px;background:var(--border);}
+.cal-team-abbr{font-family:‘Inter’,sans-serif;font-weight:700;font-size:13px;color:var(–text);}
+.cal-score{font-family:‘Inter’,sans-serif;font-weight:700;font-size:20px;color:var(–text);}
+.cal-score.final{color:var(–text2);}
+.cal-score.leader{color:var(–gold);}
+.cal-divider{width:100%;height:1px;background:var(–border);}
+.team-logo{width:22px;height:22px;object-fit:contain;}
+.no-games{text-align:center;color:var(–text3);font-size:12px;padding:20px;}
+.live-dot{display:inline-block;width:6px;height:6px;background:var(–live-red);border-radius:50%;animation:pulse 1.2s infinite;flex-shrink:0;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
 
 /* STANDINGS */
+.panel-tabs{display:flex;border-bottom:1px solid var(–border);background:var(–bg2);flex-shrink:0;}
+.panel-tab{flex:1;text-align:center;padding:7px 0;font-family:‘Inter’,sans-serif;font-weight:600;font-size:11px;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;color:var(–text3);border-bottom:2px solid transparent;transition:all .15s;}
+.panel-tab.active{color:var(–gold);border-bottom-color:var(–gold);}
 .standings-table{width:100%;border-collapse:collapse;font-size:10px;}
-.standings-table th{font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--text3);padding:5px 6px;text-align:left;letter-spacing:.8px;border-bottom:1px solid var(--border);font-size:9px;text-transform:uppercase;position:sticky;top:0;background:var(--panel);}
-.standings-table td{padding:5px 6px;border-bottom:1px solid rgba(255,255,255,.03);font-family:'DM Sans',sans-serif;font-size:11px;}
-.standings-table tr:hover td{background:var(--gold-bg);}
-.rank-num{color:var(--text3);width:18px;}
-.team-td{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:.5px;}
-.pct-cell{color:var(--gold);font-family:'Barlow Condensed',sans-serif;}
+.standings-table th{font-family:‘Inter’,sans-serif;font-weight:700;color:var(–text3);padding:5px 6px;text-align:left;letter-spacing:.5px;border-bottom:1px solid var(–border);font-size:9px;text-transform:uppercase;position:sticky;top:0;background:var(–panel);}
+.standings-table td{padding:5px 6px;border-bottom:1px solid rgba(255,255,255,.03);font-family:‘Inter’,sans-serif;font-size:11px;}
+.standings-table tr:hover td{background:var(–gold-bg);}
+.rank-num{color:var(–text3);width:18px;}
+.team-td{font-family:‘Inter’,sans-serif;font-weight:700;font-size:12px;}
+.pct-cell{color:var(–gold);}
 .playoff-line td{border-top:1px solid rgba(201,168,76,.3)!important;}
 
 /* MEDIA */
 .media-item{padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;transition:background .1s;}
-.media-item:hover{background:var(--gold-bg);margin:0 -10px;padding:8px 10px;}
+.media-item:hover{background:var(–gold-bg);margin:0 -10px;padding:8px 10px;}
 .media-item:last-child{border-bottom:none;}
-.media-source{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:2px;display:flex;align-items:center;gap:4px;}
-.media-source.yt{color:var(--yt-red);}
-.media-source.pod{color:var(--pod-purple);}
-.media-title{font-family:'Barlow',sans-serif;font-weight:500;font-size:var(--fs-title);color:var(--text);line-height:1.4;margin-bottom:2px;}
-.media-date{font-size:10px;color:var(--text3);font-family:'DM Sans',sans-serif;}
+.media-source{font-family:‘Inter’,sans-serif;font-weight:700;font-size:10px;letter-spacing:.5px;text-transform:uppercase;margin-bottom:2px;display:flex;align-items:center;gap:4px;}
+.media-source.yt{color:var(–yt-red);}
+.media-source.pod{color:var(–pod-purple);}
+.media-title{font-family:‘Inter’,sans-serif;font-weight:500;font-size:var(–fs-title);color:var(–text);line-height:1.4;margin-bottom:2px;}
+.media-date{font-size:10px;color:var(–text3);font-family:‘Inter’,sans-serif;}
 
 /* CONFIG MODAL */
 #config-modal{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;}
 #config-modal.open{display:flex;}
-.config-box{background:var(--panel);border:1px solid var(--border);border-radius:10px;width:600px;max-width:96vw;max-height:90vh;overflow-y:auto;padding:22px;box-shadow:0 16px 48px rgba(0,0,0,.8);}
+.config-box{background:var(–panel);border:1px solid var(–border);border-radius:10px;width:600px;max-width:96vw;max-height:90vh;overflow-y:auto;padding:22px;box-shadow:0 16px 48px rgba(0,0,0,.8);}
 .config-box::-webkit-scrollbar{width:3px;}
-.config-box::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
-.config-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;color:var(--gold);letter-spacing:2px;margin-bottom:18px;}
+.config-box::-webkit-scrollbar-thumb{background:var(–border);border-radius:2px;}
+.config-title{font-family:‘Inter’,sans-serif;font-weight:700;font-size:18px;color:var(–gold);letter-spacing:1px;margin-bottom:18px;}
 .config-section{margin-bottom:18px;}
-.config-section-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:9px;padding-bottom:5px;border-bottom:1px solid var(--border);}
+.config-section-title{font-family:‘Inter’,sans-serif;font-weight:700;font-size:10px;color:var(–text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:9px;padding-bottom:5px;border-bottom:1px solid var(–border);}
 .chips-grid{display:flex;flex-wrap:wrap;gap:5px;}
-.chip{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:11px;letter-spacing:.5px;padding:3px 9px;border-radius:10px;border:1px solid var(--border);color:var(--text2);cursor:pointer;transition:all .15s;background:transparent;}
-.chip.active{border-color:var(--gold);color:var(--gold);background:var(--gold-bg);}
+.chip{font-family:‘Inter’,sans-serif;font-weight:600;font-size:11px;padding:3px 9px;border-radius:10px;border:1px solid var(–border);color:var(–text2);cursor:pointer;transition:all .15s;background:transparent;}
+.chip.active{border-color:var(–gold);color:var(–gold);background:var(–gold-bg);}
 .chip.maxed{opacity:.3;cursor:not-allowed;}
-.config-input{background:var(--bg2);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 10px;width:100%;border-radius:4px;outline:none;transition:border-color .15s;}
-.config-input:focus{border-color:var(--gold);}
+.config-input{background:var(–bg2);border:1px solid var(–border);color:var(–text);font-family:‘Inter’,sans-serif;font-size:12px;padding:6px 10px;width:100%;border-radius:4px;outline:none;transition:border-color .15s;}
+.config-input:focus{border-color:var(–gold);}
 .config-row{display:flex;gap:7px;margin-top:6px;}
-.config-btn{background:var(--gold-bg);border:1px solid var(--gold);color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:1px;padding:6px 12px;cursor:pointer;border-radius:4px;transition:all .15s;white-space:nowrap;}
+.config-btn{background:var(–gold-bg);border:1px solid var(–gold);color:var(–gold);font-family:‘Inter’,sans-serif;font-weight:700;font-size:11px;letter-spacing:.5px;padding:6px 12px;cursor:pointer;border-radius:4px;transition:all .15s;white-space:nowrap;}
 .config-btn:hover{background:rgba(201,168,76,.18);}
-.sheet-info{font-size:10px;color:var(--text3);font-family:'DM Sans',sans-serif;line-height:1.6;margin-bottom:7px;}
-.sheet-info code{background:var(--bg2);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:9px;color:var(--gold);}
+.config-btn.danger{border-color:var(–live-red);color:var(–live-red);background:var(–live-red-bg);}
+.config-btn.danger:hover{background:rgba(224,80,80,.18);}
+.sheet-info{font-size:10px;color:var(–text3);font-family:‘Inter’,sans-serif;line-height:1.6;margin-bottom:7px;}
+.sheet-info code{background:var(–bg2);border:1px solid var(–border);padding:1px 5px;border-radius:3px;font-size:9px;color:var(–gold);}
 .health-item{display:flex;align-items:center;gap:9px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);}
 .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-.dot.ok{background:var(--green);}
-.dot.err{background:var(--live-red);}
-.dot.loading{background:var(--gold-light);animation:pulse 1s infinite;}
-.health-name{flex:1;font-size:11px;color:var(--text2);display:flex;align-items:center;gap:5px;font-family:'DM Sans',sans-serif;}
-.health-count{font-size:10px;color:var(--text3);min-width:55px;text-align:right;font-family:'DM Sans',sans-serif;}
-.toggle-btn{font-size:9px;padding:2px 7px;border-radius:8px;border:1px solid var(--border);color:var(--text3);cursor:pointer;background:transparent;font-family:'Barlow Condensed',sans-serif;letter-spacing:.5px;transition:all .15s;}
-.toggle-btn.on{border-color:var(--green);color:var(--green);}
-.custom-item{display:flex;align-items:center;gap:7px;padding:3px 0;font-size:11px;color:var(--text2);}
-.del-btn{cursor:pointer;color:var(--live-red);font-size:13px;line-height:1;flex-shrink:0;}
-.close-config{display:block;width:100%;padding:9px;margin-top:14px;background:transparent;border:1px solid var(--border);color:var(--text2);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:1.5px;cursor:pointer;border-radius:4px;transition:all .15s;text-transform:uppercase;}
-.close-config:hover{border-color:var(--gold);color:var(--gold);}
+.dot.ok{background:var(–green);}
+.dot.err{background:var(–live-red);}
+.dot.loading{background:var(–gold-light);animation:pulse 1s infinite;}
+.health-name{flex:1;font-size:11px;color:var(–text2);display:flex;align-items:center;gap:5px;font-family:‘Inter’,sans-serif;}
+.health-count{font-size:10px;color:var(–text3);min-width:55px;text-align:right;font-family:‘Inter’,sans-serif;}
+.toggle-btn{font-size:9px;padding:2px 7px;border-radius:8px;border:1px solid var(–border);color:var(–text3);cursor:pointer;background:transparent;font-family:‘Inter’,sans-serif;transition:all .15s;}
+.toggle-btn.on{border-color:var(–green);color:var(–green);}
+.custom-item{display:flex;align-items:center;gap:7px;padding:3px 0;font-size:11px;color:var(–text2);}
+.del-btn{cursor:pointer;color:var(–live-red);font-size:13px;line-height:1;flex-shrink:0;}
+.close-config{display:block;width:100%;padding:9px;margin-top:14px;background:transparent;border:1px solid var(–border);color:var(–text2);font-family:‘Inter’,sans-serif;font-weight:700;font-size:12px;letter-spacing:.5px;cursor:pointer;border-radius:4px;transition:all .15s;text-transform:uppercase;}
+.close-config:hover{border-color:var(–gold);color:var(–gold);}
 
 /* ESTADOS */
-.panel-loading{text-align:center;color:var(--text3);font-size:11px;padding:20px;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;}
-.panel-loading::after{content:'…';animation:dots 1.5s infinite;}
-@keyframes dots{0%{content:'.'}33%{content:'..'}66%{content:'…'}}
-.panel-error{text-align:center;color:var(--live-red);font-size:11px;padding:14px;line-height:1.8;}
-.empty-state{text-align:center;color:var(--text3);font-size:11px;padding:20px;line-height:1.8;}
+.panel-loading{text-align:center;color:var(–text3);font-size:11px;padding:20px;font-family:‘Inter’,sans-serif;}
+.panel-loading::after{content:’…’;animation:dots 1.5s infinite;}
+@keyframes dots{0%{content:’.’}33%{content:’..’}66%{content:’…’}}
+.panel-error{text-align:center;color:var(–live-red);font-size:11px;padding:14px;line-height:1.8;}
+.empty-state{text-align:center;color:var(–text3);font-size:11px;padding:20px;line-height:1.8;}
 
 /* RESPONSIVE */
 @media(max-width:860px){
-  body{overflow:auto;}
-  #canvas{position:relative;top:auto;left:auto;right:auto;bottom:auto;margin-top:var(--topbar-h);display:flex;flex-direction:column;height:auto;overflow:visible;gap:8px;padding:8px;}
-  .panel{min-height:300px;height:auto;margin:0;}
-  #panel-wire,#panel-teams{max-height:55vh;}
-  .col-sep,.row-sep{display:none;}
-  .scores-grid,.cal-grid{grid-template-columns:1fr;}
-  #topbar{overflow-x:auto;}
-  .tb-label,.tb-slider{display:none;}
-  select.tb-select{display:none;}
+body{overflow:auto;}
+#canvas{position:relative;top:auto;left:auto;right:auto;bottom:auto;margin-top:var(–topbar-h);display:flex;flex-direction:column;height:auto;overflow:visible;gap:8px;padding:8px;}
+.panel{min-height:300px;height:auto;margin:0;}
+#panel-wire,#panel-teams{max-height:55vh;}
+.col-sep,.row-sep{display:none;}
+.cal-grid{grid-template-columns:1fr;}
+#topbar{overflow-x:auto;}
+.tb-label,.tb-slider{display:none;}
+select.tb-select{display:none;}
 }
 </style>
+
 </head>
 <body>
 
@@ -305,15 +294,13 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 
   <div style="grid-row:3;grid-column:2;"></div>
 
+  <!-- Panel Partidos: vista unificada sin pestañas -->
+
   <div class="panel" id="panel-scorecal">
     <div class="panel-header">
       <span class="panel-title">📊 Partidos</span>
       <span class="panel-badge" id="badge-scorecal">—</span>
       <button class="panel-btn" onclick="refreshPanel('scorecal')">↺</button>
-    </div>
-    <div class="panel-tabs">
-      <div class="panel-tab active" id="sc-tab-scores" onclick="switchScoreTab('scores')">Resultados</div>
-      <div class="panel-tab" id="sc-tab-calendar" onclick="switchScoreTab('calendar')">Calendario ±24h</div>
     </div>
     <div class="panel-body" id="body-scorecal"></div>
   </div>
@@ -335,62 +322,77 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 </div>
 
 <!-- CONFIG -->
+
 <div id="config-modal">
   <div class="config-box">
     <div class="config-title">⚙ Configuración</div>
 
-    <div class="config-section">
-      <div class="config-section-title">Equipos favoritos (máx. 3) — filtra Mis Equipos</div>
-      <div class="chips-grid" id="teams-grid"></div>
-    </div>
+```
+<div class="config-section">
+  <div class="config-section-title">Equipos favoritos (máx. 3) — filtra Mis Equipos</div>
+  <div class="chips-grid" id="teams-grid"></div>
+</div>
 
-    <div class="config-section">
-      <div class="config-section-title">Fuentes desde Google Sheet</div>
-      <div class="sheet-info">
-        Publica tu Sheet como CSV y pega la URL aquí.<br>
-        Columnas: <code>id</code> <code>label</code> <code>url</code> <code>tipo</code> <code>pay</code> &nbsp;—&nbsp; tipo: <code>news</code> · <code>yt</code> · <code>pod</code>
-      </div>
-      <div class="config-row">
-        <input type="text" class="config-input" id="sheet-url" placeholder="https://docs.google.com/spreadsheets/d/.../pub?output=csv">
-        <button class="config-btn" onclick="loadFromSheet()">CARGAR</button>
-      </div>
-      <div id="sheet-status" style="margin-top:6px;font-size:10px;color:var(--text3);font-family:'DM Sans',sans-serif;"></div>
-    </div>
+<div class="config-section">
+  <div class="config-section-title">Fuentes desde Google Sheet</div>
+  <div class="sheet-info">
+    Publica tu Sheet como CSV y pega la URL aquí.<br>
+    Columnas: <code>id</code> <code>label</code> <code>url</code> <code>tipo</code> <code>pay</code> &nbsp;—&nbsp; tipo: <code>news</code> · <code>yt</code> · <code>pod</code>
+  </div>
+  <div class="config-row">
+    <input type="text" class="config-input" id="sheet-url" placeholder="https://docs.google.com/spreadsheets/d/.../pub?output=csv">
+    <button class="config-btn" onclick="loadFromSheet()">CARGAR</button>
+  </div>
+  <div id="sheet-status" style="margin-top:6px;font-size:10px;color:var(--text3);font-family:'Inter',sans-serif;"></div>
+</div>
 
-    <div class="config-section">
-      <div class="config-section-title">Fuentes RSS personalizadas</div>
-      <div class="config-row">
-        <input type="text" class="config-input" id="cf-label" placeholder="Nombre">
-        <input type="text" class="config-input" id="cf-url" placeholder="URL RSS">
-        <button class="config-btn" onclick="addCustomFeed()">+ AÑADIR</button>
-      </div>
-      <div id="custom-feed-list" style="margin-top:7px"></div>
-    </div>
+<div class="config-section">
+  <div class="config-section-title">Fuentes RSS personalizadas</div>
+  <div class="config-row">
+    <input type="text" class="config-input" id="cf-label" placeholder="Nombre">
+    <input type="text" class="config-input" id="cf-url" placeholder="URL RSS">
+    <button class="config-btn" onclick="addCustomFeed()">+ AÑADIR</button>
+  </div>
+  <div id="custom-feed-list" style="margin-top:7px"></div>
+</div>
 
-    <div class="config-section">
-      <div class="config-section-title">YouTube personalizado</div>
-      <div class="config-row">
-        <input type="text" class="config-input" id="yt-label" placeholder="Nombre del canal">
-        <input type="text" class="config-input" id="yt-id" placeholder="UCxxxxxxx">
-        <button class="config-btn" onclick="addCustomYT()">+ AÑADIR</button>
-      </div>
-      <div id="yt-channels-config" style="margin-top:7px"></div>
-    </div>
+<div class="config-section">
+  <div class="config-section-title">YouTube personalizado</div>
+  <div class="config-row">
+    <input type="text" class="config-input" id="yt-label" placeholder="Nombre del canal">
+    <input type="text" class="config-input" id="yt-id" placeholder="UCxxxxxxx">
+    <button class="config-btn" onclick="addCustomYT()">+ AÑADIR</button>
+  </div>
+  <div id="yt-channels-config" style="margin-top:7px"></div>
+</div>
 
-    <div class="config-section">
-      <div class="config-section-title">Estado — Noticias</div>
-      <div id="feed-health-news"></div>
-    </div>
-    <div class="config-section">
-      <div class="config-section-title">Estado — YouTube</div>
-      <div id="feed-health-yt"></div>
-    </div>
-    <div class="config-section">
-      <div class="config-section-title">Estado — Podcast</div>
-      <div id="feed-health-pod"></div>
-    </div>
+<div class="config-section">
+  <div class="config-section-title">Estado — Noticias</div>
+  <div id="feed-health-news"></div>
+</div>
+<div class="config-section">
+  <div class="config-section-title">Estado — YouTube</div>
+  <div id="feed-health-yt"></div>
+</div>
+<div class="config-section">
+  <div class="config-section-title">Estado — Podcast</div>
+  <div id="feed-health-pod"></div>
+</div>
 
-    <button class="close-config" onclick="closeConfig()">Cerrar ✕</button>
+<div class="config-section">
+  <div class="config-section-title">Restablecer</div>
+  <div class="config-row">
+    <button class="config-btn" onclick="resetFilters()" style="flex:1">↺ Reset filtros</button>
+    <button class="config-btn danger" onclick="resetAll()" style="flex:1">⚠ Reset completo</button>
+  </div>
+  <div style="margin-top:6px;font-size:9px;color:var(--text3);font-family:'Inter',sans-serif;">
+    Reset filtros: limpia exclusiones activas. Reset completo: borra equipos, feeds y ajustes guardados.
+  </div>
+</div>
+
+<button class="close-config" onclick="closeConfig()">Cerrar ✕</button>
+```
+
   </div>
 </div>
 
@@ -409,34 +411,35 @@ let NEWS_FEEDS=[
   {id:'sport_nba',label:'Sport NBA',          url:'https://www.sport.es/es/noticias/baloncesto/nba/rss.xml',pay:false,enabled:true},
   {id:'agaitan', label:'Alejandro Gaitán',    url:'https://alejandroggo.com/feed',pay:true,enabled:true},
   {id:'maniacs', label:'NBA Maniacs',         url:'https://www.nbamaniacs.com/feed/',pay:false,enabled:true},
-  {id:'kike',label:'NBA Con Contexto',    url:'https://www.nbaconcontexto.com/feed/',pay:true,enabled:true},
+  {id:'kike',    label:'NBA Con Contexto',    url:'https://www.nbaconcontexto.com/feed/',pay:true,enabled:true},
 ];
 let YT_CHANNELS=[
   {id:'UCTJNmeP0HiOU4-qOMNVNoGA',label:'Drafteados'},
   {id:'UCev6qJYN5x_OD3YuQepnyNQ',label:'Leo Carranza'},
   {id:'UCj4tzJjOFNE2JD3D9sYAAQg',label:'Planeta NBA'},
-  {id:'@Gigantesbasket', label:'Gigantes del Basket'},
+  {id:'@Gigantesbasket',          label:'Gigantes del Basket'},
   {id:'UCXJnFRcssT0Q1ID_V6Or1sQ', label:'Sergio Rabinal'},
-  { id:'UCoCXWfhkSuT4DOolxFsPoYQ', label:'Basket 365' },
-  { id:'UCvfhPZKiTP7qlsCFbENRuwA', label:'Nacho Losilla' },
-  { id:'UCkYJ2bR3QbYl8v7u3Kz6Jxw', label:'Maxi YT Basket' }
+  {id:'UCoCXWfhkSuT4DOolxFsPoYQ', label:'Basket 365'},
+  {id:'UCvfhPZKiTP7qlsCFbENRuwA', label:'Nacho Losilla'},
+  {id:'UCkYJ2bR3QbYl8v7u3Kz6Jxw', label:'Maxi YT Basket'},
 ];
+// Feeds directos: Spreaker (Esto no es un podcast NBA) + Omny (Mínimo de Veterano)
 let POD_FEEDS=[
-  {id:'enopnba',label:'Esto no es un podcast NBA',url:'https://www.ivoox.com/feed_fg_f12295569_filtro_1.xml',enabled:true},
-  {id:'minvet', label:'Mínimo de Veterano',        url:'https://www.ivoox.com/feed_fg_f11384307_filtro_1.xml',enabled:true},
+  {id:'enopnba',label:'Esto no es un podcast NBA',url:'https://www.spreaker.com/show/5970729/episodes/feed',enabled:true},
+  {id:'minvet', label:'Mínimo de Veterano',        url:'https://omny.fm/shows/nba-m-nimo-de-veterano/playlists/podcast.rss',enabled:true},
 ];
 
 // ══════════════════════════════════
 // ESTADO
 // ══════════════════════════════════
 let state={
-  favTeams:   JSON.parse(localStorage.getItem('nba_teams')||'[]'),
-  customFeeds:JSON.parse(localStorage.getItem('nba_feeds')||'[]'),
-  customYT:   JSON.parse(localStorage.getItem('nba_yt_extra')||'[]'),
+  favTeams:    JSON.parse(localStorage.getItem('nba_teams')||'[]'),
+  customFeeds: JSON.parse(localStorage.getItem('nba_feeds')||'[]'),
+  customYT:    JSON.parse(localStorage.getItem('nba_yt_extra')||'[]'),
   disabledNews:JSON.parse(localStorage.getItem('nba_dis_news')||'[]'),
-  disabledYT: JSON.parse(localStorage.getItem('nba_dis_yt')||'[]'),
-  disabledPod:JSON.parse(localStorage.getItem('nba_dis_pod')||'[]'),
-  sheetUrl:   localStorage.getItem('nba_sheet_url')||'',
+  disabledYT:  JSON.parse(localStorage.getItem('nba_dis_yt')||'[]'),
+  disabledPod: JSON.parse(localStorage.getItem('nba_dis_pod')||'[]'),
+  sheetUrl:    localStorage.getItem('nba_sheet_url')||'',
 };
 let newsData={},ytData={},podData={};
 let newsHealth={},ytHealth={},podHealth={};
@@ -446,8 +449,13 @@ let livePolling=false,liveInterval=null,autoRefreshTimer=null;
 let fetchQueue=[],activeCount=0;
 const MAX_CONCURRENT=3;
 let lastUpdate={};
-let activeScoreTab='scores',standingsConf='east';
-let _scoresData=null,_calData=null;
+let standingsConf='east';
+let _calData=null;
+
+// Límites temporales de contenido
+const LIMIT_NEWS = 48 * 3600000;   // 48h
+const LIMIT_YT   = 72 * 3600000;   // 72h
+const LIMIT_POD  =  7 * 86400000;  // 1 semana
 
 // ══════════════════════════════════
 // CONCURRENCIA
@@ -574,17 +582,31 @@ function initRowSep(){
 
 // ══════════════════════════════════
 // FILTROS (exclusión)
+// FIX: stopPropagation en opciones para que el dropdown no se cierre al clicar
 // ══════════════════════════════════
-function toggleFilterDropdown(p){const dd=document.getElementById('filter-dd-'+p);if(!dd)return;document.querySelectorAll('.filter-dropdown.open').forEach(d=>{if(d.id!=='filter-dd-'+p)d.classList.remove('open');});if(!dd.classList.contains('open')){buildFilterDropdown(p);dd.classList.add('open');}else dd.classList.remove('open');}
-document.addEventListener('click',e=>{if(!e.target.closest('.filter-bar'))document.querySelectorAll('.filter-dropdown.open').forEach(d=>d.classList.remove('open'));});
+function toggleFilterDropdown(p){
+  const dd=document.getElementById('filter-dd-'+p);if(!dd)return;
+  document.querySelectorAll('.filter-dropdown.open').forEach(d=>{if(d.id!=='filter-dd-'+p)d.classList.remove('open');});
+  if(!dd.classList.contains('open')){buildFilterDropdown(p);dd.classList.add('open');}
+  else dd.classList.remove('open');
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.filter-bar'))
+    document.querySelectorAll('.filter-dropdown.open').forEach(d=>d.classList.remove('open'));
+});
 function getExcl(p){return p==='youtube'?ytExcluded:p==='podcast'?podExcluded:newsExcluded;}
 function setExcl(p,a){if(p==='youtube')ytExcluded=a;else if(p==='podcast')podExcluded=a;else newsExcluded=a;}
 function buildFilterDropdown(p){
   const dd=document.getElementById('filter-dd-'+p);if(!dd)return;
   const sources=p==='wire'?getActiveNewsFeeds():p==='youtube'?getActiveYTChannels():getActivePodFeeds();
   const excl=getExcl(p);
-  dd.innerHTML=`<div class="filter-hint">Desmarca los que NO quieres ver</div><div class="filter-all"><button onclick="restoreAllFilter('${p}')">Mostrar todos</button></div>`+
-    sources.map(s=>{const ex=excl.includes(s.id);return`<div class="filter-option ${ex?'excluded':''}" onclick="toggleExclude('${p}','${s.id}')"><div class="check">${ex?'✕':'✓'}</div><span>${escHtml(s.label)}</span></div>`;}).join('');
+  dd.innerHTML=`<div class="filter-hint">Desmarca los que NO quieres ver</div>
+    <div class="filter-all"><button onclick="event.stopPropagation();restoreAllFilter('${p}')">Mostrar todos</button></div>`+
+    sources.map(s=>{const ex=excl.includes(s.id);
+      return`<div class="filter-option ${ex?'excluded':''}" onclick="event.stopPropagation();toggleExclude('${p}','${s.id}')">
+        <div class="check">${ex?'✕':'✓'}</div><span>${escHtml(s.label)}</span>
+      </div>`;
+    }).join('');
 }
 function toggleExclude(p,id){const a=[...getExcl(p)];const i=a.indexOf(id);if(i>=0)a.splice(i,1);else a.push(id);setExcl(p,a);buildFilterDropdown(p);updateFilterCount(p);reRender(p);}
 function restoreAllFilter(p){setExcl(p,[]);buildFilterDropdown(p);updateFilterCount(p);reRender(p);}
@@ -604,13 +626,15 @@ function matchesSearch(item){
 }
 
 // ══════════════════════════════════
-// RENDER — NOTICIAS
+// NOTICIAS — límite 48h
 // ══════════════════════════════════
 function getAllNews(){
   const all=[];
-  // CLAVE: solo usar IDs de feeds activos (no desactivados)
   getActiveNewsFeeds().forEach(f=>{if(newsData[f.id])all.push(...newsData[f.id]);});
-  return all.sort((a,b)=>new Date(b.pubDate)-new Date(a.pubDate));
+  const cutoff=Date.now()-LIMIT_NEWS;
+  return all
+    .filter(a=>!a.pubDate||new Date(a.pubDate).getTime()>cutoff)
+    .sort((a,b)=>new Date(b.pubDate)-new Date(a.pubDate));
 }
 function applyNewsFilter(items){
   let f=newsExcluded.length>0?items.filter(i=>!newsExcluded.includes(i.feedId)):items;
@@ -624,7 +648,6 @@ function applyTeamFilter(items){
       return state.favTeams.some(abbr=>{
         const full=(TEAM_NAMES[abbr]||'').toLowerCase();
         const parts=full.split(' ');
-        // Buscar abreviatura, nombre completo, ciudad, o apodo
         return text.includes(abbr.toLowerCase())||
           (full&&text.includes(full))||
           parts.some(w=>w.length>3&&text.includes(w));
@@ -646,7 +669,7 @@ function newsItemHTML(a){
 function renderWire(){
   const body=document.getElementById('body-wire');
   const all=applyNewsFilter(getAllNews());
-  if(!all.length){body.innerHTML='<div class="empty-state">No hay artículos.<br>Comprueba los feeds en ⚙ Config</div>';setBadge('wire','0');return;}
+  if(!all.length){body.innerHTML='<div class="empty-state">No hay artículos en las últimas 48h.<br>Comprueba los feeds en ⚙ Config</div>';setBadge('wire','0');return;}
   body.innerHTML=all.map(a=>newsItemHTML(a)).join('');setBadge('wire',all.length);setUpdated('wire',lastUpdate.news);
 }
 function renderTeams(){
@@ -658,61 +681,38 @@ function renderTeams(){
 }
 
 // ══════════════════════════════════
-// SCORECAL
+// PARTIDOS — vista unificada
+// AYER + HOY (resultados) / MAÑANA + PASADO (próximos)
 // ══════════════════════════════════
-function switchScoreTab(tab){
-  activeScoreTab=tab;
-  document.getElementById('sc-tab-scores').classList.toggle('active',tab==='scores');
-  document.getElementById('sc-tab-calendar').classList.toggle('active',tab==='calendar');
-  if(tab==='scores'){if(_scoresData)renderScores(_scoresData);else loadScores();}
-  else{if(_calData)renderCalendar(..._calData);else loadCalendar();}
-}
-async function loadScores(){
+async function loadPartidos(){
   document.getElementById('body-scorecal').innerHTML='<div class="panel-loading">CARGANDO</div>';
-  try{const r=await fetch('https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard');_scoresData=await r.json();if(activeScoreTab==='scores')renderScores(_scoresData);}
-  catch(e){if(activeScoreTab==='scores')document.getElementById('body-scorecal').innerHTML='<div class="panel-error">Error al cargar resultados.</div>';}
-}
-function renderScores(d){
-  if(activeScoreTab!=='scores')return;
-  const body=document.getElementById('body-scorecal');
-  const events=d.events||[];
-  if(!events.length){body.innerHTML='<div class="no-games">No hay partidos hoy</div>';setBadge('scorecal','0');return;}
-  setBadge('scorecal',events.length+' PART.');
-  const logo=id=>`https://a.espncdn.com/i/teamlogos/nba/500/${(id||'').toLowerCase()}.png`;
-  const cards=events.map(ev=>{
-    const comp=ev.competitions?.[0];const st=ev.status?.type;const isLive=st?.state==='in';
-    const teams=comp?.competitors||[];const away=teams.find(t=>t.homeAway==='away')||teams[0];const home=teams.find(t=>t.homeAway==='home')||teams[1];
-    if(!away||!home)return'';
-    const aS=parseInt(away.score||0),hS=parseInt(home.score||0);
-    return`<div class="score-card${isLive?' live':''}">
-      <div class="score-status">${isLive?'<span class="live-dot"></span>':''}${escHtml(st?.shortDetail||'')}</div>
-      <div class="score-teams">
-        <div class="score-team"><div class="score-team-info"><img class="team-logo" src="${logo(away.team?.abbreviation)}" onerror="this.style.display='none'"><span class="team-abbr">${escHtml(away.team?.abbreviation||'')}</span></div><span class="team-score${aS>hS?' leader':''}">${away.score||''}</span></div>
-        <div class="score-divider"></div>
-        <div class="score-team"><div class="score-team-info"><img class="team-logo" src="${logo(home.team?.abbreviation)}" onerror="this.style.display='none'"><span class="team-abbr">${escHtml(home.team?.abbreviation||'')}</span></div><span class="team-score${hS>aS?' leader':''}">${home.score||''}</span></div>
-      </div>
-    </div>`;
-  }).join('');
-  body.innerHTML=`<div class="scores-grid">${cards}</div>`;
-}
-async function loadCalendar(){
-  if(activeScoreTab==='calendar')document.getElementById('body-scorecal').innerHTML='<div class="panel-loading">CARGANDO</div>';
-  const now=new Date();const fmt=d=>`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
-  const y=new Date(now-86400000),m=new Date(now.getTime()+86400000);
+  const now=new Date();
+  const fmt=d=>`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+  const ayer=new Date(now-86400000);
+  const manana=new Date(now.getTime()+86400000);
+  const pasado=new Date(now.getTime()+2*86400000);
   try{
-    const[rY,rT,rM]=await Promise.all([
-      fetch(`https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${fmt(y)}`).then(r=>r.json()),
-      fetch(`https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${fmt(now)}`).then(r=>r.json()),
-      fetch(`https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${fmt(m)}`).then(r=>r.json()),
+    const[dY,dT,dM,dP]=await Promise.all([
+      fetch(`https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${fmt(ayer)}`).then(r=>r.json()),
+      fetch('https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard').then(r=>r.json()),
+      fetch(`https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${fmt(manana)}`).then(r=>r.json()),
+      fetch(`https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${fmt(pasado)}`).then(r=>r.json()),
     ]);
-    _calData=[rY,rT,rM];if(activeScoreTab==='calendar')renderCalendar(rY,rT,rM);
-  }catch(e){if(activeScoreTab==='calendar')document.getElementById('body-scorecal').innerHTML='<div class="panel-error">Error al cargar el calendario.</div>';}
+    _calData=[dY,dT,dM,dP];
+    renderPartidos(dY,dT,dM,dP);
+  }catch(e){
+    document.getElementById('body-scorecal').innerHTML='<div class="panel-error">Error al cargar partidos.<br><button onclick="loadPartidos()" style="margin-top:8px;background:transparent;border:1px solid var(--border);color:var(--gold);padding:4px 10px;cursor:pointer;border-radius:4px;font-family:\'Inter\',sans-serif;">↺ Reintentar</button></div>';
+  }
 }
-function renderCalendar(dY,dT,dM){
-  if(activeScoreTab!=='calendar')return;
+function renderPartidos(dY,dT,dM,dP){
   const body=document.getElementById('body-scorecal');
   const logo=id=>`https://a.espncdn.com/i/teamlogos/nba/500/${(id||'').toLowerCase()}.png`;
-  const secs=[{label:'AYER',data:dY},{label:'HOY',data:dT},{label:'MAÑANA',data:dM}];
+  const secs=[
+    {label:'AYER',          data:dY,tipo:'result'},
+    {label:'HOY',           data:dT,tipo:'result'},
+    {label:'MAÑANA',        data:dM,tipo:'upcoming'},
+    {label:'PASADO MAÑANA', data:dP,tipo:'upcoming'},
+  ];
   let html='',total=0;
   secs.forEach(sec=>{
     const events=sec.data?.events||[];if(!events.length)return;
@@ -722,12 +722,14 @@ function renderCalendar(dY,dT,dM){
       const comp=ev.competitions?.[0];const st=ev.status?.type;
       const isLive=st?.state==='in',isFinal=st?.state==='post';
       const stText=st?.shortDetail||'';
-      const teams=comp?.competitors||[];const away=teams.find(t=>t.homeAway==='away')||teams[0];const home=teams.find(t=>t.homeAway==='home')||teams[1];
+      const teams=comp?.competitors||[];
+      const away=teams.find(t=>t.homeAway==='away')||teams[0];
+      const home=teams.find(t=>t.homeAway==='home')||teams[1];
       if(!away||!home)return'';
       const aS=parseInt(away.score||0),hS=parseInt(home.score||0);
       const cardCls=isLive?'live-card':sec.label==='HOY'?'today-card':'';
       const stCls=isLive?'live':isFinal?'final':'upcoming';
-      const stLabel=isLive?'🔴 EN VIVO':isFinal?'FINAL':stText;
+      const stLabel=isLive?'<span class="live-dot"></span>EN VIVO':isFinal?'FINAL':stText;
       const showScore=isFinal||isLive;
       return`<div class="cal-card ${cardCls}">
         <div class="cal-status ${stCls}">${stLabel}</div>
@@ -740,7 +742,7 @@ function renderCalendar(dY,dT,dM){
     }).join('');
     html+=`<div class="cal-grid">${cards}</div>`;
   });
-  body.innerHTML=html||'<div class="empty-state">Sin partidos en ±24h</div>';
+  body.innerHTML=html||'<div class="empty-state">Sin partidos disponibles</div>';
   setBadge('scorecal',total?total+' PART.':'—');
 }
 
@@ -750,7 +752,6 @@ function renderCalendar(dY,dT,dM){
 async function loadStandings(){
   const body=document.getElementById('body-standings');
   body.innerHTML='<div class="panel-loading">CARGANDO</div>';
-  // Probar múltiples endpoints
   const endpoints=[
     'https://site.api.espn.com/apis/v2/sports/basketball/nba/standings?season=2025&seasontype=2',
     'https://site.api.espn.com/apis/site/v2/sports/basketball/nba/standings',
@@ -759,7 +760,7 @@ async function loadStandings(){
   for(const url of endpoints){
     try{const r=await fetch(url);data=await r.json();if(data?.children?.length)break;}catch(e){}
   }
-  if(!data?.children?.length){body.innerHTML='<div class="panel-error">Error al cargar clasificación.<br><button onclick="loadStandings()" style="margin-top:8px;background:transparent;border:1px solid var(--border);color:var(--gold);padding:4px 10px;cursor:pointer;border-radius:4px;font-family:\'Barlow Condensed\',sans-serif;">↺ REINTENTAR</button></div>';return;}
+  if(!data?.children?.length){body.innerHTML='<div class="panel-error">Error al cargar clasificación.<br><button onclick="loadStandings()" style="margin-top:8px;background:transparent;border:1px solid var(--border);color:var(--gold);padding:4px 10px;cursor:pointer;border-radius:4px;font-family:\'Inter\',sans-serif;">↺ Reintentar</button></div>';return;}
   window._sData={
     east:data.children.find(c=>c.abbreviation==='East'||c.name?.toLowerCase().includes('east')),
     west:data.children.find(c=>c.abbreviation==='West'||c.name?.toLowerCase().includes('west')),
@@ -784,15 +785,17 @@ function renderStandingsTable(){
 }
 
 // ══════════════════════════════════
-// YOUTUBE / PODCAST
+// YOUTUBE — límite 72h
 // ══════════════════════════════════
 function renderYT(){
   const body=document.getElementById('body-youtube');if(!body)return;
   let all=[];getActiveYTChannels().forEach(c=>{if(ytData[c.id])all.push(...ytData[c.id]);});
   all.sort((a,b)=>new Date(b.pubDate)-new Date(a.pubDate));
+  const cutoff=Date.now()-LIMIT_YT;
+  all=all.filter(i=>!i.pubDate||new Date(i.pubDate).getTime()>cutoff);
   if(ytExcluded.length>0)all=all.filter(i=>!ytExcluded.includes(i.channelId));
   if(searchQuery)all=all.filter(i=>matchesSearch(i));
-  if(!all.length){body.innerHTML='<div class="empty-state">No hay vídeos disponibles.</div>';setBadge('youtube','0');return;}
+  if(!all.length){body.innerHTML='<div class="empty-state">No hay vídeos en las últimas 72h.</div>';setBadge('youtube','0');return;}
   body.innerHTML=all.map(v=>`<div class="media-item" onclick="window.open('${escHtml(v.link)}','_blank')">
     <div class="media-source yt">▶ ${escHtml(v.channelName)} ${isNew(v.pubDate)?'<span class="badge badge-new">🆕</span>':''}</div>
     <div class="media-title">${escHtml(v.title)}</div>
@@ -800,13 +803,19 @@ function renderYT(){
   </div>`).join('');
   setBadge('youtube',all.length+' VÍD.');setUpdated('youtube',lastUpdate.yt);
 }
+
+// ══════════════════════════════════
+// PODCAST — límite 1 semana
+// ══════════════════════════════════
 function renderPod(){
   const body=document.getElementById('body-podcast');if(!body)return;
   let all=[];getActivePodFeeds().forEach(f=>{if(podData[f.id])all.push(...podData[f.id]);});
   all.sort((a,b)=>new Date(b.pubDate)-new Date(a.pubDate));
+  const cutoff=Date.now()-LIMIT_POD;
+  all=all.filter(i=>!i.pubDate||new Date(i.pubDate).getTime()>cutoff);
   if(podExcluded.length>0)all=all.filter(i=>!podExcluded.includes(i.feedId));
   if(searchQuery)all=all.filter(i=>matchesSearch(i));
-  if(!all.length){body.innerHTML='<div class="empty-state">No hay episodios disponibles.</div>';setBadge('podcast','0');return;}
+  if(!all.length){body.innerHTML='<div class="empty-state">No hay episodios en la última semana.</div>';setBadge('podcast','0');return;}
   body.innerHTML=all.map(v=>`<div class="media-item" onclick="window.open('${escHtml(v.link)}','_blank')">
     <div class="media-source pod">🎙 ${escHtml(v.source)} ${isNew(v.pubDate)?'<span class="badge badge-new">🆕</span>':''}</div>
     <div class="media-title">${escHtml(v.title)}</div>
@@ -818,15 +827,29 @@ function renderPod(){
 // ══════════════════════════════════
 // AUTO REFRESH / LIVE / FONT
 // ══════════════════════════════════
-function toggleLive(){livePolling=!livePolling;const btn=document.getElementById('live-btn');if(livePolling){btn.classList.add('active');liveInterval=setInterval(loadScores,60000);loadScores();}else{btn.classList.remove('active');clearInterval(liveInterval);}}
+function toggleLive(){livePolling=!livePolling;const btn=document.getElementById('live-btn');if(livePolling){btn.classList.add('active');liveInterval=setInterval(loadPartidos,60000);loadPartidos();}else{btn.classList.remove('active');clearInterval(liveInterval);}}
 function setAutoRefresh(val){clearInterval(autoRefreshTimer);const mins=parseInt(val);if(mins>0)autoRefreshTimer=setInterval(()=>{loadAllNews();loadAllYT();loadAllPod();},mins*60000);}
 function updateFontSize(val){document.documentElement.style.setProperty('--fs-title',val+'px');localStorage.setItem('nba_fst',val);}
 
 // ══════════════════════════════════
 // REFRESH
 // ══════════════════════════════════
-function refreshPanel(id){({wire:loadAllNews,teams:loadAllNews,scorecal:()=>activeScoreTab==='scores'?loadScores():loadCalendar(),standings:loadStandings,youtube:loadAllYT,podcast:loadAllPod}[id]||(() => {}))();}
-function refreshAll(){_scoresData=null;_calData=null;loadAllNews();loadScores();loadCalendar();loadStandings();loadAllYT();loadAllPod();}
+function refreshPanel(id){({wire:loadAllNews,teams:loadAllNews,scorecal:loadPartidos,standings:loadStandings,youtube:loadAllYT,podcast:loadAllPod}[id]||(() => {}))();}
+function refreshAll(){_calData=null;loadAllNews();loadPartidos();loadStandings();loadAllYT();loadAllPod();}
+
+// ══════════════════════════════════
+// RESET
+// ══════════════════════════════════
+function resetFilters(){
+  newsExcluded=[];ytExcluded=[];podExcluded=[];
+  ['wire','youtube','podcast'].forEach(p=>updateFilterCount(p));
+  renderWire();renderTeams();renderYT();renderPod();
+}
+function resetAll(){
+  if(!confirm('¿Borrar toda la configuración guardada?\nSe eliminarán equipos favoritos, feeds personalizados y ajustes de tipografía.'))return;
+  localStorage.clear();
+  location.reload();
+}
 
 // ══════════════════════════════════
 // CONFIG
@@ -864,13 +887,13 @@ function formatDate(d){if(!d)return '';try{const date=new Date(d);if(isNaN(date)
 function init(){
   const fst=localStorage.getItem('nba_fst');if(fst){document.getElementById('fst-slider').value=fst;updateFontSize(fst);}
   ['wire','youtube','podcast'].forEach(id=>updateFilterCount(id));
-  // Separadores
   initColSep('sep-col1','panel-wire','panel-youtube','--col1','--col2');
   initColSep('sep-col2','panel-youtube','panel-podcast','--col2','--col3');
   initRowSep();
-  loadAllNews();loadScores();loadCalendar();loadStandings();loadAllYT();loadAllPod();
+  loadAllNews();loadPartidos();loadStandings();loadAllYT();loadAllPod();
 }
 init();
 </script>
+
 </body>
 </html>
