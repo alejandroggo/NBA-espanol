@@ -371,7 +371,10 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 <!-- CONFIG -->
 <div id="config-modal">
   <div class="config-box">
-    <div class="config-title">⚙ Configuración</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <div class="config-title" style="margin-bottom:0">⚙ Configuración</div>
+      <button onclick="closeConfig()" style="background:transparent;border:1px solid var(--border);color:var(--text3);font-size:16px;width:28px;height:28px;cursor:pointer;border-radius:4px;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text3)'">✕</button>
+    </div>
 
     <div class="config-section">
       <div class="config-section-title">Equipos favoritos (máx. 3) — filtra Mis Equipos</div>
