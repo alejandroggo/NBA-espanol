@@ -1034,20 +1034,20 @@ async function loadPartidos(){
     }
     const results=await Promise.all(fetchesTodo);
     const[dY_or_T,dT_or_M,dM_maybe]=etHour<12?results:[null,...results];
-    _calData={dY:dY_or_T,dT:dT_or_M,dM:dM_maybe};
-    renderPartidos(dY_or_T,dT_or_M,dM_maybe,etHour);
+    _calData={dY:dY_or_T,dT:dT_or_M,dM:dM_maybe,ayerStr,todayStr,mananaStr};
+    renderPartidos(dY_or_T,dT_or_M,dM_maybe,etHour,ayerStr,todayStr,mananaStr);
   }catch(e){
     document.getElementById('body-scorecal').innerHTML='<div class="panel-error">Error al cargar partidos.<br><button onclick="loadPartidos()" style="margin-top:8px;background:transparent;border:1px solid var(--border);color:var(--gold);padding:4px 10px;cursor:pointer;border-radius:4px;font-family:\'Inter\',sans-serif;">↺ Reintentar</button></div>';
   }
 }
-function renderPartidos(dY,dT,dM,etHour){
+function renderPartidos(dY,dT,dM,etHour,ayerStr,todayStr,mananaStr){
   const body=document.getElementById('body-scorecal');
   const logo=id=>`https://a.espncdn.com/i/teamlogos/nba/500/${(id||'').toLowerCase()}.png`;
-  // FIX #5: estructura dinámica según hora ET
+  const toHoopsDate=s=>s?`${s.slice(0,4)}-${s.slice(4,6)}-${s.slice(6,8)}`:'';
   const secs=[];
-  if(etHour<12&&dY)secs.push({label:'AYER',data:dY,tipo:'result'});
-  if(dT)secs.push({label:'HOY',data:dT,tipo:'result'});
-  if(dM)secs.push({label:'MAÑANA',data:dM,tipo:'upcoming'});
+  if(etHour<12&&dY)secs.push({label:'AYER',data:dY,dateStr:toHoopsDate(ayerStr)});
+  if(dT)secs.push({label:'HOY',data:dT,dateStr:toHoopsDate(todayStr)});
+  if(dM)secs.push({label:'MAÑANA',data:dM,dateStr:toHoopsDate(mananaStr)});
   let html='',total=0;
   secs.forEach(sec=>{
     const events=sec.data?.events||[];if(!events.length)return;
@@ -1066,7 +1066,10 @@ function renderPartidos(dY,dT,dM,etHour){
       const stCls=isLive?'live':isFinal?'final':'upcoming';
       const stLabel=isLive?'<span class="live-dot"></span>EN VIVO':isFinal?'FINAL':stText;
       const showScore=isFinal||isLive;
-      return`<div class="cal-card ${cardCls}">
+      const awayAbbr=(away.team?.abbreviation||'').toLowerCase();
+      const homeAbbr=(home.team?.abbreviation||'').toLowerCase();
+      const hoopsUrl=sec.dateStr?`https://hoopsjunkie.io/games/${sec.dateStr}/${awayAbbr}-vs-${homeAbbr}`:'';
+      return`<div class="cal-card ${cardCls}"${hoopsUrl?` onclick="window.open('${hoopsUrl}','_blank')" style="cursor:pointer;"`:''>
         <div class="cal-status ${stCls}">${stLabel}</div>
         <div class="cal-teams">
           <div class="cal-team"><div class="cal-team-info"><img class="team-logo" src="${logo(away.team?.abbreviation)}" onerror="this.style.display='none'"><span class="cal-team-abbr">${escHtml(away.team?.abbreviation||'')}</span></div>${showScore?`<span class="cal-score${isFinal?' final':''}${aS>hS?' leader':''}">${away.score||0}</span>`:''}</div>
