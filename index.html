@@ -1159,8 +1159,9 @@ function renderPartidos(dY,dT,dM,etHour,ayerStr,todayStr,mananaStr){
 async function loadStandings(){
   const body=document.getElementById('body-standings');
   body.innerHTML='<div class="panel-loading">CARGANDO</div>';
+  const yr=new Date().getMonth()>=9?new Date().getFullYear()+1:new Date().getFullYear();
   const endpoints=[
-    'https://site.api.espn.com/apis/v2/sports/basketball/nba/standings?season=2025&seasontype=2',
+    `https://site.api.espn.com/apis/v2/sports/basketball/nba/standings?season=${yr}&seasontype=2`,
     'https://site.api.espn.com/apis/site/v2/sports/basketball/nba/standings',
   ];
   let data=null;
@@ -1184,7 +1185,11 @@ function renderStandingsTable(){
   const body=document.getElementById('body-standings');if(!body||!window._sData)return;
   const data=standingsConf==='east'?window._sData.east:window._sData.west;
   if(!data){body.innerHTML='<div class="panel-error">Sin datos.</div>';return;}
-  const rows=(data.standings?.entries||[]).map((entry,i)=>{
+  const entries=(data.standings?.entries||[]).slice().sort((a,b)=>{
+    const pct=e=>{const s={};(e.stats||[]).forEach(x=>s[x.name]=parseFloat(x.value)||0);return s['winPercent']||s['pct']||0;};
+    return pct(b)-pct(a);
+  });
+  const rows=entries.map((entry,i)=>{
     const t=entry.team;const s={};(entry.stats||[]).forEach(x=>s[x.name]=x.displayValue||x.value);
     return`<tr class="${i===5?'playoff-line':''}"><td class="rank-num">${i+1}</td><td class="team-td">${t?.abbreviation||t?.shortDisplayName||''}</td><td>${s['wins']||0}-${s['losses']||0}</td><td class="pct-cell">${s['winPercent']||s['pct']||'—'}</td><td>${s['gamesBehind']||s['gamesBack']||'—'}</td><td>${s['Home']||s['homeRecord']||'—'}</td><td>${s['Road']||s['awayRecord']||'—'}</td><td>${s['L10']||s['last10']||'—'}</td></tr>`;
   }).join('');
