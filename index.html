@@ -397,34 +397,38 @@ const NBA_TEAMS=['ATL','BOS','BKN','CHA','CHI','CLE','DAL','DEN','DET','GSW','HO
 const TEAM_NAMES={ATL:'Atlanta Hawks',BOS:'Boston Celtics',BKN:'Brooklyn Nets',CHA:'Charlotte Hornets',CHI:'Chicago Bulls',CLE:'Cleveland Cavaliers',DAL:'Dallas Mavericks',DEN:'Denver Nuggets',DET:'Detroit Pistons',GSW:'Golden State Warriors',HOU:'Houston Rockets',IND:'Indiana Pacers',LAC:'LA Clippers',LAL:'Los Angeles Lakers',MEM:'Memphis Grizzlies',MIA:'Miami Heat',MIL:'Milwaukee Bucks',MIN:'Minnesota Timberwolves',NOP:'New Orleans Pelicans',NYK:'New York Knicks',OKC:'Oklahoma City Thunder',ORL:'Orlando Magic',PHI:'Philadelphia 76ers',PHX:'Phoenix Suns',POR:'Portland Trail Blazers',SAC:'Sacramento Kings',SAS:'San Antonio Spurs',TOR:'Toronto Raptors',UTA:'Utah Jazz',WAS:'Washington Wizards'};
 
 let NEWS_FEEDS=[
-  {id:'gigantes', label:'Gigantes del Basket',url:'https://www.gigantes.com/nba/feed/',pay:false,enabled:true},
-  {id:'md_nba',  label:'Mundo Deportivo NBA', url:'https://www.mundodeportivo.com/feed/rss/baloncesto/nba',pay:false,enabled:true},
-  {id:'as_nba',  label:'AS NBA',              url:'https://feeds.as.com/mrss-s/pages/as/site/as.com/section/baloncesto/subsection/nba/',pay:false,enabled:true},
-  {id:'marca_nba',label:'Marca NBA',          url:'https://e00-marca.uecdn.es/rss/baloncesto/nba.xml',pay:false,enabled:true},
-  {id:'sport_nba',label:'Sport NBA',          url:'https://www.sport.es/es/rss/nba/rss.xml',pay:false,enabled:true},
   {id:'agaitan', label:'Alejandro Gaitán',    url:'https://alejandroggo.com/feed',pay:true,enabled:true},
-  {id:'maniacs', label:'NBA Maniacs',         url:'https://www.nbamaniacs.com/feed/',pay:false,enabled:true},
+  {id:'as_nba',  label:'AS NBA',              url:'https://feeds.as.com/mrss-s/pages/as/site/as.com/section/baloncesto/subsection/nba/',pay:false,enabled:true},
+  {id:'gigantes', label:'Gigantes del Basket',url:'https://www.gigantes.com/nba/feed/',pay:false,enabled:true},
+  {id:'marca_nba',label:'Marca NBA',          url:'https://e00-marca.uecdn.es/rss/baloncesto/nba.xml',pay:false,enabled:true},
+  {id:'md_nba',  label:'Mundo Deportivo NBA', url:'https://www.mundodeportivo.com/feed/rss/baloncesto/nba',pay:false,enabled:true},
   {id:'kike',    label:'NBA Con Contexto',    url:'https://www.nbaconcontexto.com/feed/',pay:true,enabled:true},
+  {id:'maniacs', label:'NBA Maniacs',         url:'https://www.nbamaniacs.com/feed/',pay:false,enabled:true},
+  {id:'sport_nba',label:'Sport NBA',          url:'https://www.sport.es/es/rss/nba/rss.xml',pay:false,enabled:true},
 ];
+  
 let YT_CHANNELS=[
-  {id:'UCTJNmeP0HiOU4-qOMNVNoGA',label:'Drafteados'},
-  {id:'UCev6qJYN5x_OD3YuQepnyNQ',label:'Leo Carranza'},
-  {id:'UCj4tzJjOFNE2JD3D9sYAAQg',label:'Planeta NBA'},
-  {id:'@Gigantesbasket',          label:'Gigantes del Basket'},
-  {id:'UCXJnFRcssT0Q1ID_V6Or1sQ', label:'Sergio Rabinal'},
   {id:'UCoCXWfhkSuT4DOolxFsPoYQ', label:'Basket 365'},
-  {id:'UCvfhPZKiTP7qlsCFbENRuwA', label:'Nacho Losilla'},
+  {id:'UCTJNmeP0HiOU4-qOMNVNoGA',label:'Drafteados'},
+  {id:'@Gigantesbasket',          label:'Gigantes del Basket'},
+  {id:'UCev6qJYN5x_OD3YuQepnyNQ',label:'Leo Carranza'},
   {id:'UCkYJ2bR3QbYl8v7u3Kz6Jxw', label:'Maxi YT Basket'},
+  {id:'UCvfhPZKiTP7qlsCFbENRuwA', label:'Nacho Losilla'},
+  {id:'UCj4tzJjOFNE2JD3D9sYAAQg',label:'Planeta NBA'},
+  {id:'UCXJnFRcssT0Q1ID_V6Or1sQ', label:'Sergio Rabinal'},
+  
 ];
-// Feeds directos: Spreaker (Esto no es un podcast NBA) + Omny (Mínimo de Veterano)
+
 let POD_FEEDS=[
-  {id:'enopnba',label:'Esto no es un podcast NBA',url:'https://www.spreaker.com/show/5970729/episodes/feed',enabled:true},
-  {id:'minvet', label:'Mínimo de Veterano',        url:'https://omny.fm/shows/nba-m-nimo-de-veterano/playlists/podcast.rss',enabled:true},
+  {id:'tresmas', label:'3+1',        url:'https://feeds.ivoox.com/feed_fg_f12314873_filtro_1.xml',enabled:true},
   {id:'buzzbet', label:'Buzzer Beater',        url:'https://feeds.ivoox.com/feed_fg_f11091103_filtro_1.xml',enabled:true},
   {id:'reverso', label:'El Reverso',        url:'https://feeds.ivoox.com/feed_fg_f1404265_filtro_1.xml',enabled:true},
-  {id:'nbahouse', label:'NBA House',        url:'https://www.spreaker.com/show/6150962/episodes/feed',enabled:true},
+  {id:'enopnba',label:'Esto no es un podcast NBA',url:'https://www.spreaker.com/show/5970729/episodes/feed',enabled:true},
   {id:'nbaadict', label:'NBA Adictos',        url:'https://feeds.ivoox.com/feed_fg_f1584844_filtro_1.xml',enabled:true},
+  {id:'nbahouse', label:'NBA House',        url:'https://www.spreaker.com/show/6150962/episodes/feed',enabled:true},
   {id:'massball', label:'Massive Ball',        url:'https://feeds.ivoox.com/feed_fg_f1583803_filtro_1.xml',enabled:true},
+  {id:'minvet', label:'Mínimo de Veterano',        url:'https://omny.fm/shows/nba-m-nimo-de-veterano/playlists/podcast.rss',enabled:true},
+
 ];
 
 // ══════════════════════════════════
