@@ -683,14 +683,11 @@ function renderTeams(){
 }
 
 // ══════════════════════════════════
-// PARTIDOS — vista unificada
-// AYER + HOY (resultados) / MAÑANA + PASADO (próximos)
-// ══════════════════════════════════
 async function loadPartidos(){
   document.getElementById('body-scorecal').innerHTML='<div class="panel-loading">CARGANDO</div>';
   const now=new Date();
   const fmt=d=>`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
-  const ayer=new Date(now-86400000);
+  const ayer=new Date(now-43200000);
   const manana=new Date(now.getTime()+86400000);
   const pasado=new Date(now.getTime()+2*86400000);
   try{
@@ -698,7 +695,6 @@ async function loadPartidos(){
       fetch(`https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${fmt(ayer)}`).then(r=>r.json()),
       fetch('https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard').then(r=>r.json()),
       fetch(`https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${fmt(manana)}`).then(r=>r.json()),
-      fetch(`https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${fmt(pasado)}`).then(r=>r.json()),
     ]);
     _calData=[dY,dT,dM,dP];
     renderPartidos(dY,dT,dM,dP);
