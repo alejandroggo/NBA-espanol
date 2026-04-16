@@ -289,7 +289,7 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
   <!-- NOTICIAS -->
   <div class="panel" id="panel-wire">
     <div class="panel-header" onclick="togglePanelMobile('panel-wire')">
-      <span class="panel-title">📡 Noticias</span>
+      <span class="panel-title">✍️ Noticias</span>
       <span class="panel-badge" id="badge-wire">—</span>
       <span class="panel-updated" id="upd-wire"></span>
       <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('wire')">↺</button>
@@ -307,7 +307,7 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
   <!-- YOUTUBE -->
   <div class="panel" id="panel-youtube">
     <div class="panel-header" onclick="togglePanelMobile('panel-youtube')">
-      <span class="panel-title">▶ YouTube</span>
+      <span class="panel-title">🎥 YouTube</span>
       <span class="panel-badge" id="badge-youtube">—</span>
       <span class="panel-updated" id="upd-youtube"></span>
       <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('youtube')">↺</button>
@@ -388,11 +388,11 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 <!-- MOBILE TAB BAR -->
 <nav id="mobile-tabbar">
   <button class="mob-tab" id="mtab-wire" onclick="mobileTab('wire')">
-    <span class="mob-tab-icon">📡</span>
+    <span class="mob-tab-icon">✍️</span>
     <span class="mob-tab-label">Noticias</span>
   </button>
   <button class="mob-tab" id="mtab-youtube" onclick="mobileTab('youtube')">
-    <span class="mob-tab-icon">▶</span>
+    <span class="mob-tab-icon">🎥</span>
     <span class="mob-tab-label">YouTube</span>
   </button>
   <button class="mob-tab" id="mtab-podcast" onclick="mobileTab('podcast')">
@@ -899,7 +899,7 @@ function renderTeamKwBar(){
   // FIX #4: toggles YT y Pod
   const ytOn=state.teamsIncYT!==false;
   const podOn=state.teamsIncPod!==false;
-  html+=`<span class="kw-chip" style="margin-left:auto;${ytOn?'color:var(--yt-red);border-color:var(--yt-red);':''}" onclick="toggleTeamsYT(this)" title="Incluir YouTube en Mis Equipos">▶ YT</span>`;
+  html+=`<span class="kw-chip" style="margin-left:auto;${ytOn?'color:var(--yt-red);border-color:var(--yt-red);':''}" onclick="toggleTeamsYT(this)" title="Incluir YouTube en Mis Equipos">🎥 YT</span>`;
   html+=`<span class="kw-chip" style="${podOn?'color:var(--pod-purple);border-color:var(--pod-purple);':''}" onclick="toggleTeamsPod(this)" title="Incluir podcasts en Mis Equipos">🎙 Pod</span>`;
   bar.innerHTML=html;
 }
@@ -1030,9 +1030,9 @@ function renderTeams(){
     if(a._type==='yt'){
       const thumb=ytThumbFromLink(a.link||'');
       return`<div class="media-item" onclick="window.open('${escHtml(a.link)}','_blank')">
-        ${mediaThumbOrPlaceholder(thumb,'▶',a.logo||getSourceLogo(a.channelId||''))}
+        ${mediaThumbOrPlaceholder(thumb,'🎥',a.logo||getSourceLogo(a.channelId||''))}
         <div class="media-content">
-          <div class="media-source yt">▶ ${escHtml(a.channelName||a.source||'')} ${isNew(a.pubDate)?'<span class="badge badge-new">🆕</span>':''}</div>
+          <div class="media-source yt">🎥 ${escHtml(a.channelName||a.source||'')} ${isNew(a.pubDate)?'<span class="badge badge-new">🆕</span>':''}</div>
           <div class="media-title">${escHtml(a.title)}</div>
           <div class="media-date">${a.pubDate?formatDate(a.pubDate):''}</div>
         </div>
@@ -1183,9 +1183,9 @@ function renderYT(){
   body.innerHTML=all.map(v=>{
     const thumb=ytThumbFromLink(v.link||'');
     return`<div class="media-item" onclick="window.open('${escHtml(v.link)}','_blank')">
-      ${mediaThumbOrPlaceholder(thumb,'▶',v.logo||getSourceLogo(v.channelId||''))}
+      ${mediaThumbOrPlaceholder(thumb,'🎥',v.logo||getSourceLogo(v.channelId||''))}
       <div class="media-content">
-        <div class="media-source yt">▶ ${escHtml(v.channelName)} ${isNew(v.pubDate)?'<span class="badge badge-new">🆕</span>':''}</div>
+        <div class="media-source yt">🎥 ${escHtml(v.channelName)} ${isNew(v.pubDate)?'<span class="badge badge-new">🆕</span>':''}</div>
         <div class="media-title">${escHtml(v.title)}</div>
         <div class="media-date">${v.pubDate?formatDate(v.pubDate):''}</div>
       </div>
