@@ -466,6 +466,38 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 // DATOS BASE
 // ══════════════════════════════════
 const NBA_TEAMS=['ATL','BOS','BKN','CHA','CHI','CLE','DAL','DEN','DET','GSW','HOU','IND','LAC','LAL','MEM','MIA','MIL','MIN','NOP','NYK','OKC','ORL','PHI','PHX','POR','SAC','SAS','TOR','UTA','WAS'];
+const TEAM_KEYWORDS_HARDCODED = [
+  'jalen johnson','kuminga'                        // ATL
+  'tatum', 'jaylen brown', 'mazzulla',    // BOS
+  'michael porter', 'jordi'                        // BKN
+  'lamelo', 'lamelo ball',                 // CHA
+  'josh giddey',                           // CHI
+  'donovan mitchell',                      // CLE
+  'cooper flagg',                          // DAL
+  'jokic', 'nikola jokic',                 // DEN
+  'cade cunningham',                       // DET
+  'curry', 'stephen curry', 'steph'              // GSW
+  'sengun', 'alperen sengun',             // HOU
+  'haliburton', 'tyrese haliburton',      // IND
+  'kawhi',                                 // LAC
+  'lebron', 'luka doncic',                // LAL
+  'ja morant',                             // MEM
+  'bam adebayo',                           // MIA
+  'giannis',                               // MIL
+  'anthony edwards', 'ant', 'edwards'        // MIN
+  'zion',                                  // NOP
+  'jalen brunson',                         // NYK
+  'shai', 'sga', 'gilgeous-alexander'                          // OKC
+  'paolo banchero',                        // ORL
+  'embiid', 'maxey', 'edgecombe'                   // PHI
+  'devin booker',                          // PHX
+  'scoot henderson',                       // POR
+  'sabonis', 'domantas sabonis',           // SAC
+  'wembanyama', 'wemby',                   // SAS
+  'scottie barnes',                        // TOR
+  'lauri markkanen',                       // UTA
+  'trae young',                            // WAS
+];
 const TEAM_NAMES={ATL:'Atlanta Hawks',BOS:'Boston Celtics',BKN:'Brooklyn Nets',CHA:'Charlotte Hornets',CHI:'Chicago Bulls',CLE:'Cleveland Cavaliers',DAL:'Dallas Mavericks',DEN:'Denver Nuggets',DET:'Detroit Pistons',GSW:'Golden State Warriors',HOU:'Houston Rockets',IND:'Indiana Pacers',LAC:'LA Clippers',LAL:'Los Angeles Lakers',MEM:'Memphis Grizzlies',MIA:'Miami Heat',MIL:'Milwaukee Bucks',MIN:'Minnesota Timberwolves',NOP:'New Orleans Pelicans',NYK:'New York Knicks',OKC:'Oklahoma City Thunder',ORL:'Orlando Magic',PHI:'Philadelphia 76ers',PHX:'Phoenix Suns',POR:'Portland Trail Blazers',SAC:'Sacramento Kings',SAS:'San Antonio Spurs',TOR:'Toronto Raptors',UTA:'Utah Jazz',WAS:'Washington Wizards'};
 
 // FIX #3: logos por defecto para medios conocidos (se puede ampliar con col en Sheet)
@@ -867,8 +899,8 @@ function matchesTeamFilter(item){
       parts.some(w=>w.length>3&&text.includes(w));
   });
   // keywords libres — FIX #1: case-insensitive ya garantizado (todo en minúsculas)
-  const kwMatch=state.teamKeywords.length===0||state.teamKeywords.some(kw=>text.includes(kw));
-  // si no hay ni equipos ni kw, mostrar todo
+const allKws = [...state.teamKeywords, ...TEAM_KEYWORDS_HARDCODED];
+const kwMatch = allKws.length === 0 || allKws.some(kw => text.includes(kw)); 
   if(state.favTeams.length===0&&state.teamKeywords.length===0)return true;
   return teamMatch||kwMatch;
 }
