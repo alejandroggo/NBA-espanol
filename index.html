@@ -484,7 +484,7 @@ const TEAM_KEYWORDS_HARDCODED = {
   MEM: ['ja morant'],
   MIA: ['bam adebayo'],
   MIL: ['giannis'],
-  MIN: ['anthony edwards','ant','edwards'],
+  MIN: ['anthony edwards','edwards'],
   NOP: ['zion'],
   NYK: ['jalen brunson'],
   OKC: ['shai','sga','gilgeous-alexander'],
@@ -889,20 +889,20 @@ function toggleTeamsPod(el){
 // ══════════════════════════════════
 // MATCH para Mis Equipos — FIX #1 case-insensitive
 // ══════════════════════════════════
-function matchesTeamFilter(item){
+function matchesTeamFilter(item, strict=false){
   const text=(item.title||'').toLowerCase();
   if(state.favTeams.length===0&&state.teamKeywords.length===0)return true;
-  // equipos favoritos + keywords hardcoded del equipo seleccionado
   const teamMatch=state.favTeams.some(abbr=>{
     const full=(TEAM_NAMES[abbr]||'').toLowerCase();
     const parts=full.split(' ');
-    const teamKws=TEAM_KEYWORDS_HARDCODED[abbr]||[];
+    // En modo strict (YT/podcasts) no se usan keywords de jugadores —
+    // son contenido general que menciona a cualquier estrella en passing
+    const teamKws=strict?[]:(TEAM_KEYWORDS_HARDCODED[abbr]||[]);
     return text.includes(abbr.toLowerCase())||
       (full&&text.includes(full))||
-      parts.some(w=>w.length>3&&text.includes(w))||
+      parts.some(w=>w.length>4&&text.includes(w))||
       teamKws.some(kw=>text.includes(kw));
   });
-  // keywords libres añadidas por el usuario
   const kwMatch=state.teamKeywords.length>0&&state.teamKeywords.some(kw=>text.includes(kw.toLowerCase()));
   return teamMatch||kwMatch;
 }
@@ -969,14 +969,14 @@ function renderTeams(){
   if(state.teamsIncYT!==false){
     let allYT=[];getActiveYTChannels().forEach(c=>{if(ytData[c.id])allYT.push(...ytData[c.id]);});
     const cutoffYT=Date.now()-LIMIT_YT;
-    allYT.filter(i=>(!i.pubDate||new Date(i.pubDate).getTime()>cutoffYT)&&matchesTeamFilter(i)&&(searchQuery?matchesSearch(i):true))
+    allYT.filter(i=>(!i.pubDate||new Date(i.pubDate).getTime()>cutoffYT)&&matchesTeamFilter(i,true)&&(searchQuery?matchesSearch(i):true))
       .forEach(v=>items.push({...v,_type:'yt',source:v.channelName,feedId:v.channelId}));
   }
   // FIX #4: podcasts
   if(state.teamsIncPod!==false){
     let allPod=[];getActivePodFeeds().forEach(f=>{if(podData[f.id])allPod.push(...podData[f.id]);});
     const cutoffPod=Date.now()-LIMIT_POD;
-    allPod.filter(i=>(!i.pubDate||new Date(i.pubDate).getTime()>cutoffPod)&&matchesTeamFilter(i)&&(searchQuery?matchesSearch(i):true))
+    allPod.filter(i=>(!i.pubDate||new Date(i.pubDate).getTime()>cutoffPod)&&matchesTeamFilter(i,true)&&(searchQuery?matchesSearch(i):true))
       .forEach(p=>items.push({...p,_type:'pod'}));
   }
   items.sort((a,b)=>new Date(b.pubDate)-new Date(a.pubDate));
