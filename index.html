@@ -687,7 +687,7 @@ async function loadPartidos(){
   document.getElementById('body-scorecal').innerHTML='<div class="panel-loading">CARGANDO</div>';
   const now=new Date();
   const fmt=d=>`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
-  const ayer=new Date(now-43200000);
+  const ayer=new Date(now-86400000);
   const manana=new Date(now.getTime()+86400000);
   const pasado=new Date(now.getTime()+2*86400000);
   try{
