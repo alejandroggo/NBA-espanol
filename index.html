@@ -1196,8 +1196,8 @@ function renderTeamsGrid(){document.getElementById('teams-grid').innerHTML=NBA_T
 function toggleTeam(abbr,el){if(state.favTeams.includes(abbr)){state.favTeams=state.favTeams.filter(t=>t!==abbr);el.classList.remove('active');}else{if(state.favTeams.length>=3)return;state.favTeams.push(abbr);el.classList.add('active');}localStorage.setItem('nba_teams',JSON.stringify(state.favTeams));document.querySelectorAll('#teams-grid .chip').forEach(c=>c.classList.toggle('maxed',state.favTeams.length>=3&&!state.favTeams.includes(c.textContent.trim())));renderTeams();}
 function removeCustomFeed(i){state.customFeeds.splice(i,1);localStorage.setItem('nba_feeds',JSON.stringify(state.customFeeds));}
 function renderYTConfig(){
-  // FIX #8: this now renders under Estado — YouTube in config
-  const c=document.getElementById('yt-channels-config');
+  const c=document.getElementById('feed-health-yt');
+  if(!c)return;
   c.innerHTML=[...YT_CHANNELS,...state.customYT].map((ch,i)=>{
     const h=ytHealth[ch.id]||{status:'loading',count:0};const disabled=state.disabledYT.includes(ch.id);const isCustom=i>=YT_CHANNELS.length;
     const logo=getSourceLogo(ch.id);
@@ -1224,12 +1224,7 @@ function updateHealthUI(){
     return`<div class="health-item">${logoHtml}<div class="dot ${dis?'err':h.status}"></div><span class="health-name">${escHtml(f.label)}</span><span class="health-count">${h.count||0} ep.</span><button class="toggle-btn ${dis?'':'on'}" onclick="togglePod('${f.id}',this)">${dis?'DESACT.':'ACTIVO'}</button></div>`;
   }).join('');
 
-  // FIX #8: YT estado ahora en su propio div feed-health-yt (conectado a renderYTConfig)
   renderYTConfig();
-  // pero feed-health-yt es distinto de yt-channels-config (que está en la sección de añadir canal)
-  // reutilizamos el mismo render volcándolo también aquí
-  const ytEl=document.getElementById('feed-health-yt');
-  if(ytEl)ytEl.innerHTML=document.getElementById('yt-channels-config').innerHTML;
 }
 function toggleNews(id,btn){if(state.disabledNews.includes(id)){state.disabledNews=state.disabledNews.filter(x=>x!==id);btn.textContent='ACTIVO';btn.classList.add('on');}else{state.disabledNews.push(id);btn.textContent='DESACT.';btn.classList.remove('on');}localStorage.setItem('nba_dis_news',JSON.stringify(state.disabledNews));updateHealthUI();renderWire();renderTeams();}
 function togglePod(id,btn){if(state.disabledPod.includes(id)){state.disabledPod=state.disabledPod.filter(x=>x!==id);btn.textContent='ACTIVO';btn.classList.add('on');}else{state.disabledPod.push(id);btn.textContent='DESACT.';btn.classList.remove('on');}localStorage.setItem('nba_dis_pod',JSON.stringify(state.disabledPod));updateHealthUI();renderPod();}
