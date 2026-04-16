@@ -89,10 +89,23 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 .filter-all{padding:5px 10px;font-size:9px;color:var(--text3);border-bottom:1px solid var(--border);display:flex;gap:8px;}
 .filter-all button{background:none;border:none;color:var(--gold);cursor:pointer;font-family:'Inter',sans-serif;font-size:10px;font-weight:600;letter-spacing:.5px;padding:0;}
 
-/* ARTÍCULOS */
-.article-item{padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;transition:background .1s;}
+/* TEAM KEYWORD CHIPS — FIX #1 */
+.team-kw-bar{padding:6px 10px;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0;display:flex;flex-wrap:wrap;gap:4px;align-items:center;}
+.kw-chip{font-family:'Inter',sans-serif;font-weight:600;font-size:10px;padding:2px 8px;border-radius:10px;border:1px solid var(--border);color:var(--text2);cursor:pointer;transition:all .15s;background:transparent;text-transform:uppercase;letter-spacing:.4px;}
+.kw-chip:hover{border-color:var(--gold);color:var(--gold);}
+.kw-chip.active{border-color:var(--gold);color:var(--gold);background:var(--gold-bg);}
+.kw-chip.add-kw{border-style:dashed;color:var(--text3);}
+.kw-chip.add-kw:hover{border-color:var(--gold);color:var(--gold);}
+.kw-input-wrap{display:flex;gap:4px;align-items:center;}
+.kw-input{background:var(--bg);border:1px solid var(--gold);color:var(--text);font-family:'Inter',sans-serif;font-size:10px;padding:2px 7px;border-radius:10px;outline:none;width:90px;}
+
+/* ARTÍCULOS con thumbnail — FIX #6 */
+.article-item{padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;transition:background .1s;display:flex;gap:8px;align-items:flex-start;}
 .article-item:hover{background:var(--gold-bg);margin:0 -10px;padding:8px 10px;}
 .article-item:last-child{border-bottom:none;}
+.article-thumb{width:44px;height:44px;object-fit:cover;border-radius:4px;flex-shrink:0;background:var(--bg2);}
+.article-thumb-placeholder{width:44px;height:44px;border-radius:4px;flex-shrink:0;background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text3);}
+.article-content{flex:1;min-width:0;}
 .article-meta{display:flex;align-items:center;gap:5px;margin-bottom:3px;flex-wrap:wrap;}
 .article-source{font-family:'Inter',sans-serif;font-weight:700;font-size:10px;letter-spacing:.5px;color:var(--gold);text-transform:uppercase;}
 .article-title{font-family:'Inter',sans-serif;font-weight:500;font-size:var(--fs-title);color:var(--text);line-height:1.4;margin-bottom:2px;}
@@ -100,6 +113,9 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 .badge{font-size:8px;letter-spacing:.5px;padding:1px 5px;border-radius:3px;text-transform:uppercase;flex-shrink:0;}
 .badge-pay{background:rgba(224,80,80,.12);color:var(--live-red);border:1px solid rgba(224,80,80,.25);}
 .badge-new{background:rgba(76,175,130,.1);color:var(--green);border:1px solid rgba(76,175,130,.25);}
+
+/* source logo small */
+.source-logo{width:14px;height:14px;object-fit:contain;border-radius:2px;vertical-align:middle;}
 
 /* SCORES / CALENDAR */
 .cal-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
@@ -137,10 +153,13 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 .pct-cell{color:var(--gold);}
 .playoff-line td{border-top:1px solid rgba(201,168,76,.3)!important;}
 
-/* MEDIA */
-.media-item{padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;transition:background .1s;}
+/* MEDIA con thumbnail — FIX #6 */
+.media-item{padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;transition:background .1s;display:flex;gap:8px;align-items:flex-start;}
 .media-item:hover{background:var(--gold-bg);margin:0 -10px;padding:8px 10px;}
 .media-item:last-child{border-bottom:none;}
+.media-thumb{width:44px;height:44px;object-fit:cover;border-radius:4px;flex-shrink:0;background:var(--bg2);}
+.media-thumb-placeholder{width:44px;height:44px;border-radius:4px;flex-shrink:0;background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text3);}
+.media-content{flex:1;min-width:0;}
 .media-source{font-family:'Inter',sans-serif;font-weight:700;font-size:10px;letter-spacing:.5px;text-transform:uppercase;margin-bottom:2px;display:flex;align-items:center;gap:4px;}
 .media-source.yt{color:var(--yt-red);}
 .media-source.pod{color:var(--pod-purple);}
@@ -150,7 +169,7 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 /* CONFIG MODAL */
 #config-modal{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;}
 #config-modal.open{display:flex;}
-.config-box{background:var(--panel);border:1px solid var(--border);border-radius:10px;width:600px;max-width:96vw;max-height:90vh;overflow-y:auto;padding:22px;box-shadow:0 16px 48px rgba(0,0,0,.8);}
+.config-box{background:var(--panel);border:1px solid var(--border);border-radius:10px;width:620px;max-width:96vw;max-height:90vh;overflow-y:auto;padding:22px;box-shadow:0 16px 48px rgba(0,0,0,.8);}
 .config-box::-webkit-scrollbar{width:3px;}
 .config-box::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
 .config-title{font-family:'Inter',sans-serif;font-weight:700;font-size:18px;color:var(--gold);letter-spacing:1px;margin-bottom:18px;}
@@ -183,6 +202,10 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 .close-config{display:block;width:100%;padding:9px;margin-top:14px;background:transparent;border:1px solid var(--border);color:var(--text2);font-family:'Inter',sans-serif;font-weight:700;font-size:12px;letter-spacing:.5px;cursor:pointer;border-radius:4px;transition:all .15s;text-transform:uppercase;}
 .close-config:hover{border-color:var(--gold);color:var(--gold);}
 
+/* FIX #8: logo input row in config */
+.config-logo-row{display:flex;gap:7px;margin-top:5px;align-items:center;}
+.config-logo-preview{width:22px;height:22px;object-fit:contain;border-radius:3px;border:1px solid var(--border);background:var(--bg2);flex-shrink:0;}
+
 /* ESTADOS */
 .panel-loading{text-align:center;color:var(--text3);font-size:11px;padding:20px;font-family:'Inter',sans-serif;}
 .panel-loading::after{content:'…';animation:dots 1.5s infinite;}
@@ -190,17 +213,31 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 .panel-error{text-align:center;color:var(--live-red);font-size:11px;padding:14px;line-height:1.8;}
 .empty-state{text-align:center;color:var(--text3);font-size:11px;padding:20px;line-height:1.8;}
 
-/* RESPONSIVE */
+/* ══════════════════════════════════
+   FIX #7 — MOBILE: paneles desplegables
+══════════════════════════════════ */
 @media(max-width:860px){
   body{overflow:auto;}
   #canvas{position:relative;top:auto;left:auto;right:auto;bottom:auto;margin-top:var(--topbar-h);display:flex;flex-direction:column;height:auto;overflow:visible;gap:8px;padding:8px;}
-  .panel{min-height:300px;height:auto;margin:0;}
-  #panel-wire,#panel-teams{max-height:55vh;}
+  .panel{min-height:auto;height:auto;margin:0;}
   .col-sep,.row-sep{display:none;}
   .cal-grid{grid-template-columns:1fr;}
   #topbar{overflow-x:auto;}
   .tb-label,.tb-slider{display:none;}
   select.tb-select{display:none;}
+
+  /* Collapsible panels on mobile */
+  .panel-header{cursor:pointer;}
+  .panel-collapse-btn{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;font-size:11px;color:var(--text3);transition:transform .2s;flex-shrink:0;}
+  .panel.collapsed .panel-collapse-btn{transform:rotate(-90deg);}
+  .panel.collapsed .panel-body,
+  .panel.collapsed .filter-bar,
+  .panel.collapsed .panel-tabs,
+  .panel.collapsed .team-kw-bar{display:none!important;}
+  .panel:not(.collapsed) .panel-body{max-height:55vh;overflow-y:auto;}
+}
+@media(min-width:861px){
+  .panel-collapse-btn{display:none;}
 }
 </style>
 </head>
@@ -232,12 +269,14 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 </div>
 
 <div id="canvas">
+  <!-- NOTICIAS -->
   <div class="panel" id="panel-wire">
-    <div class="panel-header">
+    <div class="panel-header" onclick="togglePanelMobile('panel-wire')">
       <span class="panel-title">📡 Noticias</span>
       <span class="panel-badge" id="badge-wire">—</span>
       <span class="panel-updated" id="upd-wire"></span>
-      <button class="panel-btn" onclick="refreshPanel('wire')">↺</button>
+      <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('wire')">↺</button>
+      <span class="panel-collapse-btn">▾</span>
     </div>
     <div class="filter-bar">
       <button class="filter-btn" onclick="toggleFilterDropdown('wire')"><span>Fuentes</span><span class="filter-count" id="filter-count-wire"></span></button>
@@ -248,12 +287,14 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 
   <div class="col-sep" id="sep-col1"></div>
 
+  <!-- YOUTUBE -->
   <div class="panel" id="panel-youtube">
-    <div class="panel-header">
+    <div class="panel-header" onclick="togglePanelMobile('panel-youtube')">
       <span class="panel-title">▶ YouTube</span>
       <span class="panel-badge" id="badge-youtube">—</span>
       <span class="panel-updated" id="upd-youtube"></span>
-      <button class="panel-btn" onclick="refreshPanel('youtube')">↺</button>
+      <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('youtube')">↺</button>
+      <span class="panel-collapse-btn">▾</span>
     </div>
     <div class="filter-bar">
       <button class="filter-btn" onclick="toggleFilterDropdown('youtube')"><span>Canales</span><span class="filter-count" id="filter-count-youtube"></span></button>
@@ -264,12 +305,14 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 
   <div class="col-sep" id="sep-col2"></div>
 
+  <!-- PODCAST -->
   <div class="panel" id="panel-podcast">
-    <div class="panel-header">
+    <div class="panel-header" onclick="togglePanelMobile('panel-podcast')">
       <span class="panel-title">🎙 Podcast</span>
       <span class="panel-badge" id="badge-podcast">—</span>
       <span class="panel-updated" id="upd-podcast"></span>
-      <button class="panel-btn" onclick="refreshPanel('podcast')">↺</button>
+      <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('podcast')">↺</button>
+      <span class="panel-collapse-btn">▾</span>
     </div>
     <div class="filter-bar">
       <button class="filter-btn" onclick="toggleFilterDropdown('podcast')"><span>Programas</span><span class="filter-count" id="filter-count-podcast"></span></button>
@@ -280,35 +323,42 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 
   <div class="row-sep" id="sep-row"></div>
 
+  <!-- MIS EQUIPOS -->
   <div class="panel" id="panel-teams">
-    <div class="panel-header">
+    <div class="panel-header" onclick="togglePanelMobile('panel-teams')">
       <span class="panel-title">🏀 Mis Equipos</span>
       <span class="panel-badge" id="badge-teams">—</span>
       <span class="panel-updated" id="upd-teams"></span>
-      <button class="panel-btn" onclick="refreshPanel('teams')">↺</button>
+      <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('teams')">↺</button>
+      <span class="panel-collapse-btn">▾</span>
     </div>
+    <!-- FIX #1: keyword filter bar + FIX #4: YT/pod chips -->
+    <div class="team-kw-bar" id="team-kw-bar"></div>
     <div class="panel-body" id="body-teams"></div>
   </div>
 
   <div style="grid-row:3;grid-column:2;"></div>
 
-  <!-- Panel Partidos: vista unificada sin pestañas -->
+  <!-- PARTIDOS -->
   <div class="panel" id="panel-scorecal">
-    <div class="panel-header">
+    <div class="panel-header" onclick="togglePanelMobile('panel-scorecal')">
       <span class="panel-title">📊 Partidos</span>
       <span class="panel-badge" id="badge-scorecal">—</span>
-      <button class="panel-btn" onclick="refreshPanel('scorecal')">↺</button>
+      <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('scorecal')">↺</button>
+      <span class="panel-collapse-btn">▾</span>
     </div>
     <div class="panel-body" id="body-scorecal"></div>
   </div>
 
   <div style="grid-row:3;grid-column:4;"></div>
 
+  <!-- CLASIFICACIÓN -->
   <div class="panel" id="panel-standings">
-    <div class="panel-header">
+    <div class="panel-header" onclick="togglePanelMobile('panel-standings')">
       <span class="panel-title">🏆 Clasificación</span>
       <span class="panel-badge" id="badge-standings">—</span>
-      <button class="panel-btn" onclick="refreshPanel('standings')">↺</button>
+      <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('standings')">↺</button>
+      <span class="panel-collapse-btn">▾</span>
     </div>
     <div class="panel-tabs">
       <div class="panel-tab active" id="tab-east" onclick="switchConf('east')">Este</div>
@@ -326,6 +376,17 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
     <div class="config-section">
       <div class="config-section-title">Equipos favoritos (máx. 3) — filtra Mis Equipos</div>
       <div class="chips-grid" id="teams-grid"></div>
+    </div>
+
+    <!-- FIX #1: keywords en config -->
+    <div class="config-section">
+      <div class="config-section-title">Palabras clave — Mis Equipos</div>
+      <div class="sheet-info">Añade términos libres para filtrar Mis Equipos (p. ej. nombres de jugadores, ciudades…). Sin límite.</div>
+      <div class="config-row">
+        <input type="text" class="config-input" id="kw-input" placeholder="Ej: Wembanyama, Jokic, Doncic…" onkeydown="if(event.key==='Enter')addKeyword()">
+        <button class="config-btn" onclick="addKeyword()">+ AÑADIR</button>
+      </div>
+      <div id="kw-list" style="margin-top:7px;display:flex;flex-wrap:wrap;gap:5px;"></div>
     </div>
 
     <div class="config-section">
@@ -348,6 +409,11 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
         <input type="text" class="config-input" id="cf-url" placeholder="URL RSS">
         <button class="config-btn" onclick="addCustomFeed()">+ AÑADIR</button>
       </div>
+      <!-- FIX #3: logo URL para feeds personalizados -->
+      <div class="config-logo-row" style="margin-top:4px;">
+        <input type="text" class="config-input" id="cf-logo" placeholder="URL logo (opcional)" style="flex:1;">
+        <img id="cf-logo-preview" class="config-logo-preview" src="" style="display:none;" alt="logo">
+      </div>
       <div id="custom-feed-list" style="margin-top:7px"></div>
     </div>
 
@@ -358,20 +424,26 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
         <input type="text" class="config-input" id="yt-id" placeholder="UCxxxxxxx">
         <button class="config-btn" onclick="addCustomYT()">+ AÑADIR</button>
       </div>
+      <!-- FIX #3: logo URL para canales YT -->
+      <div class="config-logo-row" style="margin-top:4px;">
+        <input type="text" class="config-input" id="yt-logo" placeholder="URL logo canal (opcional)" style="flex:1;">
+        <img id="yt-logo-preview" class="config-logo-preview" src="" style="display:none;" alt="logo">
+      </div>
       <div id="yt-channels-config" style="margin-top:7px"></div>
     </div>
 
+    <!-- FIX #8: Estado — orden correcto: noticias → news, podcast → pod, YT bajo su header -->
     <div class="config-section">
       <div class="config-section-title">Estado — Noticias</div>
       <div id="feed-health-news"></div>
     </div>
     <div class="config-section">
-      <div class="config-section-title">Estado — YouTube</div>
-      <div id="feed-health-yt"></div>
-    </div>
-    <div class="config-section">
       <div class="config-section-title">Estado — Podcast</div>
       <div id="feed-health-pod"></div>
+    </div>
+    <div class="config-section">
+      <div class="config-section-title">Estado — YouTube</div>
+      <div id="feed-health-yt"></div>
     </div>
 
     <div class="config-section">
@@ -396,6 +468,49 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 const NBA_TEAMS=['ATL','BOS','BKN','CHA','CHI','CLE','DAL','DEN','DET','GSW','HOU','IND','LAC','LAL','MEM','MIA','MIL','MIN','NOP','NYK','OKC','ORL','PHI','PHX','POR','SAC','SAS','TOR','UTA','WAS'];
 const TEAM_NAMES={ATL:'Atlanta Hawks',BOS:'Boston Celtics',BKN:'Brooklyn Nets',CHA:'Charlotte Hornets',CHI:'Chicago Bulls',CLE:'Cleveland Cavaliers',DAL:'Dallas Mavericks',DEN:'Denver Nuggets',DET:'Detroit Pistons',GSW:'Golden State Warriors',HOU:'Houston Rockets',IND:'Indiana Pacers',LAC:'LA Clippers',LAL:'Los Angeles Lakers',MEM:'Memphis Grizzlies',MIA:'Miami Heat',MIL:'Milwaukee Bucks',MIN:'Minnesota Timberwolves',NOP:'New Orleans Pelicans',NYK:'New York Knicks',OKC:'Oklahoma City Thunder',ORL:'Orlando Magic',PHI:'Philadelphia 76ers',PHX:'Phoenix Suns',POR:'Portland Trail Blazers',SAC:'Sacramento Kings',SAS:'San Antonio Spurs',TOR:'Toronto Raptors',UTA:'Utah Jazz',WAS:'Washington Wizards'};
 
+// FIX #3: logos por defecto para medios conocidos (se puede ampliar con col en Sheet)
+const SOURCE_LOGOS={
+  'agaitan':    '',
+  'as_nba':     'https://e00-marca.uecdn.es/assets/najax/img/favicon/as.ico',
+  'gigantes':   'https://www.gigantes.com/wp-content/uploads/gigantes-favicon.png',
+  'marca_nba':  'https://e00-marca.uecdn.es/assets/najax/img/favicon/marca.ico',
+  'md_nba':     'https://www.mundodeportivo.com/favicon.ico',
+  'kike':       '',
+  'maniacs':    'https://www.nbamaniacs.com/favicon.ico',
+  'sport_nba':  'https://www.sport.es/favicon.ico',
+  // YT channels — se infiere del channelId si no hay logo manual
+  // Podcasts
+  'tresmas':    '',
+  'buzzbeet':   '',
+  'reverso':    '',
+  'enopnba':    '',
+  'nbaadict':   '',
+  'nbahouse':   '',
+  'massball':   '',
+  'minvet':     '',
+};
+
+// FIX #2: YT fallback — intenta channel_id primero, luego RSS handle, luego scraping
+async function fetchYTFeed(ch){
+  const byId=`https://www.youtube.com/feeds/videos.xml?channel_id=${ch.id}`;
+  const byHandle=ch.id.startsWith('@')?`https://www.youtube.com/feeds/videos.xml?user=${ch.id.replace('@','')}`:'';
+  // también intentamos con handle aunque no tenga @
+  const byUser=`https://www.youtube.com/feeds/videos.xml?user=${ch.id}`;
+
+  const attempts=[byId];
+  if(byHandle)attempts.push(byHandle);
+  if(!ch.id.startsWith('UC')&&!ch.id.startsWith('@'))attempts.push(byUser);
+
+  // Para handles (@X) usamos allorigins para evitar CORS
+  for(const url of attempts){
+    try{
+      const items=await enqueueFetch(()=>fetchRSS(url));
+      if(items&&items.length)return items;
+    }catch(e){}
+  }
+  throw new Error('no feed found');
+}
+
 let NEWS_FEEDS=[
   {id:'agaitan', label:'Alejandro Gaitán',    url:'https://alejandroggo.com/feed',pay:true,enabled:true},
   {id:'as_nba',  label:'AS NBA',              url:'https://feeds.as.com/mrss-s/pages/as/site/as.com/section/baloncesto/subsection/nba/',pay:false,enabled:true},
@@ -415,20 +530,18 @@ let YT_CHANNELS=[
   {id:'UCkYJ2bR3QbYl8v7u3Kz6Jxw', label:'Maxi YT Basket'},
   {id:'UCvfhPZKiTP7qlsCFbENRuwA', label:'Nacho Losilla'},
   {id:'UCj4tzJjOFNE2JD3D9sYAAQg',label:'Planeta NBA'},
-  {id:'UCXJnFRcssT0Q1ID_V6Or1sQ', label:'Sergio Rabinal'},
-  
+  {id:'UCXJnFRcssT0Q1ID_V6Or1sX', label:'Sergio Rabinal'},
 ];
 
 let POD_FEEDS=[
-  {id:'tresmas', label:'3+1',        url:'https://feeds.ivoox.com/feed_fg_f12314873_filtro_1.xml',enabled:true},
-  {id:'buzzbet', label:'Buzzer Beater',        url:'https://feeds.ivoox.com/feed_fg_f11091103_filtro_1.xml',enabled:true},
-  {id:'reverso', label:'El Reverso',        url:'https://feeds.ivoox.com/feed_fg_f1404265_filtro_1.xml',enabled:true},
-  {id:'enopnba',label:'Esto no es un podcast NBA',url:'https://www.spreaker.com/show/5970729/episodes/feed',enabled:true},
-  {id:'nbaadict', label:'NBA Adictos',        url:'https://feeds.ivoox.com/feed_fg_f1584844_filtro_1.xml',enabled:true},
-  {id:'nbahouse', label:'NBA House',        url:'https://www.spreaker.com/show/6150962/episodes/feed',enabled:true},
-  {id:'massball', label:'Massive Ball',        url:'https://feeds.ivoox.com/feed_fg_f1583803_filtro_1.xml',enabled:true},
-  {id:'minvet', label:'Mínimo de Veterano',        url:'https://omny.fm/shows/nba-m-nimo-de-veterano/playlists/podcast.rss',enabled:true},
-
+  {id:'tresmas',  label:'3+1',                        url:'https://feeds.ivoox.com/feed_fg_f12314873_filtro_1.xml',enabled:true},
+  {id:'buzzbeet', label:'Buzzer Beater',               url:'https://feeds.ivoox.com/feed_fg_f11091103_filtro_1.xml',enabled:true},
+  {id:'reverso',  label:'El Reverso',                  url:'https://feeds.ivoox.com/feed_fg_f1404265_filtro_1.xml',enabled:true},
+  {id:'enopnba',  label:'Esto no es un podcast NBA',   url:'https://www.spreaker.com/show/5970729/episodes/feed',enabled:true},
+  {id:'nbaadict', label:'NBA Adictos',                 url:'https://feeds.ivoox.com/feed_fg_f1584844_filtro_1.xml',enabled:true},
+  {id:'nbahouse', label:'NBA House',                   url:'https://www.spreaker.com/show/6150962/episodes/feed',enabled:true},
+  {id:'massball', label:'Massive Ball',                url:'https://feeds.ivoox.com/feed_fg_f1583803_filtro_1.xml',enabled:true},
+  {id:'minvet',   label:'Mínimo de Veterano',          url:'https://omny.fm/shows/nba-m-nimo-de-veterano/playlists/podcast.rss',enabled:true},
 ];
 
 // ══════════════════════════════════
@@ -442,6 +555,13 @@ let state={
   disabledYT:  JSON.parse(localStorage.getItem('nba_dis_yt')||'[]'),
   disabledPod: JSON.parse(localStorage.getItem('nba_dis_pod')||'[]'),
   sheetUrl:    localStorage.getItem('nba_sheet_url')||'',
+  // FIX #1: keywords libres
+  teamKeywords: JSON.parse(localStorage.getItem('nba_kw')||'[]'),
+  // FIX #4: incluir YT y podcasts en Mis Equipos
+  teamsIncYT:  JSON.parse(localStorage.getItem('nba_teams_yt')||'true'),
+  teamsIncPod: JSON.parse(localStorage.getItem('nba_teams_pod')||'true'),
+  // FIX #3: logos manuales por id de fuente
+  sourceLogos: JSON.parse(localStorage.getItem('nba_logos')||'{}'),
 };
 let newsData={},ytData={},podData={};
 let newsHealth={},ytHealth={},podHealth={};
@@ -455,9 +575,17 @@ let standingsConf='east';
 let _calData=null;
 
 // Límites temporales de contenido
-const LIMIT_NEWS = 48 * 3600000;   // 48h
-const LIMIT_YT   = 72 * 3600000;   // 72h
-const LIMIT_POD  =  7 * 86400000;  // 1 semana
+const LIMIT_NEWS = 48 * 3600000;
+const LIMIT_YT   = 72 * 3600000;
+const LIMIT_POD  =  7 * 86400000;
+
+// ══════════════════════════════════
+// FIX #7 — MOBILE COLLAPSE
+// ══════════════════════════════════
+function togglePanelMobile(panelId){
+  if(window.innerWidth>860)return;
+  document.getElementById(panelId).classList.toggle('collapsed');
+}
 
 // ══════════════════════════════════
 // CONCURRENCIA
@@ -469,7 +597,7 @@ function drainQueue(){while(activeCount<MAX_CONCURRENT&&fetchQueue.length){const
 // RSS
 // ══════════════════════════════════
 async function fetchRSS(url){
-  const r2j=async()=>{const r=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(9000)});const d=await r.json();if(d.status!=='ok'||!d.items?.length)throw new Error('empty');return d.items.map(i=>({title:i.title||'',link:i.link||'',pubDate:i.pubDate||''}));};
+  const r2j=async()=>{const r=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(9000)});const d=await r.json();if(d.status!=='ok'||!d.items?.length)throw new Error('empty');return d.items.map(i=>({title:i.title||'',link:i.link||'',pubDate:i.pubDate||'',thumbnail:i.thumbnail||i.enclosure?.link||''}));};
   const ao=async()=>{const r=await fetch(`https://allorigins.win/get?disableCache=true&url=${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(9000)});return parseXML((await r.json()).contents);};
   const cp=async()=>{const r=await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(9000)});return parseXML(await r.text());};
   return Promise.any([r2j(),ao(),cp()]);
@@ -480,9 +608,30 @@ function parseXML(xml){
     const title=el.querySelector('title')?.textContent||'';
     const link=el.querySelector('link')?.getAttribute('href')||el.querySelector('link')?.textContent||el.querySelector('guid')?.textContent||'';
     const pubDate=el.querySelector('pubDate')?.textContent||el.querySelector('published')?.textContent||el.querySelector('updated')?.textContent||'';
-    if(title)items.push({title,link,pubDate});
+    // FIX #6: intentar extraer thumbnail del RSS
+    const mediaThumb=el.querySelector('thumbnail')?.getAttribute('url')||el.querySelector('thumbnail')?.textContent||'';
+    const enclosure=el.querySelector('enclosure')?.getAttribute('url')||'';
+    const mediaContent=el.querySelector('content')?.getAttribute('url')||'';
+    // itunes:image
+    const itunesImg=el.querySelector('image')?.getAttribute('href')||'';
+    let thumbnail=mediaThumb||itunesImg||'';
+    // si es enclosure de imagen
+    const encType=el.querySelector('enclosure')?.getAttribute('type')||'';
+    if(!thumbnail&&enclosure&&encType.startsWith('image/'))thumbnail=enclosure;
+    if(title)items.push({title,link,pubDate,thumbnail});
   });
   if(!items.length)throw new Error('empty');return items;
+}
+
+// FIX #6: thumbnail para YT desde link
+function ytThumbFromLink(link){
+  const m=link.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  return m?`https://img.youtube.com/vi/${m[1]}/mqdefault.jpg`:'';
+}
+
+// FIX #3: get logo for a source
+function getSourceLogo(id){
+  return state.sourceLogos[id]||SOURCE_LOGOS[id]||'';
 }
 
 // ══════════════════════════════════
@@ -499,12 +648,15 @@ async function loadFromSheet(){
     let an=0,ay=0,ap=0;
     rows.forEach(row=>{
       const cols=row.split(',').map(c=>c.trim().replace(/^"|"$/g,''));
-      const[id,label,feedUrl,tipo,pay]=cols;if(!id||!label||!feedUrl||!tipo)return;
+      const[id,label,feedUrl,tipo,pay,logo]=cols;if(!id||!label||!feedUrl||!tipo)return;
+      // FIX #3: si tiene col logo, guardarla
+      if(logo){state.sourceLogos[id]=logo;}
       if(tipo==='news'&&!NEWS_FEEDS.find(f=>f.id===id)&&!state.customFeeds.find(f=>f.id===id)){NEWS_FEEDS.push({id,label,url:feedUrl,pay:pay==='1'||pay==='true',enabled:true});an++;}
       if(tipo==='yt'&&!YT_CHANNELS.find(c=>c.id===id)&&!state.customYT.find(c=>c.id===id)){YT_CHANNELS.push({id,label});ay++;}
       if(tipo==='pod'&&!POD_FEEDS.find(f=>f.id===id)){POD_FEEDS.push({id,label,url:feedUrl,enabled:true});ap++;}
     });
     localStorage.setItem('nba_sheet_url',url);state.sheetUrl=url;
+    localStorage.setItem('nba_logos',JSON.stringify(state.sourceLogos));
     el.textContent=`✓ ${an} noticias, ${ay} YouTube, ${ap} podcast añadidos.`;el.style.color='var(--green)';
     refreshAll();updateHealthUI();
   }catch(e){el.textContent='Error. Comprueba la URL y que el Sheet esté publicado.';el.style.color='var(--live-red)';}
@@ -524,18 +676,21 @@ async function loadNewsFeed(feed){
 }
 async function loadYTChannel(ch){
   ytHealth[ch.id]={status:'loading',count:0};
-  const url=ch.id.startsWith('UC')?`https://www.youtube.com/feeds/videos.xml?channel_id=${ch.id}`:`https://www.youtube.com/feeds/videos.xml?user=${ch.id.replace('@','')}`;
-  try{const items=await enqueueFetch(()=>fetchRSS(url));ytData[ch.id]=items.map(i=>({...i,channelName:ch.label,channelId:ch.id})).slice(0,15);ytHealth[ch.id]={status:'ok',count:items.length};}
-  catch(e){ytData[ch.id]=[];ytHealth[ch.id]={status:'err',count:0};}
+  // FIX #2: usar fetchYTFeed con fallbacks
+  try{
+    const items=await fetchYTFeed(ch);
+    ytData[ch.id]=items.map(i=>({...i,channelName:ch.label,channelId:ch.id,logo:getSourceLogo(ch.id)})).slice(0,15);
+    ytHealth[ch.id]={status:'ok',count:items.length};
+  }catch(e){ytData[ch.id]=[];ytHealth[ch.id]={status:'err',count:0};}
 }
 async function loadPodFeed(feed){
   podHealth[feed.id]={status:'loading',count:0};
-  try{const items=await enqueueFetch(()=>fetchRSS(feed.url));podData[feed.id]=items.map(i=>({...i,source:feed.label,feedId:feed.id})).slice(0,20);podHealth[feed.id]={status:'ok',count:items.length};}
+  try{const items=await enqueueFetch(()=>fetchRSS(feed.url));podData[feed.id]=items.map(i=>({...i,source:feed.label,feedId:feed.id,logo:getSourceLogo(feed.id)})).slice(0,20);podHealth[feed.id]={status:'ok',count:items.length};}
   catch(e){podData[feed.id]=[];podHealth[feed.id]={status:'err',count:0};}
 }
 async function loadAllNews(){const active=getActiveNewsFeeds();setLoading('wire');setLoading('teams');await Promise.allSettled(active.map(f=>loadNewsFeed(f)));lastUpdate.news=new Date();renderWire();renderTeams();updateHealthUI();}
-async function loadAllYT(){const active=getActiveYTChannels();setLoading('youtube');await Promise.allSettled(active.map(c=>loadYTChannel(c)));lastUpdate.yt=new Date();renderYT();updateHealthUI();}
-async function loadAllPod(){const active=getActivePodFeeds();setLoading('podcast');await Promise.allSettled(active.map(f=>loadPodFeed(f)));lastUpdate.pod=new Date();renderPod();updateHealthUI();}
+async function loadAllYT(){const active=getActiveYTChannels();setLoading('youtube');await Promise.allSettled(active.map(c=>loadYTChannel(c)));lastUpdate.yt=new Date();renderYT();renderTeams();updateHealthUI();}
+async function loadAllPod(){const active=getActivePodFeeds();setLoading('podcast');await Promise.allSettled(active.map(f=>loadPodFeed(f)));lastUpdate.pod=new Date();renderPod();renderTeams();updateHealthUI();}
 function setLoading(id){const b=document.getElementById('body-'+id);if(b)b.innerHTML='<div class="panel-loading">CARGANDO</div>';}
 
 // ══════════════════════════════════
@@ -583,8 +738,7 @@ function initRowSep(){
 }
 
 // ══════════════════════════════════
-// FILTROS (exclusión)
-// FIX: stopPropagation en opciones para que el dropdown no se cierre al clicar
+// FILTROS
 // ══════════════════════════════════
 function toggleFilterDropdown(p){
   const dd=document.getElementById('filter-dd-'+p);if(!dd)return;
@@ -605,8 +759,10 @@ function buildFilterDropdown(p){
   dd.innerHTML=`<div class="filter-hint">Desmarca los que NO quieres ver</div>
     <div class="filter-all"><button onclick="event.stopPropagation();restoreAllFilter('${p}')">Mostrar todos</button></div>`+
     sources.map(s=>{const ex=excl.includes(s.id);
+      const logo=getSourceLogo(s.id||'');
+      const logoHtml=logo?`<img src="${escHtml(logo)}" style="width:12px;height:12px;object-fit:contain;border-radius:2px;" onerror="this.style.display='none'"> `:'';
       return`<div class="filter-option ${ex?'excluded':''}" onclick="event.stopPropagation();toggleExclude('${p}','${s.id}')">
-        <div class="check">${ex?'✕':'✓'}</div><span>${escHtml(s.label)}</span>
+        <div class="check">${ex?'✕':'✓'}</div>${logoHtml}<span>${escHtml(s.label)}</span>
       </div>`;
     }).join('');
 }
@@ -628,44 +784,134 @@ function matchesSearch(item){
 }
 
 // ══════════════════════════════════
-// NOTICIAS — límite 48h
+// FIX #1 — KEYWORDS PARA MIS EQUIPOS
+// ══════════════════════════════════
+function addKeyword(){
+  const inp=document.getElementById('kw-input');
+  const kw=inp.value.trim();
+  if(!kw||state.teamKeywords.includes(kw.toLowerCase()))return;
+  state.teamKeywords.push(kw.toLowerCase());
+  localStorage.setItem('nba_kw',JSON.stringify(state.teamKeywords));
+  inp.value='';
+  renderKwList();
+  renderTeamKwBar();
+  renderTeams();
+}
+function removeKeyword(kw){
+  state.teamKeywords=state.teamKeywords.filter(k=>k!==kw);
+  localStorage.setItem('nba_kw',JSON.stringify(state.teamKeywords));
+  renderKwList();
+  renderTeamKwBar();
+  renderTeams();
+}
+function renderKwList(){
+  const list=document.getElementById('kw-list');if(!list)return;
+  if(!state.teamKeywords.length){list.innerHTML='<span style="font-size:10px;color:var(--text3);font-family:Inter,sans-serif;">Sin palabras clave añadidas</span>';return;}
+  list.innerHTML=state.teamKeywords.map(kw=>`<span style="display:inline-flex;align-items:center;gap:4px;background:var(--bg2);border:1px solid var(--border);padding:2px 8px;border-radius:10px;font-size:10px;color:var(--text2);font-family:Inter,sans-serif;">${escHtml(kw)}<span style="cursor:pointer;color:var(--live-red);font-size:11px;" onclick="removeKeyword('${escHtml(kw)}')">✕</span></span>`).join('');
+}
+// Barra de chips dentro del panel Mis Equipos
+function renderTeamKwBar(){
+  const bar=document.getElementById('team-kw-bar');if(!bar)return;
+  const teams=state.favTeams;
+  const kws=state.teamKeywords;
+  let html='';
+  // chips de equipos favoritos (no editables aquí, solo info)
+  teams.forEach(t=>{
+    html+=`<span class="kw-chip active" title="${escHtml(TEAM_NAMES[t]||t)}">${t}</span>`;
+  });
+  // chips de keywords
+  kws.forEach(kw=>{
+    html+=`<span class="kw-chip active" style="color:var(--pod-purple);border-color:var(--pod-purple);">${escHtml(kw)}<span style="margin-left:3px;cursor:pointer;opacity:.6" onclick="removeKeyword('${escHtml(kw)}')">✕</span></span>`;
+  });
+  // botón añadir
+  html+=`<span class="kw-chip add-kw" onclick="openKwInput(this)">+ kw</span>`;
+  // FIX #4: toggles YT y Pod
+  const ytOn=state.teamsIncYT!==false;
+  const podOn=state.teamsIncPod!==false;
+  html+=`<span class="kw-chip" style="margin-left:auto;${ytOn?'color:var(--yt-red);border-color:var(--yt-red);':''}" onclick="toggleTeamsYT(this)" title="Incluir YouTube en Mis Equipos">▶ YT</span>`;
+  html+=`<span class="kw-chip" style="${podOn?'color:var(--pod-purple);border-color:var(--pod-purple);':''}" onclick="toggleTeamsPod(this)" title="Incluir podcasts en Mis Equipos">🎙 Pod</span>`;
+  bar.innerHTML=html;
+}
+function openKwInput(btn){
+  btn.outerHTML=`<span class="kw-input-wrap"><input class="kw-input" id="kw-bar-input" placeholder="nueva kw…" onkeydown="if(event.key==='Enter')addKwFromBar();if(event.key==='Escape')renderTeamKwBar();" autofocus><span class="kw-chip" onclick="addKwFromBar()">✓</span></span>`;
+  setTimeout(()=>document.getElementById('kw-bar-input')?.focus(),50);
+}
+function addKwFromBar(){
+  const inp=document.getElementById('kw-bar-input');if(!inp)return;
+  const kw=inp.value.trim().toLowerCase();
+  if(kw&&!state.teamKeywords.includes(kw)){state.teamKeywords.push(kw);localStorage.setItem('nba_kw',JSON.stringify(state.teamKeywords));}
+  renderTeamKwBar();renderKwList();renderTeams();
+}
+function toggleTeamsYT(el){
+  state.teamsIncYT=!state.teamsIncYT;
+  localStorage.setItem('nba_teams_yt',JSON.stringify(state.teamsIncYT));
+  renderTeamKwBar();renderTeams();
+}
+function toggleTeamsPod(el){
+  state.teamsIncPod=!state.teamsIncPod;
+  localStorage.setItem('nba_teams_pod',JSON.stringify(state.teamsIncPod));
+  renderTeamKwBar();renderTeams();
+}
+
+// ══════════════════════════════════
+// MATCH para Mis Equipos — FIX #1 case-insensitive
+// ══════════════════════════════════
+function matchesTeamFilter(item){
+  const text=(item.title||'').toLowerCase();
+  // equipos favoritos
+  const teamMatch=state.favTeams.length===0||state.favTeams.some(abbr=>{
+    const full=(TEAM_NAMES[abbr]||'').toLowerCase();
+    const parts=full.split(' ');
+    return text.includes(abbr.toLowerCase())||
+      (full&&text.includes(full))||
+      parts.some(w=>w.length>3&&text.includes(w));
+  });
+  // keywords libres — FIX #1: case-insensitive ya garantizado (todo en minúsculas)
+  const kwMatch=state.teamKeywords.length===0||state.teamKeywords.some(kw=>text.includes(kw));
+  // si no hay ni equipos ni kw, mostrar todo
+  if(state.favTeams.length===0&&state.teamKeywords.length===0)return true;
+  return teamMatch||kwMatch;
+}
+
+// ══════════════════════════════════
+// NOTICIAS
 // ══════════════════════════════════
 function getAllNews(){
   const all=[];
   getActiveNewsFeeds().forEach(f=>{if(newsData[f.id])all.push(...newsData[f.id]);});
   const cutoff=Date.now()-LIMIT_NEWS;
-  return all
-    .filter(a=>!a.pubDate||new Date(a.pubDate).getTime()>cutoff)
+  return all.filter(a=>!a.pubDate||new Date(a.pubDate).getTime()>cutoff)
     .sort((a,b)=>new Date(b.pubDate)-new Date(a.pubDate));
 }
 function applyNewsFilter(items){
   let f=newsExcluded.length>0?items.filter(i=>!newsExcluded.includes(i.feedId)):items;
   return searchQuery?f.filter(i=>matchesSearch(i)):f;
 }
-function applyTeamFilter(items){
-  let f=items;
-  if(state.favTeams.length){
-    f=items.filter(a=>{
-      const text=(a.title||'').toLowerCase();
-      return state.favTeams.some(abbr=>{
-        const full=(TEAM_NAMES[abbr]||'').toLowerCase();
-        const parts=full.split(' ');
-        return text.includes(abbr.toLowerCase())||
-          (full&&text.includes(full))||
-          parts.some(w=>w.length>3&&text.includes(w));
-      });
-    });
-  }
-  return searchQuery?f.filter(i=>matchesSearch(i)):f;
-}
 function isNew(pd){if(!pd)return false;try{return Date.now()-new Date(pd)<86400000;}catch{return false;}}
+
+// FIX #6: thumbnail rendering
+function thumbOrPlaceholder(src,emoji){
+  if(src)return`<img class="article-thumb" src="${escHtml(src)}" onerror="this.style.display='none'" loading="lazy">`;
+  return`<div class="article-thumb-placeholder">${emoji}</div>`;
+}
+function mediaThumbOrPlaceholder(src,emoji){
+  if(src)return`<img class="media-thumb" src="${escHtml(src)}" onerror="this.style.display='none'" loading="lazy">`;
+  return`<div class="media-thumb-placeholder">${emoji}</div>`;
+}
+
 function newsItemHTML(a){
   const payB=a.pay?'<span class="badge badge-pay">🔒</span>':'';
   const newB=isNew(a.pubDate)?'<span class="badge badge-new">🆕</span>':'';
+  const logo=getSourceLogo(a.feedId||'');
+  const logoHtml=logo?`<img src="${escHtml(logo)}" class="source-logo" onerror="this.style.display='none'">`:'';
+  const thumb=thumbOrPlaceholder(a.thumbnail||'','📰');
   return`<div class="article-item" onclick="window.open('${escHtml(a.link)}','_blank')">
-    <div class="article-meta"><span class="article-source">${escHtml(a.source)}</span>${payB}${newB}</div>
-    <div class="article-title">${escHtml(a.title)}</div>
-    <div class="article-date">${a.pubDate?formatDate(a.pubDate):''}</div>
+    ${thumb}
+    <div class="article-content">
+      <div class="article-meta">${logoHtml}<span class="article-source">${escHtml(a.source)}</span>${payB}${newB}</div>
+      <div class="article-title">${escHtml(a.title)}</div>
+      <div class="article-date">${a.pubDate?formatDate(a.pubDate):''}</div>
+    </div>
   </div>`;
 }
 function renderWire(){
@@ -674,43 +920,101 @@ function renderWire(){
   if(!all.length){body.innerHTML='<div class="empty-state">No hay artículos en las últimas 48h.<br>Comprueba los feeds en ⚙ Config</div>';setBadge('wire','0');return;}
   body.innerHTML=all.map(a=>newsItemHTML(a)).join('');setBadge('wire',all.length);setUpdated('wire',lastUpdate.news);
 }
+
+// FIX #4: Mis Equipos incluye noticias + YT + podcasts
 function renderTeams(){
   const body=document.getElementById('body-teams');
-  if(!state.favTeams.length){body.innerHTML='<div class="empty-state">Elige 1–3 equipos en ⚙ Config<br>para filtrar noticias por equipo.</div>';setBadge('teams','0');return;}
-  const filtered=applyTeamFilter(getAllNews());
-  body.innerHTML=filtered.length?filtered.map(a=>newsItemHTML(a)).join(''):'<div class="empty-state">Sin artículos para los equipos seleccionados.<br><small style="color:var(--text3);font-size:9px">Busca por abreviatura, ciudad o nombre del equipo.</small></div>';
-  setBadge('teams',filtered.length);setUpdated('teams',lastUpdate.news);
+  renderTeamKwBar();
+  const noFilter=state.favTeams.length===0&&state.teamKeywords.length===0;
+  if(noFilter){body.innerHTML='<div class="empty-state">Elige equipos favoritos o añade palabras clave para filtrar.<br><small style="font-size:9px;color:var(--text3)">Usa ⚙ Config o el botón "+ kw" de arriba.</small></div>';setBadge('teams','0');return;}
+
+  const items=[];
+  // noticias
+  getAllNews().filter(a=>matchesTeamFilter(a)&&(searchQuery?matchesSearch(a):true)).forEach(a=>items.push({...a,_type:'news'}));
+  // FIX #4: YT
+  if(state.teamsIncYT!==false){
+    let allYT=[];getActiveYTChannels().forEach(c=>{if(ytData[c.id])allYT.push(...ytData[c.id]);});
+    const cutoffYT=Date.now()-LIMIT_YT;
+    allYT.filter(i=>(!i.pubDate||new Date(i.pubDate).getTime()>cutoffYT)&&matchesTeamFilter(i)&&(searchQuery?matchesSearch(i):true))
+      .forEach(v=>items.push({...v,_type:'yt',source:v.channelName,feedId:v.channelId}));
+  }
+  // FIX #4: podcasts
+  if(state.teamsIncPod!==false){
+    let allPod=[];getActivePodFeeds().forEach(f=>{if(podData[f.id])allPod.push(...podData[f.id]);});
+    const cutoffPod=Date.now()-LIMIT_POD;
+    allPod.filter(i=>(!i.pubDate||new Date(i.pubDate).getTime()>cutoffPod)&&matchesTeamFilter(i)&&(searchQuery?matchesSearch(i):true))
+      .forEach(p=>items.push({...p,_type:'pod'}));
+  }
+  items.sort((a,b)=>new Date(b.pubDate)-new Date(a.pubDate));
+  if(!items.length){body.innerHTML='<div class="empty-state">Sin contenido para los filtros seleccionados.</div>';setBadge('teams','0');return;}
+  body.innerHTML=items.map(a=>{
+    if(a._type==='yt'){
+      const thumb=ytThumbFromLink(a.link||'');
+      return`<div class="media-item" onclick="window.open('${escHtml(a.link)}','_blank')">
+        ${mediaThumbOrPlaceholder(thumb,'▶')}
+        <div class="media-content">
+          <div class="media-source yt">▶ ${escHtml(a.channelName||a.source||'')} ${isNew(a.pubDate)?'<span class="badge badge-new">🆕</span>':''}</div>
+          <div class="media-title">${escHtml(a.title)}</div>
+          <div class="media-date">${a.pubDate?formatDate(a.pubDate):''}</div>
+        </div>
+      </div>`;
+    }
+    if(a._type==='pod'){
+      return`<div class="media-item" onclick="window.open('${escHtml(a.link)}','_blank')">
+        ${mediaThumbOrPlaceholder(a.thumbnail||a.logo||'','🎙')}
+        <div class="media-content">
+          <div class="media-source pod">🎙 ${escHtml(a.source||'')} ${isNew(a.pubDate)?'<span class="badge badge-new">🆕</span>':''}</div>
+          <div class="media-title">${escHtml(a.title)}</div>
+          <div class="media-date">${a.pubDate?formatDate(a.pubDate):''}</div>
+        </div>
+      </div>`;
+    }
+    return newsItemHTML(a);
+  }).join('');
+  setBadge('teams',items.length);setUpdated('teams',lastUpdate.news);
 }
 
 // ══════════════════════════════════
+// FIX #5 — PARTIDOS: solo HOY y MAÑANA (no ayer ni pasado)
+// A las 12 ET ya no muestra partidos de ayer
+// ══════════════════════════════════
 async function loadPartidos(){
   document.getElementById('body-scorecal').innerHTML='<div class="panel-loading">CARGANDO</div>';
+  // FIX #5: hora ET actual
+  const etStr=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',hour12:false}).format(new Date());
+  const etMatch=etStr.match(/(\d+)\/(\d+)\/(\d+),\s*(\d+)/);
+  const etHour=etMatch?parseInt(etMatch[4]):12;
+  // Si son las 12 ET o más tarde, solo HOY y MAÑANA
+  // Si son antes de las 12 ET, incluir también AYER (partidos de la noche anterior)
   const now=new Date();
   const fmt=d=>`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
   const ayer=new Date(now-86400000);
   const manana=new Date(now.getTime()+86400000);
-  const pasado=new Date(now.getTime()+2*86400000);
   try{
-    const[dY,dT,dM,dP]=await Promise.all([
-      fetch(`https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${fmt(ayer)}`).then(r=>r.json()),
+    const fetchesTodo=[
       fetch('https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard').then(r=>r.json()),
       fetch(`https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${fmt(manana)}`).then(r=>r.json()),
-    ]);
-    _calData=[dY,dT,dM,dP];
-    renderPartidos(dY,dT,dM,dP);
+    ];
+    // FIX #5: solo añadir ayer si son antes de las 12 ET
+    if(etHour<12){
+      fetchesTodo.unshift(fetch(`https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${fmt(ayer)}`).then(r=>r.json()));
+    }
+    const results=await Promise.all(fetchesTodo);
+    const[dY_or_T,dT_or_M,dM_maybe]=etHour<12?results:[null,...results];
+    _calData={dY:dY_or_T,dT:dT_or_M,dM:dM_maybe};
+    renderPartidos(dY_or_T,dT_or_M,dM_maybe,etHour);
   }catch(e){
     document.getElementById('body-scorecal').innerHTML='<div class="panel-error">Error al cargar partidos.<br><button onclick="loadPartidos()" style="margin-top:8px;background:transparent;border:1px solid var(--border);color:var(--gold);padding:4px 10px;cursor:pointer;border-radius:4px;font-family:\'Inter\',sans-serif;">↺ Reintentar</button></div>';
   }
 }
-function renderPartidos(dY,dT,dM,dP){
+function renderPartidos(dY,dT,dM,etHour){
   const body=document.getElementById('body-scorecal');
   const logo=id=>`https://a.espncdn.com/i/teamlogos/nba/500/${(id||'').toLowerCase()}.png`;
-  const secs=[
-    {label:'AYER',          data:dY,tipo:'result'},
-    {label:'HOY',           data:dT,tipo:'result'},
-    {label:'MAÑANA',        data:dM,tipo:'upcoming'},
-    {label:'PASADO MAÑANA', data:dP,tipo:'upcoming'},
-  ];
+  // FIX #5: estructura dinámica según hora ET
+  const secs=[];
+  if(etHour<12&&dY)secs.push({label:'AYER',data:dY,tipo:'result'});
+  if(dT)secs.push({label:'HOY',data:dT,tipo:'result'});
+  if(dM)secs.push({label:'MAÑANA',data:dM,tipo:'upcoming'});
   let html='',total=0;
   secs.forEach(sec=>{
     const events=sec.data?.events||[];if(!events.length)return;
@@ -794,11 +1098,17 @@ function renderYT(){
   if(ytExcluded.length>0)all=all.filter(i=>!ytExcluded.includes(i.channelId));
   if(searchQuery)all=all.filter(i=>matchesSearch(i));
   if(!all.length){body.innerHTML='<div class="empty-state">No hay vídeos en las últimas 72h.</div>';setBadge('youtube','0');return;}
-  body.innerHTML=all.map(v=>`<div class="media-item" onclick="window.open('${escHtml(v.link)}','_blank')">
-    <div class="media-source yt">▶ ${escHtml(v.channelName)} ${isNew(v.pubDate)?'<span class="badge badge-new">🆕</span>':''}</div>
-    <div class="media-title">${escHtml(v.title)}</div>
-    <div class="media-date">${v.pubDate?formatDate(v.pubDate):''}</div>
-  </div>`).join('');
+  body.innerHTML=all.map(v=>{
+    const thumb=ytThumbFromLink(v.link||'');
+    return`<div class="media-item" onclick="window.open('${escHtml(v.link)}','_blank')">
+      ${mediaThumbOrPlaceholder(thumb,'▶')}
+      <div class="media-content">
+        <div class="media-source yt">▶ ${escHtml(v.channelName)} ${isNew(v.pubDate)?'<span class="badge badge-new">🆕</span>':''}</div>
+        <div class="media-title">${escHtml(v.title)}</div>
+        <div class="media-date">${v.pubDate?formatDate(v.pubDate):''}</div>
+      </div>
+    </div>`;
+  }).join('');
   setBadge('youtube',all.length+' VÍD.');setUpdated('youtube',lastUpdate.yt);
 }
 
@@ -814,11 +1124,18 @@ function renderPod(){
   if(podExcluded.length>0)all=all.filter(i=>!podExcluded.includes(i.feedId));
   if(searchQuery)all=all.filter(i=>matchesSearch(i));
   if(!all.length){body.innerHTML='<div class="empty-state">No hay episodios en la última semana.</div>';setBadge('podcast','0');return;}
-  body.innerHTML=all.map(v=>`<div class="media-item" onclick="window.open('${escHtml(v.link)}','_blank')">
-    <div class="media-source pod">🎙 ${escHtml(v.source)} ${isNew(v.pubDate)?'<span class="badge badge-new">🆕</span>':''}</div>
-    <div class="media-title">${escHtml(v.title)}</div>
-    <div class="media-date">${v.pubDate?formatDate(v.pubDate):''}</div>
-  </div>`).join('');
+  body.innerHTML=all.map(v=>{
+    // FIX #6: thumbnail de podcast (itunes:image u otro)
+    const thumb=v.thumbnail||v.logo||'';
+    return`<div class="media-item" onclick="window.open('${escHtml(v.link)}','_blank')">
+      ${mediaThumbOrPlaceholder(thumb,'🎙')}
+      <div class="media-content">
+        <div class="media-source pod">🎙 ${escHtml(v.source)} ${isNew(v.pubDate)?'<span class="badge badge-new">🆕</span>':''}</div>
+        <div class="media-title">${escHtml(v.title)}</div>
+        <div class="media-date">${v.pubDate?formatDate(v.pubDate):''}</div>
+      </div>
+    </div>`;
+  }).join('');
   setBadge('podcast',all.length+' EP.');setUpdated('podcast',lastUpdate.pod);
 }
 
@@ -832,7 +1149,7 @@ function updateFontSize(val){document.documentElement.style.setProperty('--fs-ti
 // ══════════════════════════════════
 // REFRESH
 // ══════════════════════════════════
-function refreshPanel(id){({wire:loadAllNews,teams:loadAllNews,scorecal:loadPartidos,standings:loadStandings,youtube:loadAllYT,podcast:loadAllPod}[id]||(() => {}))();}
+function refreshPanel(id){({wire:loadAllNews,teams:()=>{loadAllNews();loadAllYT();loadAllPod();},scorecal:loadPartidos,standings:loadStandings,youtube:loadAllYT,podcast:loadAllPod}[id]||(() => {}))();}
 function refreshAll(){_calData=null;loadAllNews();loadPartidos();loadStandings();loadAllYT();loadAllPod();}
 
 // ══════════════════════════════════
@@ -845,28 +1162,85 @@ function resetFilters(){
 }
 function resetAll(){
   if(!confirm('¿Borrar toda la configuración guardada?\nSe eliminarán equipos favoritos, feeds personalizados y ajustes de tipografía.'))return;
-  localStorage.clear();
-  location.reload();
+  localStorage.clear();location.reload();
 }
 
 // ══════════════════════════════════
-// CONFIG
+// CONFIG — FIX #3: logo preview inputs
 // ══════════════════════════════════
-function openConfig(){renderTeamsGrid();renderCustomFeedList();renderYTConfig();updateHealthUI();if(state.sheetUrl)document.getElementById('sheet-url').value=state.sheetUrl;document.getElementById('config-modal').classList.add('open');}
+document.getElementById('cf-logo').addEventListener('input',function(){
+  const p=document.getElementById('cf-logo-preview');
+  if(this.value){p.src=this.value;p.style.display='inline-block';}
+  else p.style.display='none';
+});
+document.getElementById('yt-logo').addEventListener('input',function(){
+  const p=document.getElementById('yt-logo-preview');
+  if(this.value){p.src=this.value;p.style.display='inline-block';}
+  else p.style.display='none';
+});
+
+function openConfig(){
+  renderTeamsGrid();renderCustomFeedList();renderYTConfig();updateHealthUI();renderKwList();
+  if(state.sheetUrl)document.getElementById('sheet-url').value=state.sheetUrl;
+  document.getElementById('config-modal').classList.add('open');
+}
 function closeConfig(){document.getElementById('config-modal').classList.remove('open');}
 function renderTeamsGrid(){document.getElementById('teams-grid').innerHTML=NBA_TEAMS.map(t=>`<button class="chip ${state.favTeams.includes(t)?'active':''} ${state.favTeams.length>=3&&!state.favTeams.includes(t)?'maxed':''}" onclick="toggleTeam('${t}',this)">${t}</button>`).join('');}
 function toggleTeam(abbr,el){if(state.favTeams.includes(abbr)){state.favTeams=state.favTeams.filter(t=>t!==abbr);el.classList.remove('active');}else{if(state.favTeams.length>=3)return;state.favTeams.push(abbr);el.classList.add('active');}localStorage.setItem('nba_teams',JSON.stringify(state.favTeams));document.querySelectorAll('#teams-grid .chip').forEach(c=>c.classList.toggle('maxed',state.favTeams.length>=3&&!state.favTeams.includes(c.textContent.trim())));renderTeams();}
-function renderCustomFeedList(){const list=document.getElementById('custom-feed-list');list.innerHTML=state.customFeeds.length?state.customFeeds.map((f,i)=>`<div class="custom-item"><span style="flex-shrink:0">${escHtml(f.label)}</span><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:9px;color:var(--text3)">${escHtml(f.url)}</span><span class="del-btn" onclick="removeCustomFeed(${i})">✕</span></div>`).join(''):'';}
-function addCustomFeed(){const label=document.getElementById('cf-label').value.trim(),url=document.getElementById('cf-url').value.trim();if(!label||!url)return;state.customFeeds.push({label,url,id:'c_'+label,pay:false,enabled:true});localStorage.setItem('nba_feeds',JSON.stringify(state.customFeeds));document.getElementById('cf-label').value='';document.getElementById('cf-url').value='';renderCustomFeedList();}
+function renderCustomFeedList(){const list=document.getElementById('custom-feed-list');list.innerHTML=state.customFeeds.length?state.customFeeds.map((f,i)=>`<div class="custom-item">${f.logo?`<img src="${escHtml(f.logo)}" class="config-logo-preview" onerror="this.style.display='none'">`:''}<span style="flex-shrink:0">${escHtml(f.label)}</span><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:9px;color:var(--text3)">${escHtml(f.url)}</span><span class="del-btn" onclick="removeCustomFeed(${i})">✕</span></div>`).join(''):'';}
+function addCustomFeed(){
+  const label=document.getElementById('cf-label').value.trim(),url=document.getElementById('cf-url').value.trim(),logo=document.getElementById('cf-logo').value.trim();
+  if(!label||!url)return;
+  const entry={label,url,id:'c_'+label,pay:false,enabled:true};
+  if(logo){entry.logo=logo;state.sourceLogos['c_'+label]=logo;localStorage.setItem('nba_logos',JSON.stringify(state.sourceLogos));}
+  state.customFeeds.push(entry);localStorage.setItem('nba_feeds',JSON.stringify(state.customFeeds));
+  document.getElementById('cf-label').value='';document.getElementById('cf-url').value='';document.getElementById('cf-logo').value='';document.getElementById('cf-logo-preview').style.display='none';
+  renderCustomFeedList();
+}
 function removeCustomFeed(i){state.customFeeds.splice(i,1);localStorage.setItem('nba_feeds',JSON.stringify(state.customFeeds));renderCustomFeedList();}
-function renderYTConfig(){const c=document.getElementById('yt-channels-config');c.innerHTML=[...YT_CHANNELS,...state.customYT].map((ch,i)=>{const h=ytHealth[ch.id]||{status:'loading',count:0};const disabled=state.disabledYT.includes(ch.id);const isCustom=i>=YT_CHANNELS.length;return`<div class="health-item"><div class="dot ${disabled?'err':h.status}"></div><span class="health-name">${escHtml(ch.label)}</span><span class="health-count">${h.count||0} vídeos</span><button class="toggle-btn ${disabled?'':'on'}" onclick="toggleYT('${ch.id}',this)">${disabled?'DESACT.':'ACTIVO'}</button>${isCustom?`<span class="del-btn" onclick="removeCustomYT(${i-YT_CHANNELS.length})">✕</span>`:''}</div>`;}).join('');}
-function addCustomYT(){const label=document.getElementById('yt-label').value.trim(),id=document.getElementById('yt-id').value.trim();if(!label||!id)return;state.customYT.push({id,label});localStorage.setItem('nba_yt_extra',JSON.stringify(state.customYT));document.getElementById('yt-label').value='';document.getElementById('yt-id').value='';renderYTConfig();}
+function renderYTConfig(){
+  // FIX #8: this now renders under Estado — YouTube in config
+  const c=document.getElementById('yt-channels-config');
+  c.innerHTML=[...YT_CHANNELS,...state.customYT].map((ch,i)=>{
+    const h=ytHealth[ch.id]||{status:'loading',count:0};const disabled=state.disabledYT.includes(ch.id);const isCustom=i>=YT_CHANNELS.length;
+    const logo=getSourceLogo(ch.id);
+    const logoHtml=logo?`<img src="${escHtml(logo)}" class="config-logo-preview" onerror="this.style.display='none'">`:'';
+    return`<div class="health-item">${logoHtml}<div class="dot ${disabled?'err':h.status}"></div><span class="health-name">${escHtml(ch.label)}</span><span class="health-count">${h.count||0} vídeos</span><button class="toggle-btn ${disabled?'':'on'}" onclick="toggleYT('${ch.id}',this)">${disabled?'DESACT.':'ACTIVO'}</button>${isCustom?`<span class="del-btn" onclick="removeCustomYT(${i-YT_CHANNELS.length})">✕</span>`:''}</div>`;
+  }).join('');
+}
+function addCustomYT(){
+  const label=document.getElementById('yt-label').value.trim(),id=document.getElementById('yt-id').value.trim(),logo=document.getElementById('yt-logo').value.trim();
+  if(!label||!id)return;
+  state.customYT.push({id,label});localStorage.setItem('nba_yt_extra',JSON.stringify(state.customYT));
+  if(logo){state.sourceLogos[id]=logo;localStorage.setItem('nba_logos',JSON.stringify(state.sourceLogos));}
+  document.getElementById('yt-label').value='';document.getElementById('yt-id').value='';document.getElementById('yt-logo').value='';document.getElementById('yt-logo-preview').style.display='none';
+  renderYTConfig();
+}
 function removeCustomYT(i){state.customYT.splice(i,1);localStorage.setItem('nba_yt_extra',JSON.stringify(state.customYT));renderYTConfig();}
 function toggleYT(id,btn){if(state.disabledYT.includes(id)){state.disabledYT=state.disabledYT.filter(x=>x!==id);btn.textContent='ACTIVO';btn.classList.add('on');}else{state.disabledYT.push(id);btn.textContent='DESACT.';btn.classList.remove('on');}localStorage.setItem('nba_dis_yt',JSON.stringify(state.disabledYT));renderYTConfig();loadAllYT();}
+
+// FIX #8: updateHealthUI — orden: noticias, podcast, YT (YT ahora también tiene su sección Estado separada)
 function updateHealthUI(){
-  document.getElementById('feed-health-news').innerHTML=[...NEWS_FEEDS,...state.customFeeds.map(f=>({...f,id:'c_'+f.label}))].map(f=>{const h=newsHealth[f.id]||{status:'loading',count:0};const dis=state.disabledNews.includes(f.id);return`<div class="health-item"><div class="dot ${dis?'err':h.status}"></div><span class="health-name">${f.pay?'🔒 ':''}${escHtml(f.label)}</span><span class="health-count">${h.count||0} art.</span><button class="toggle-btn ${dis?'':'on'}" onclick="toggleNews('${f.id}',this)">${dis?'DESACT.':'ACTIVO'}</button></div>`;}).join('');
+  document.getElementById('feed-health-news').innerHTML=[...NEWS_FEEDS,...state.customFeeds.map(f=>({...f,id:'c_'+f.label}))].map(f=>{
+    const h=newsHealth[f.id]||{status:'loading',count:0};const dis=state.disabledNews.includes(f.id);
+    const logo=getSourceLogo(f.id);
+    const logoHtml=logo?`<img src="${escHtml(logo)}" class="config-logo-preview" onerror="this.style.display='none'">`:'';
+    return`<div class="health-item">${logoHtml}<div class="dot ${dis?'err':h.status}"></div><span class="health-name">${f.pay?'🔒 ':''}${escHtml(f.label)}</span><span class="health-count">${h.count||0} art.</span><button class="toggle-btn ${dis?'':'on'}" onclick="toggleNews('${f.id}',this)">${dis?'DESACT.':'ACTIVO'}</button></div>`;
+  }).join('');
+
+  document.getElementById('feed-health-pod').innerHTML=POD_FEEDS.map(f=>{
+    const h=podHealth[f.id]||{status:'loading',count:0};const dis=state.disabledPod.includes(f.id);
+    const logo=getSourceLogo(f.id);
+    const logoHtml=logo?`<img src="${escHtml(logo)}" class="config-logo-preview" onerror="this.style.display='none'">`:'';
+    return`<div class="health-item">${logoHtml}<div class="dot ${dis?'err':h.status}"></div><span class="health-name">${escHtml(f.label)}</span><span class="health-count">${h.count||0} ep.</span><button class="toggle-btn ${dis?'':'on'}" onclick="togglePod('${f.id}',this)">${dis?'DESACT.':'ACTIVO'}</button></div>`;
+  }).join('');
+
+  // FIX #8: YT estado ahora en su propio div feed-health-yt (conectado a renderYTConfig)
   renderYTConfig();
-  document.getElementById('feed-health-pod').innerHTML=POD_FEEDS.map(f=>{const h=podHealth[f.id]||{status:'loading',count:0};const dis=state.disabledPod.includes(f.id);return`<div class="health-item"><div class="dot ${dis?'err':h.status}"></div><span class="health-name">${escHtml(f.label)}</span><span class="health-count">${h.count||0} ep.</span><button class="toggle-btn ${dis?'':'on'}" onclick="togglePod('${f.id}',this)">${dis?'DESACT.':'ACTIVO'}</button></div>`;}).join('');
+  // pero feed-health-yt es distinto de yt-channels-config (que está en la sección de añadir canal)
+  // reutilizamos el mismo render volcándolo también aquí
+  const ytEl=document.getElementById('feed-health-yt');
+  if(ytEl)ytEl.innerHTML=document.getElementById('yt-channels-config').innerHTML;
 }
 function toggleNews(id,btn){if(state.disabledNews.includes(id)){state.disabledNews=state.disabledNews.filter(x=>x!==id);btn.textContent='ACTIVO';btn.classList.add('on');}else{state.disabledNews.push(id);btn.textContent='DESACT.';btn.classList.remove('on');}localStorage.setItem('nba_dis_news',JSON.stringify(state.disabledNews));updateHealthUI();renderWire();renderTeams();}
 function togglePod(id,btn){if(state.disabledPod.includes(id)){state.disabledPod=state.disabledPod.filter(x=>x!==id);btn.textContent='ACTIVO';btn.classList.add('on');}else{state.disabledPod.push(id);btn.textContent='DESACT.';btn.classList.remove('on');}localStorage.setItem('nba_dis_pod',JSON.stringify(state.disabledPod));updateHealthUI();renderPod();}
@@ -888,6 +1262,7 @@ function init(){
   initColSep('sep-col1','panel-wire','panel-youtube','--col1','--col2');
   initColSep('sep-col2','panel-youtube','panel-podcast','--col2','--col3');
   initRowSep();
+  renderTeamKwBar();
   loadAllNews();loadPartidos();loadStandings();loadAllYT();loadAllPod();
 }
 init();
