@@ -923,13 +923,20 @@ function applyNewsFilter(items){
 }
 function isNew(pd){if(!pd)return false;try{return Date.now()-new Date(pd)<86400000;}catch{return false;}}
 
-// FIX #6: thumbnail rendering
-function thumbOrPlaceholder(src,emoji){
-  if(src)return`<img class="article-thumb" src="${escHtml(src)}" onerror="this.style.display='none'" loading="lazy">`;
+function thumbOrPlaceholder(src,emoji,logoSrc=''){
+  if(src){
+    const err=logoSrc?`this.onerror=null;this.src='${escHtml(logoSrc)}';this.style.objectFit='contain';this.style.padding='8px'`:`this.style.display='none'`;
+    return`<img class="article-thumb" src="${escHtml(src)}" onerror="${err}" loading="lazy">`;
+  }
+  if(logoSrc)return`<div class="article-thumb-placeholder"><img src="${escHtml(logoSrc)}" style="width:26px;height:26px;object-fit:contain;opacity:.8" onerror="this.style.display='none'"></div>`;
   return`<div class="article-thumb-placeholder">${emoji}</div>`;
 }
-function mediaThumbOrPlaceholder(src,emoji){
-  if(src)return`<img class="media-thumb" src="${escHtml(src)}" onerror="this.style.display='none'" loading="lazy">`;
+function mediaThumbOrPlaceholder(src,emoji,logoSrc=''){
+  if(src){
+    const err=logoSrc?`this.onerror=null;this.src='${escHtml(logoSrc)}';this.style.objectFit='contain';this.style.padding='8px'`:`this.style.display='none'`;
+    return`<img class="media-thumb" src="${escHtml(src)}" onerror="${err}" loading="lazy">`;
+  }
+  if(logoSrc)return`<div class="media-thumb-placeholder"><img src="${escHtml(logoSrc)}" style="width:26px;height:26px;object-fit:contain;opacity:.8" onerror="this.style.display='none'"></div>`;
   return`<div class="media-thumb-placeholder">${emoji}</div>`;
 }
 
@@ -938,7 +945,7 @@ function newsItemHTML(a){
   const newB=isNew(a.pubDate)?'<span class="badge badge-new">🆕</span>':'';
   const logo=getSourceLogo(a.feedId||'');
   const logoHtml=logo?`<img src="${escHtml(logo)}" class="source-logo" onerror="this.style.display='none'">`:'';
-  const thumb=thumbOrPlaceholder(a.thumbnail||'','📰');
+  const thumb=thumbOrPlaceholder(a.thumbnail||'','📰',logo);
   return`<div class="article-item" onclick="window.open('${escHtml(a.link)}','_blank')">
     ${thumb}
     <div class="article-content">
@@ -985,7 +992,7 @@ function renderTeams(){
     if(a._type==='yt'){
       const thumb=ytThumbFromLink(a.link||'');
       return`<div class="media-item" onclick="window.open('${escHtml(a.link)}','_blank')">
-        ${mediaThumbOrPlaceholder(thumb,'▶')}
+        ${mediaThumbOrPlaceholder(thumb,'▶',a.logo||getSourceLogo(a.channelId||''))}
         <div class="media-content">
           <div class="media-source yt">▶ ${escHtml(a.channelName||a.source||'')} ${isNew(a.pubDate)?'<span class="badge badge-new">🆕</span>':''}</div>
           <div class="media-title">${escHtml(a.title)}</div>
@@ -995,7 +1002,7 @@ function renderTeams(){
     }
     if(a._type==='pod'){
       return`<div class="media-item" onclick="window.open('${escHtml(a.link)}','_blank')">
-        ${mediaThumbOrPlaceholder(a.thumbnail||a.logo||'','🎙')}
+        ${mediaThumbOrPlaceholder(a.thumbnail||'','🎙',a.logo||getSourceLogo(a.feedId||''))}
         <div class="media-content">
           <div class="media-source pod">🎙 ${escHtml(a.source||'')} ${isNew(a.pubDate)?'<span class="badge badge-new">🆕</span>':''}</div>
           <div class="media-title">${escHtml(a.title)}</div>
@@ -1138,7 +1145,7 @@ function renderYT(){
   body.innerHTML=all.map(v=>{
     const thumb=ytThumbFromLink(v.link||'');
     return`<div class="media-item" onclick="window.open('${escHtml(v.link)}','_blank')">
-      ${mediaThumbOrPlaceholder(thumb,'▶')}
+      ${mediaThumbOrPlaceholder(thumb,'▶',v.logo||getSourceLogo(v.channelId||''))}
       <div class="media-content">
         <div class="media-source yt">▶ ${escHtml(v.channelName)} ${isNew(v.pubDate)?'<span class="badge badge-new">🆕</span>':''}</div>
         <div class="media-title">${escHtml(v.title)}</div>
@@ -1163,9 +1170,9 @@ function renderPod(){
   if(!all.length){body.innerHTML='<div class="empty-state">No hay episodios en la última semana.</div>';setBadge('podcast','0');return;}
   body.innerHTML=all.map(v=>{
     // FIX #6: thumbnail de podcast (itunes:image u otro)
-    const thumb=v.thumbnail||v.logo||'';
+    const thumb=v.thumbnail||'';
     return`<div class="media-item" onclick="window.open('${escHtml(v.link)}','_blank')">
-      ${mediaThumbOrPlaceholder(thumb,'🎙')}
+      ${mediaThumbOrPlaceholder(thumb,'🎙',v.logo||getSourceLogo(v.feedId||''))}
       <div class="media-content">
         <div class="media-source pod">🎙 ${escHtml(v.source)} ${isNew(v.pubDate)?'<span class="badge badge-new">🆕</span>':''}</div>
         <div class="media-title">${escHtml(v.title)}</div>
