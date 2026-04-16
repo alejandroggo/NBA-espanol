@@ -557,18 +557,20 @@ const SOURCE_LOGOS={
   'minvet':     '',
 };
 
-// FIX #2: YT fallback — intenta channel_id primero, luego RSS handle, luego scraping
 async function fetchYTFeed(ch){
-  const byId=`https://www.youtube.com/feeds/videos.xml?channel_id=${ch.id}`;
-  const byHandle=ch.id.startsWith('@')?`https://www.youtube.com/feeds/videos.xml?user=${ch.id.replace('@','')}`:'';
-  // también intentamos con handle aunque no tenga @
-  const byUser=`https://www.youtube.com/feeds/videos.xml?user=${ch.id}`;
-
-  const attempts=[byId];
-  if(byHandle)attempts.push(byHandle);
-  if(!ch.id.startsWith('UC')&&!ch.id.startsWith('@'))attempts.push(byUser);
-
-  // Para handles (@X) usamos allorigins para evitar CORS
+  const isHandle=ch.id.startsWith('@');
+  const isUC=ch.id.startsWith('UC');
+  const attempts=[];
+  if(isUC){
+    attempts.push(`https://www.youtube.com/feeds/videos.xml?channel_id=${ch.id}`);
+  } else if(isHandle){
+    // YouTube RSS soporta channel_id=@handle y también user=handlename (legacy)
+    attempts.push(`https://www.youtube.com/feeds/videos.xml?channel_id=${ch.id}`);
+    attempts.push(`https://www.youtube.com/feeds/videos.xml?user=${ch.id.replace('@','')}`);
+  } else {
+    attempts.push(`https://www.youtube.com/feeds/videos.xml?channel_id=${ch.id}`);
+    attempts.push(`https://www.youtube.com/feeds/videos.xml?user=${ch.id}`);
+  }
   for(const url of attempts){
     try{
       const items=await enqueueFetch(()=>fetchRSS(url));
@@ -594,10 +596,10 @@ let YT_CHANNELS=[
   {id:'UCTJNmeP0HiOU4-qOMNVNoGA',label:'Drafteados'},
   {id:'@Gigantesbasket',          label:'Gigantes del Basket'},
   {id:'UCev6qJYN5x_OD3YuQepnyNQ',label:'Leo Carranza'},
-  {id:'UCkYJ2bR3QbYl8v7u3Kz6Jxw', label:'Maxi YT Basket'},
+  {id:'UCiQsjWR-lS6ZtPK1_Zm2oeQ', label:'Maxi YT Basket'},
   {id:'UCvfhPZKiTP7qlsCFbENRuwA', label:'Nacho Losilla'},
   {id:'UCj4tzJjOFNE2JD3D9sYAAQg',label:'Planeta NBA'},
-  {id:'UCXJnFRcssT0Q1ID_V6Or1sX', label:'Sergio Rabinal'},
+  {id:'@sergiorabinal',            label:'Sergio Rabinal'},
 ];
 
 let POD_FEEDS=[
