@@ -371,7 +371,10 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 <!-- CONFIG -->
 <div id="config-modal">
   <div class="config-box">
-    <div class="config-title">⚙ Configuración</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <div class="config-title" style="margin-bottom:0">⚙ Configuración</div>
+      <button onclick="closeConfig()" style="background:transparent;border:1px solid var(--border);color:var(--text3);font-size:16px;width:28px;height:28px;cursor:pointer;border-radius:4px;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text3)'">✕</button>
+    </div>
 
     <div class="config-section">
       <div class="config-section-title">Equipos favoritos (máx. 3) — filtra Mis Equipos</div>
@@ -400,36 +403,6 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
         <button class="config-btn" onclick="loadFromSheet()">CARGAR</button>
       </div>
       <div id="sheet-status" style="margin-top:6px;font-size:10px;color:var(--text3);font-family:'Inter',sans-serif;"></div>
-    </div>
-
-    <div class="config-section">
-      <div class="config-section-title">Fuentes RSS personalizadas</div>
-      <div class="config-row">
-        <input type="text" class="config-input" id="cf-label" placeholder="Nombre">
-        <input type="text" class="config-input" id="cf-url" placeholder="URL RSS">
-        <button class="config-btn" onclick="addCustomFeed()">+ AÑADIR</button>
-      </div>
-      <!-- FIX #3: logo URL para feeds personalizados -->
-      <div class="config-logo-row" style="margin-top:4px;">
-        <input type="text" class="config-input" id="cf-logo" placeholder="URL logo (opcional)" style="flex:1;">
-        <img id="cf-logo-preview" class="config-logo-preview" src="" style="display:none;" alt="logo">
-      </div>
-      <div id="custom-feed-list" style="margin-top:7px"></div>
-    </div>
-
-    <div class="config-section">
-      <div class="config-section-title">YouTube personalizado</div>
-      <div class="config-row">
-        <input type="text" class="config-input" id="yt-label" placeholder="Nombre del canal">
-        <input type="text" class="config-input" id="yt-id" placeholder="UCxxxxxxx">
-        <button class="config-btn" onclick="addCustomYT()">+ AÑADIR</button>
-      </div>
-      <!-- FIX #3: logo URL para canales YT -->
-      <div class="config-logo-row" style="margin-top:4px;">
-        <input type="text" class="config-input" id="yt-logo" placeholder="URL logo canal (opcional)" style="flex:1;">
-        <img id="yt-logo-preview" class="config-logo-preview" src="" style="display:none;" alt="logo">
-      </div>
-      <div id="yt-channels-config" style="margin-top:7px"></div>
     </div>
 
     <!-- FIX #8: Estado — orden correcto: noticias → news, podcast → pod, YT bajo su header -->
@@ -1215,56 +1188,25 @@ function resetAll(){
   localStorage.clear();location.reload();
 }
 
-// ══════════════════════════════════
-// CONFIG — FIX #3: logo preview inputs
-// ══════════════════════════════════
-document.getElementById('cf-logo').addEventListener('input',function(){
-  const p=document.getElementById('cf-logo-preview');
-  if(this.value){p.src=this.value;p.style.display='inline-block';}
-  else p.style.display='none';
-});
-document.getElementById('yt-logo').addEventListener('input',function(){
-  const p=document.getElementById('yt-logo-preview');
-  if(this.value){p.src=this.value;p.style.display='inline-block';}
-  else p.style.display='none';
-});
 
 function openConfig(){
-  renderTeamsGrid();renderCustomFeedList();renderYTConfig();updateHealthUI();renderKwList();
+  renderTeamsGrid();updateHealthUI();renderKwList();
   if(state.sheetUrl)document.getElementById('sheet-url').value=state.sheetUrl;
   document.getElementById('config-modal').classList.add('open');
 }
 function closeConfig(){document.getElementById('config-modal').classList.remove('open');}
 function renderTeamsGrid(){document.getElementById('teams-grid').innerHTML=NBA_TEAMS.map(t=>`<button class="chip ${state.favTeams.includes(t)?'active':''} ${state.favTeams.length>=3&&!state.favTeams.includes(t)?'maxed':''}" onclick="toggleTeam('${t}',this)">${t}</button>`).join('');}
 function toggleTeam(abbr,el){if(state.favTeams.includes(abbr)){state.favTeams=state.favTeams.filter(t=>t!==abbr);el.classList.remove('active');}else{if(state.favTeams.length>=3)return;state.favTeams.push(abbr);el.classList.add('active');}localStorage.setItem('nba_teams',JSON.stringify(state.favTeams));document.querySelectorAll('#teams-grid .chip').forEach(c=>c.classList.toggle('maxed',state.favTeams.length>=3&&!state.favTeams.includes(c.textContent.trim())));renderTeams();}
-function renderCustomFeedList(){const list=document.getElementById('custom-feed-list');list.innerHTML=state.customFeeds.length?state.customFeeds.map((f,i)=>`<div class="custom-item">${f.logo?`<img src="${escHtml(f.logo)}" class="config-logo-preview" onerror="this.style.display='none'">`:''}<span style="flex-shrink:0">${escHtml(f.label)}</span><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:9px;color:var(--text3)">${escHtml(f.url)}</span><span class="del-btn" onclick="removeCustomFeed(${i})">✕</span></div>`).join(''):'';}
-function addCustomFeed(){
-  const label=document.getElementById('cf-label').value.trim(),url=document.getElementById('cf-url').value.trim(),logo=document.getElementById('cf-logo').value.trim();
-  if(!label||!url)return;
-  const entry={label,url,id:'c_'+label,pay:false,enabled:true};
-  if(logo){const nl=normalizeLogo(logo);entry.logo=nl;state.sourceLogos['c_'+label]=nl;localStorage.setItem('nba_logos',JSON.stringify(state.sourceLogos));}
-  state.customFeeds.push(entry);localStorage.setItem('nba_feeds',JSON.stringify(state.customFeeds));
-  document.getElementById('cf-label').value='';document.getElementById('cf-url').value='';document.getElementById('cf-logo').value='';document.getElementById('cf-logo-preview').style.display='none';
-  renderCustomFeedList();
-}
-function removeCustomFeed(i){state.customFeeds.splice(i,1);localStorage.setItem('nba_feeds',JSON.stringify(state.customFeeds));renderCustomFeedList();}
+function removeCustomFeed(i){state.customFeeds.splice(i,1);localStorage.setItem('nba_feeds',JSON.stringify(state.customFeeds));}
 function renderYTConfig(){
-  // FIX #8: this now renders under Estado — YouTube in config
-  const c=document.getElementById('yt-channels-config');
+  const c=document.getElementById('feed-health-yt');
+  if(!c)return;
   c.innerHTML=[...YT_CHANNELS,...state.customYT].map((ch,i)=>{
     const h=ytHealth[ch.id]||{status:'loading',count:0};const disabled=state.disabledYT.includes(ch.id);const isCustom=i>=YT_CHANNELS.length;
     const logo=getSourceLogo(ch.id);
     const logoHtml=logo?`<img src="${escHtml(logo)}" class="config-logo-preview" onerror="this.style.display='none'">`:'';
     return`<div class="health-item">${logoHtml}<div class="dot ${disabled?'err':h.status}"></div><span class="health-name">${escHtml(ch.label)}</span><span class="health-count">${h.count||0} vídeos</span><button class="toggle-btn ${disabled?'':'on'}" onclick="toggleYT('${ch.id}',this)">${disabled?'DESACT.':'ACTIVO'}</button>${isCustom?`<span class="del-btn" onclick="removeCustomYT(${i-YT_CHANNELS.length})">✕</span>`:''}</div>`;
   }).join('');
-}
-function addCustomYT(){
-  const label=document.getElementById('yt-label').value.trim(),id=document.getElementById('yt-id').value.trim(),logo=document.getElementById('yt-logo').value.trim();
-  if(!label||!id)return;
-  state.customYT.push({id,label});localStorage.setItem('nba_yt_extra',JSON.stringify(state.customYT));
-  if(logo){state.sourceLogos[id]=normalizeLogo(logo);localStorage.setItem('nba_logos',JSON.stringify(state.sourceLogos));}
-  document.getElementById('yt-label').value='';document.getElementById('yt-id').value='';document.getElementById('yt-logo').value='';document.getElementById('yt-logo-preview').style.display='none';
-  renderYTConfig();
 }
 function removeCustomYT(i){state.customYT.splice(i,1);localStorage.setItem('nba_yt_extra',JSON.stringify(state.customYT));renderYTConfig();}
 function toggleYT(id,btn){if(state.disabledYT.includes(id)){state.disabledYT=state.disabledYT.filter(x=>x!==id);btn.textContent='ACTIVO';btn.classList.add('on');}else{state.disabledYT.push(id);btn.textContent='DESACT.';btn.classList.remove('on');}localStorage.setItem('nba_dis_yt',JSON.stringify(state.disabledYT));renderYTConfig();loadAllYT();}
@@ -1285,12 +1227,7 @@ function updateHealthUI(){
     return`<div class="health-item">${logoHtml}<div class="dot ${dis?'err':h.status}"></div><span class="health-name">${escHtml(f.label)}</span><span class="health-count">${h.count||0} ep.</span><button class="toggle-btn ${dis?'':'on'}" onclick="togglePod('${f.id}',this)">${dis?'DESACT.':'ACTIVO'}</button></div>`;
   }).join('');
 
-  // FIX #8: YT estado ahora en su propio div feed-health-yt (conectado a renderYTConfig)
   renderYTConfig();
-  // pero feed-health-yt es distinto de yt-channels-config (que está en la sección de añadir canal)
-  // reutilizamos el mismo render volcándolo también aquí
-  const ytEl=document.getElementById('feed-health-yt');
-  if(ytEl)ytEl.innerHTML=document.getElementById('yt-channels-config').innerHTML;
 }
 function toggleNews(id,btn){if(state.disabledNews.includes(id)){state.disabledNews=state.disabledNews.filter(x=>x!==id);btn.textContent='ACTIVO';btn.classList.add('on');}else{state.disabledNews.push(id);btn.textContent='DESACT.';btn.classList.remove('on');}localStorage.setItem('nba_dis_news',JSON.stringify(state.disabledNews));updateHealthUI();renderWire();renderTeams();}
 function togglePod(id,btn){if(state.disabledPod.includes(id)){state.disabledPod=state.disabledPod.filter(x=>x!==id);btn.textContent='ACTIVO';btn.classList.add('on');}else{state.disabledPod.push(id);btn.textContent='DESACT.';btn.classList.remove('on');}localStorage.setItem('nba_dis_pod',JSON.stringify(state.disabledPod));updateHealthUI();renderPod();}
