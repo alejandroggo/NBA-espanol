@@ -789,7 +789,7 @@ function buildFilterDropdown(p){
   const sources=p==='wire'?getActiveNewsFeeds():p==='youtube'?getActiveYTChannels():getActivePodFeeds();
   const excl=getExcl(p);
   dd.innerHTML=`<div class="filter-hint">Desmarca los que NO quieres ver</div>
-    <div class="filter-all"><button onclick="event.stopPropagation();restoreAllFilter('${p}')">Mostrar todos</button></div>`+
+    <div class="filter-all"><button onclick="event.stopPropagation();restoreAllFilter('${p}')">Mostrar todos</button><button onclick="event.stopPropagation();excludeAllFilter('${p}')">Ocultar todos</button></div>`+
     sources.map(s=>{const ex=excl.includes(s.id);
       const logo=getSourceLogo(s.id||'');
       const logoHtml=logo?`<img src="${escHtml(logo)}" style="width:12px;height:12px;object-fit:contain;border-radius:2px;" onerror="this.style.display='none'"> `:'';
@@ -800,6 +800,7 @@ function buildFilterDropdown(p){
 }
 function toggleExclude(p,id){const a=[...getExcl(p)];const i=a.indexOf(id);if(i>=0)a.splice(i,1);else a.push(id);setExcl(p,a);buildFilterDropdown(p);updateFilterCount(p);reRender(p);}
 function restoreAllFilter(p){setExcl(p,[]);buildFilterDropdown(p);updateFilterCount(p);reRender(p);}
+function excludeAllFilter(p){const sources=p==='wire'?getActiveNewsFeeds():p==='youtube'?getActiveYTChannels():getActivePodFeeds();setExcl(p,sources.map(s=>s.id));buildFilterDropdown(p);updateFilterCount(p);reRender(p);}
 function updateFilterCount(p){const el=document.getElementById('filter-count-'+p);if(!el)return;const excl=getExcl(p);if(excl.length===0){el.textContent='';el.classList.remove('has-exclusions');}else{el.textContent=excl.length+' excl.';el.classList.add('has-exclusions');}}
 function reRender(p){if(p==='wire')renderWire();else if(p==='youtube')renderYT();else if(p==='podcast')renderPod();}
 
