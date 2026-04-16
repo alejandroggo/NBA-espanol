@@ -1,0 +1,25 @@
+id,label,url,tipo,pay,logo
+agaitan,Alejandro Gaitán,https://alejandroggo.com/feed,news,1,
+as_nba,AS NBA,https://feeds.as.com/mrss-s/pages/as/site/as.com/section/baloncesto/subsection/nba/,news,0,https://e00-marca.uecdn.es/assets/najax/img/favicon/as.ico
+gigantes,Gigantes del Basket,https://www.gigantes.com/nba/feed/,news,0,https://www.gigantes.com/wp-content/uploads/gigantes-favicon.png
+marca_nba,Marca NBA,https://e00-marca.uecdn.es/rss/baloncesto/nba.xml,news,0,https://e00-marca.uecdn.es/assets/najax/img/favicon/marca.ico
+md_nba,Mundo Deportivo NBA,https://www.mundodeportivo.com/feed/rss/baloncesto/nba,news,0,https://www.mundodeportivo.com/favicon.ico
+kike,NBA Con Contexto,https://www.nbaconcontexto.com/feed/,news,1,
+maniacs,NBA Maniacs,https://www.nbamaniacs.com/feed/,news,0,https://www.nbamaniacs.com/favicon.ico
+sport_nba,Sport NBA,https://www.sport.es/es/rss/nba/rss.xml,news,0,https://www.sport.es/favicon.ico
+UCoCXWfhkSuT4DOolxFsPoYQ,Basket 365,UCoCXWfhkSuT4DOolxFsPoYQ,yt,0,
+UCTJNmeP0HiOU4-qOMNVNoGA,Drafteados,UCTJNmeP0HiOU4-qOMNVNoGA,yt,0,
+@Gigantesbasket,Gigantes del Basket,@Gigantesbasket,yt,0,
+UCev6qJYN5x_OD3YuQepnyNQ,Leo Carranza,UCev6qJYN5x_OD3YuQepnyNQ,yt,0,
+UCkYJ2bR3QbYl8v7u3Kz6Jxw,Maxi YT Basket,UCkYJ2bR3QbYl8v7u3Kz6Jxw,yt,0,
+UCvfhPZKiTP7qlsCFbENRuwA,Nacho Losilla,UCvfhPZKiTP7qlsCFbENRuwA,yt,0,
+UCj4tzJjOFNE2JD3D9sYAAQg,Planeta NBA,UCj4tzJjOFNE2JD3D9sYAAQg,yt,0,
+UCXJnFRcssT0Q1ID_V6Or1sX,Sergio Rabinal,UCXJnFRcssT0Q1ID_V6Or1sX,yt,0,
+tresmas,3+1,https://feeds.ivoox.com/feed_fg_f12314873_filtro_1.xml,pod,0,
+buzzbeet,Buzzer Beater,https://feeds.ivoox.com/feed_fg_f11091103_filtro_1.xml,pod,0,
+reverso,El Reverso,https://feeds.ivoox.com/feed_fg_f1404265_filtro_1.xml,pod,0,
+enopnba,Esto no es un podcast NBA,https://www.spreaker.com/show/5970729/episodes/feed,pod,0,
+nbaadict,NBA Adictos,https://feeds.ivoox.com/feed_fg_f1584844_filtro_1.xml,pod,0,
+nbahouse,NBA House,https://www.spreaker.com/show/6150962/episodes/feed,pod,0,
+massball,Massive Ball,https://feeds.ivoox.com/feed_fg_f1583803_filtro_1.xml,pod,0,
+minvet,Mínimo de Veterano,https://omny.fm/shows/nba-m-nimo-de-veterano/playlists/podcast.rss,pod,0,
