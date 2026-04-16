@@ -668,6 +668,13 @@ function getSourceLogo(id){
 
 // ══════════════════════════════════
 // GOOGLE SHEET
+// Convierte links de compartir de Google Drive a URL directa de imagen
+function normalizeLogo(url){
+  if(!url)return'';
+  const m=url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  return m?`https://drive.google.com/uc?export=view&id=${m[1]}`:url;
+}
+
 // ══════════════════════════════════
 async function loadFromSheet(){
   const url=document.getElementById('sheet-url').value.trim();
@@ -680,9 +687,8 @@ async function loadFromSheet(){
     let an=0,ay=0,ap=0;
     rows.forEach(row=>{
       const cols=row.split(',').map(c=>c.trim().replace(/^"|"$/g,''));
-      const[id,label,feedUrl,tipo,pay,logo]=cols;if(!id||!label||!feedUrl||!tipo)return;
-      // FIX #3: si tiene col logo, guardarla
-      if(logo){state.sourceLogos[id]=logo;}
+      const[id,label,feedUrl,tipo,pay,logo]=cols;if(!id||!label||!tipo)return;
+      if(logo){state.sourceLogos[id]=normalizeLogo(logo);}
       if(tipo==='news'&&!NEWS_FEEDS.find(f=>f.id===id)&&!state.customFeeds.find(f=>f.id===id)){NEWS_FEEDS.push({id,label,url:feedUrl,pay:pay==='1'||pay==='true',enabled:true});an++;}
       if(tipo==='yt'&&!YT_CHANNELS.find(c=>c.id===id)&&!state.customYT.find(c=>c.id===id)){YT_CHANNELS.push({id,label});ay++;}
       if(tipo==='pod'&&!POD_FEEDS.find(f=>f.id===id)){POD_FEEDS.push({id,label,url:feedUrl,enabled:true});ap++;}
@@ -1236,7 +1242,7 @@ function addCustomFeed(){
   const label=document.getElementById('cf-label').value.trim(),url=document.getElementById('cf-url').value.trim(),logo=document.getElementById('cf-logo').value.trim();
   if(!label||!url)return;
   const entry={label,url,id:'c_'+label,pay:false,enabled:true};
-  if(logo){entry.logo=logo;state.sourceLogos['c_'+label]=logo;localStorage.setItem('nba_logos',JSON.stringify(state.sourceLogos));}
+  if(logo){const nl=normalizeLogo(logo);entry.logo=nl;state.sourceLogos['c_'+label]=nl;localStorage.setItem('nba_logos',JSON.stringify(state.sourceLogos));}
   state.customFeeds.push(entry);localStorage.setItem('nba_feeds',JSON.stringify(state.customFeeds));
   document.getElementById('cf-label').value='';document.getElementById('cf-url').value='';document.getElementById('cf-logo').value='';document.getElementById('cf-logo-preview').style.display='none';
   renderCustomFeedList();
@@ -1256,7 +1262,7 @@ function addCustomYT(){
   const label=document.getElementById('yt-label').value.trim(),id=document.getElementById('yt-id').value.trim(),logo=document.getElementById('yt-logo').value.trim();
   if(!label||!id)return;
   state.customYT.push({id,label});localStorage.setItem('nba_yt_extra',JSON.stringify(state.customYT));
-  if(logo){state.sourceLogos[id]=logo;localStorage.setItem('nba_logos',JSON.stringify(state.sourceLogos));}
+  if(logo){state.sourceLogos[id]=normalizeLogo(logo);localStorage.setItem('nba_logos',JSON.stringify(state.sourceLogos));}
   document.getElementById('yt-label').value='';document.getElementById('yt-id').value='';document.getElementById('yt-logo').value='';document.getElementById('yt-logo-preview').style.display='none';
   renderYTConfig();
 }
