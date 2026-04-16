@@ -172,6 +172,8 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 .team-td{font-family:'Inter',sans-serif;font-weight:700;font-size:12px;}
 .pct-cell{color:var(--gold);}
 .playoff-line td{border-top:1px solid rgba(201,168,76,.3)!important;}
+.playin-line td{border-top:1px solid rgba(155,111,212,.3)!important;}
+.playin-row td{background:rgba(155,111,212,.03);}
 
 /* MEDIA con thumbnail — FIX #6 */
 .media-item{padding:8px 0;border-bottom:1px solid var(--item-sep);cursor:pointer;transition:background .1s;display:flex;gap:8px;align-items:flex-start;}
@@ -781,9 +783,9 @@ async function loadPodFeed(feed){
   try{const items=await enqueueFetch(()=>fetchRSS(feed.url));podData[feed.id]=items.map(i=>({...i,source:feed.label,feedId:feed.id,logo:getSourceLogo(feed.id)})).slice(0,20);podHealth[feed.id]={status:'ok',count:items.length};}
   catch(e){podData[feed.id]=[];podHealth[feed.id]={status:'err',count:0};}
 }
-async function loadAllNews(){const active=getActiveNewsFeeds();setLoading('wire');setLoading('teams');await Promise.allSettled(active.map(f=>loadNewsFeed(f)));lastUpdate.news=new Date();renderWire();renderTeams();updateHealthUI();}
-async function loadAllYT(){const active=getActiveYTChannels();setLoading('youtube');await Promise.allSettled(active.map(c=>loadYTChannel(c)));lastUpdate.yt=new Date();renderYT();renderTeams();updateHealthUI();}
-async function loadAllPod(){const active=getActivePodFeeds();setLoading('podcast');await Promise.allSettled(active.map(f=>loadPodFeed(f)));lastUpdate.pod=new Date();renderPod();renderTeams();updateHealthUI();}
+async function loadAllNews(){const active=getActiveNewsFeeds();setLoading('wire');setLoading('teams');await Promise.allSettled(active.map(f=>loadNewsFeed(f)));lastUpdate.news=new Date();renderWire();renderTeams();updateHealthUI();saveCache();}
+async function loadAllYT(){const active=getActiveYTChannels();setLoading('youtube');await Promise.allSettled(active.map(c=>loadYTChannel(c)));lastUpdate.yt=new Date();renderYT();renderTeams();updateHealthUI();saveCache();}
+async function loadAllPod(){const active=getActivePodFeeds();setLoading('podcast');await Promise.allSettled(active.map(f=>loadPodFeed(f)));lastUpdate.pod=new Date();renderPod();renderTeams();updateHealthUI();saveCache();}
 function setLoading(id){const b=document.getElementById('body-'+id);if(b)b.innerHTML='<div class="panel-loading">CARGANDO</div>';}
 
 // ══════════════════════════════════
@@ -1191,7 +1193,8 @@ function renderStandingsTable(){
   });
   const rows=entries.map((entry,i)=>{
     const t=entry.team;const s={};(entry.stats||[]).forEach(x=>s[x.name]=x.displayValue||x.value);
-    return`<tr class="${i===5?'playoff-line':''}"><td class="rank-num">${i+1}</td><td class="team-td">${t?.abbreviation||t?.shortDisplayName||''}</td><td>${s['wins']||0}-${s['losses']||0}</td><td class="pct-cell">${s['winPercent']||s['pct']||'—'}</td><td>${s['gamesBehind']||s['gamesBack']||'—'}</td><td>${s['Home']||s['homeRecord']||'—'}</td><td>${s['Road']||s['awayRecord']||'—'}</td><td>${s['L10']||s['last10']||'—'}</td></tr>`;
+    const cls=[i===5?'playoff-line':'',i===9?'playin-line':(i>=6&&i<=9?'playin-row':'')].filter(Boolean).join(' ');
+    return`<tr class="${cls}"><td class="rank-num">${i+1}</td><td class="team-td">${t?.abbreviation||t?.shortDisplayName||''}</td><td>${s['wins']||0}-${s['losses']||0}</td><td class="pct-cell">${s['winPercent']||s['pct']||'—'}</td><td>${s['gamesBehind']||s['gamesBack']||'—'}</td><td>${s['Home']||s['homeRecord']||'—'}</td><td>${s['Road']||s['awayRecord']||'—'}</td><td>${s['L10']||s['last10']||'—'}</td></tr>`;
   }).join('');
   body.innerHTML=`<div style="overflow-y:auto;height:100%;"><table class="standings-table"><thead><tr><th>#</th><th>EQUIPO</th><th>V-D</th><th>PCT</th><th>DIF</th><th>LOCAL</th><th>VISIT.</th><th>ÚLT10</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
@@ -1345,6 +1348,32 @@ function toggleTheme(){
 }
 (function(){applyTheme(localStorage.getItem('nba_theme')||'dark');})();
 
+// ══════════════════════════════════
+// CACHE LOCAL
+// ══════════════════════════════════
+const CACHE_TTL=30*60*1000; // 30 minutos
+function saveCache(){
+  try{
+    localStorage.setItem('nba_cache',JSON.stringify({
+      ts:Date.now(),
+      news:newsData,yt:ytData,pod:podData,
+      lu:{news:lastUpdate.news,yt:lastUpdate.yt,pod:lastUpdate.pod}
+    }));
+  }catch(e){}
+}
+function loadCache(){
+  try{
+    const raw=localStorage.getItem('nba_cache');if(!raw)return false;
+    const c=JSON.parse(raw);
+    if(Date.now()-c.ts>CACHE_TTL)return false;
+    Object.assign(newsData,c.news||{});
+    Object.assign(ytData,c.yt||{});
+    Object.assign(podData,c.pod||{});
+    if(c.lu){lastUpdate.news=c.lu.news?new Date(c.lu.news):null;lastUpdate.yt=c.lu.yt?new Date(c.lu.yt):null;lastUpdate.pod=c.lu.pod?new Date(c.lu.pod):null;}
+    return true;
+  }catch(e){return false;}
+}
+
 function init(){
   const fst=localStorage.getItem('nba_fst');if(fst){document.getElementById('fst-slider').value=fst;updateFontSize(fst);}
   ['wire','youtube','podcast'].forEach(id=>updateFilterCount(id));
@@ -1352,6 +1381,9 @@ function init(){
   initColSep('sep-col2','panel-youtube','panel-podcast','--col2','--col3');
   initRowSep();
   renderTeamKwBar();
+  // Mostrar cache inmediatamente si existe y es reciente
+  if(loadCache()){renderWire();renderYT();renderPod();renderTeams();updateHealthUI();}
+  // Luego actualizar en segundo plano siempre
   loadAllNews();loadPartidos();loadStandings();loadAllYT();loadAllPod();
 }
 init();
