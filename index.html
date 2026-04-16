@@ -214,30 +214,47 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 .empty-state{text-align:center;color:var(--text3);font-size:11px;padding:20px;line-height:1.8;}
 
 /* ══════════════════════════════════
-   FIX #7 — MOBILE: paneles desplegables
+   MOBILE: tab bar navigation
 ══════════════════════════════════ */
+#mobile-tabbar{display:none;}
+.panel-collapse-btn{display:none;}
+
 @media(max-width:860px){
-  body{overflow:auto;}
-  #canvas{position:relative;top:auto;left:auto;right:auto;bottom:auto;margin-top:var(--topbar-h);display:flex;flex-direction:column;height:auto;overflow:visible;gap:8px;padding:8px;}
-  .panel{min-height:auto;height:auto;margin:0;}
+  body{overflow:hidden;}
+  #topbar{overflow-x:auto;}
+  .tb-label,.tb-slider,select.tb-select{display:none;}
+
+  /* Canvas fills space between topbar and tab bar */
+  #canvas{
+    position:fixed;top:var(--topbar-h);left:0;right:0;bottom:58px;
+    display:flex;flex-direction:column;overflow:hidden;padding:0;gap:0;
+  }
+  /* Hide grid separators and spacer divs */
+  #canvas>*:not(.panel){display:none!important;}
   .col-sep,.row-sep{display:none;}
   .cal-grid{grid-template-columns:1fr;}
-  #topbar{overflow-x:auto;}
-  .tb-label,.tb-slider{display:none;}
-  select.tb-select{display:none;}
 
-  /* Collapsible panels on mobile */
-  .panel-header{cursor:pointer;}
-  .panel-collapse-btn{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;font-size:11px;color:var(--text3);transition:transform .2s;flex-shrink:0;}
-  .panel.collapsed .panel-collapse-btn{transform:rotate(-90deg);}
-  .panel.collapsed .panel-body,
-  .panel.collapsed .filter-bar,
-  .panel.collapsed .panel-tabs,
-  .panel.collapsed .team-kw-bar{display:none!important;}
-  .panel:not(.collapsed) .panel-body{max-height:55vh;overflow-y:auto;}
-}
-@media(min-width:861px){
-  .panel-collapse-btn{display:none;}
+  /* All panels hidden by default */
+  .panel{display:none;flex-direction:column;margin:0;border-radius:0;min-height:0;}
+  /* Single active panel fills full height */
+  .panel.mob-active{display:flex;flex:1;min-height:0;}
+  /* Two panels share height (results tab) */
+  .panel.mob-half{display:flex;flex:1;min-height:0;}
+
+  /* Tab bar */
+  #mobile-tabbar{
+    display:flex;position:fixed;bottom:0;left:0;right:0;height:58px;
+    background:var(--panel);border-top:1px solid var(--border);
+    z-index:500;box-shadow:0 -2px 12px rgba(0,0,0,0.5);
+  }
+  .mob-tab{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:3px;background:transparent;border:none;color:var(--text3);cursor:pointer;
+    padding:8px 0 6px;transition:color .15s;-webkit-tap-highlight-color:transparent;
+  }
+  .mob-tab.active{color:var(--gold);}
+  .mob-tab-icon{font-size:19px;line-height:1;}
+  .mob-tab-label{font-family:'Inter',sans-serif;font-size:9px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;}
 }
 </style>
 </head>
@@ -367,6 +384,30 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
     <div class="panel-body" id="body-standings" style="padding:0;overflow-y:auto;"></div>
   </div>
 </div>
+
+<!-- MOBILE TAB BAR -->
+<nav id="mobile-tabbar">
+  <button class="mob-tab" id="mtab-wire" onclick="mobileTab('wire')">
+    <span class="mob-tab-icon">📡</span>
+    <span class="mob-tab-label">Noticias</span>
+  </button>
+  <button class="mob-tab" id="mtab-youtube" onclick="mobileTab('youtube')">
+    <span class="mob-tab-icon">▶</span>
+    <span class="mob-tab-label">YouTube</span>
+  </button>
+  <button class="mob-tab" id="mtab-podcast" onclick="mobileTab('podcast')">
+    <span class="mob-tab-icon">🎙</span>
+    <span class="mob-tab-label">Podcast</span>
+  </button>
+  <button class="mob-tab" id="mtab-teams" onclick="mobileTab('teams')">
+    <span class="mob-tab-icon">🏀</span>
+    <span class="mob-tab-label">Mi Equipo</span>
+  </button>
+  <button class="mob-tab" id="mtab-results" onclick="mobileTab('results')">
+    <span class="mob-tab-icon">📊</span>
+    <span class="mob-tab-label">Resultados</span>
+  </button>
+</nav>
 
 <!-- CONFIG -->
 <div id="config-modal">
@@ -587,10 +628,28 @@ const LIMIT_POD  =  7 * 86400000;
 // ══════════════════════════════════
 // FIX #7 — MOBILE COLLAPSE
 // ══════════════════════════════════
-function togglePanelMobile(panelId){
+function togglePanelMobile(panelId){/* desactivado — navegación por tabs en móvil */}
+
+const MOB_TAB_CFG={
+  wire:    {single:'panel-wire'},
+  youtube: {single:'panel-youtube'},
+  podcast: {single:'panel-podcast'},
+  teams:   {single:'panel-teams'},
+  results: {half:['panel-scorecal','panel-standings']}
+};
+let _mobileTab='wire';
+function mobileTab(tab){
   if(window.innerWidth>860)return;
-  document.getElementById(panelId).classList.toggle('collapsed');
+  _mobileTab=tab;
+  document.querySelectorAll('.mob-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('mtab-'+tab)?.classList.add('active');
+  document.querySelectorAll('#canvas .panel').forEach(p=>p.classList.remove('mob-active','mob-half'));
+  const cfg=MOB_TAB_CFG[tab];
+  if(cfg.single){document.getElementById(cfg.single)?.classList.add('mob-active');}
+  else if(cfg.half){cfg.half.forEach(id=>document.getElementById(id)?.classList.add('mob-half'));}
 }
+// Init on load
+if(window.innerWidth<=860)mobileTab('wire');
 
 // ══════════════════════════════════
 // CONCURRENCIA
