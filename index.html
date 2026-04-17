@@ -994,7 +994,7 @@ function mediaThumbOrPlaceholder(src,emoji,logoSrc=''){
 
 function newsItemHTML(a){
   const payB=a.pay?'<span class="badge badge-pay">🔒</span>':'';
-  const newB=isNew(a.pubDate)?'<span class="badge badge-new">🔔</span>':'';
+  const newB=isNew(a.pubDate)?'<span class="badge badge-new">🚨</span>':'';
   const logo=getSourceLogo(a.feedId||'');
   const logoHtml=logo?`<img src="${escHtml(logo)}" class="source-logo" onerror="this.style.display='none'">`:'';
   const thumb=thumbOrPlaceholder(a.thumbnail||'','📰',logo);
@@ -1046,7 +1046,7 @@ function renderTeams(){
       return`<div class="media-item" onclick="window.open('${escHtml(a.link)}','_blank')">
         ${mediaThumbOrPlaceholder(thumb,'🎥',a.logo||getSourceLogo(a.channelId||''))}
         <div class="media-content">
-          <div class="media-source yt"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg> ${escHtml(a.channelName||a.source||'')} ${isNew(a.pubDate)?'<span class="badge badge-new">🔔</span>':''}</div>
+          <div class="media-source yt"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg> ${escHtml(a.channelName||a.source||'')} ${isNew(a.pubDate)?'<span class="badge badge-new">🚨</span>':''}</div>
           <div class="media-title">${escHtml(a.title)}</div>
           <div class="media-date">${a.pubDate?formatDate(a.pubDate):''}</div>
         </div>
@@ -1056,7 +1056,7 @@ function renderTeams(){
       return`<div class="media-item" onclick="window.open('${escHtml(a.link)}','_blank')">
         ${mediaThumbOrPlaceholder(a.thumbnail||'','🎙',a.logo||getSourceLogo(a.feedId||''))}
         <div class="media-content">
-          <div class="media-source pod"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> ${escHtml(a.source||'')} ${isNew(a.pubDate)?'<span class="badge badge-new">🔔</span>':''}</div>
+          <div class="media-source pod"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> ${escHtml(a.source||'')} ${isNew(a.pubDate)?'<span class="badge badge-new">🚨</span>':''}</div>
           <div class="media-title">${escHtml(a.title)}</div>
           <div class="media-date">${a.pubDate?formatDate(a.pubDate):''}</div>
         </div>
@@ -1293,7 +1293,7 @@ function renderYT(){
     return`<div class="media-item" onclick="window.open('${escHtml(v.link)}','_blank')">
       ${mediaThumbOrPlaceholder(thumb,'🎥',v.logo||getSourceLogo(v.channelId||''))}
       <div class="media-content">
-        <div class="media-source yt"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg> ${escHtml(v.channelName)} ${isNew(v.pubDate)?'<span class="badge badge-new">🔔</span>':''}</div>
+        <div class="media-source yt"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg> ${escHtml(v.channelName)} ${isNew(v.pubDate)?'<span class="badge badge-new">🚨</span>':''}</div>
         <div class="media-title">${escHtml(v.title)}</div>
         <div class="media-date">${v.pubDate?formatDate(v.pubDate):''}</div>
       </div>
@@ -1320,7 +1320,7 @@ function renderPod(){
     return`<div class="media-item" onclick="window.open('${escHtml(v.link)}','_blank')">
       ${mediaThumbOrPlaceholder(thumb,'🎙',v.logo||getSourceLogo(v.feedId||''))}
       <div class="media-content">
-        <div class="media-source pod"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> ${escHtml(v.source)} ${isNew(v.pubDate)?'<span class="badge badge-new">🔔</span>':''}</div>
+        <div class="media-source pod"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> ${escHtml(v.source)} ${isNew(v.pubDate)?'<span class="badge badge-new">🚨</span>':''}</div>
         <div class="media-title">${escHtml(v.title)}</div>
         <div class="media-date">${v.pubDate?formatDate(v.pubDate):''}</div>
       </div>
