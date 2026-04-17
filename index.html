@@ -401,7 +401,7 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
     <div class="panel-header" onclick="togglePanelMobile('panel-scorecal')">
       <span class="panel-title">📊 Partidos</span>
       <span class="panel-badge" id="badge-scorecal">—</span>
-      <button class="panel-btn" id="spoiler-btn" onclick="event.stopPropagation();toggleSpoilerMode()" title="Modo sin spoilers">👁</button>
+      <button class="panel-btn" id="spoiler-btn" onclick="event.stopPropagation();toggleSpoilerMode()" title="Modo sin spoilers" style="font-size:9px;letter-spacing:.4px;display:flex;align-items:center;gap:3px;padding:2px 6px;border:1px solid var(--border);border-radius:4px;"><span id="spoiler-icon">👁</span> NO SPOILERS</button>
       <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('scorecal')">↺</button>
       <span class="panel-collapse-btn">▾</span>
     </div>
@@ -1135,8 +1135,8 @@ async function loadPartidos(){
 function toggleSpoilerMode(){
   state.noSpoilers=!state.noSpoilers;
   localStorage.setItem('nba_nospoilers',JSON.stringify(state.noSpoilers));
-  const btn=document.getElementById('spoiler-btn');
-  if(btn)btn.textContent=state.noSpoilers?'🙈':'👁';
+  const icon=document.getElementById('spoiler-icon');
+  if(icon)icon.textContent=state.noSpoilers?'🙈':'👁';
   if(_calData){const{dY,dT,dM,etHour,ayerStr,todayStr,mananaStr}=_calData;renderPartidos(dY,dT,dM,etHour,ayerStr,todayStr,mananaStr);}
 }
 
@@ -1490,7 +1490,7 @@ function init(){
   initRowSep();
   renderTeamKwBar();
   updateAttributionLogo();
-  const sb=document.getElementById('spoiler-btn');if(sb&&state.noSpoilers)sb.textContent='🙈';
+  const si=document.getElementById('spoiler-icon');if(si&&state.noSpoilers)si.textContent='🙈';
   // Mostrar cache inmediatamente si existe y es reciente
   if(loadCache()){renderWire();renderYT();renderPod();renderTeams();updateHealthUI();}
   // Luego actualizar en segundo plano siempre
