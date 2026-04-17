@@ -132,6 +132,7 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 .article-source{font-family:'Inter',sans-serif;font-weight:700;font-size:10px;letter-spacing:.5px;color:var(--gold);text-transform:uppercase;}
 .article-title{font-family:'Inter',sans-serif;font-weight:500;font-size:var(--fs-title);color:var(--text);line-height:1.4;margin-bottom:2px;}
 .article-date{font-size:10px;color:var(--text3);font-family:'Inter',sans-serif;}
+.article-author{color:var(--text3);font-style:italic;}
 .badge{font-size:8px;letter-spacing:.5px;padding:1px 5px;border-radius:3px;text-transform:uppercase;flex-shrink:0;}
 .badge-pay{background:rgba(224,80,80,.12);color:var(--live-red);border:1px solid rgba(224,80,80,.25);}
 .badge-new{background:rgba(76,175,130,.1);color:var(--green);border:1px solid rgba(76,175,130,.25);}
@@ -271,6 +272,7 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
     z-index:999;align-items:center;justify-content:space-around;padding:0 8px;gap:6px;
   }
   #mobile-actionbar .tb-btn{flex:1;text-align:center;justify-content:center;display:flex;align-items:center;gap:4px;}
+  #mob-theme-btn{flex:0 0 auto;padding:4px 8px;}
 
   /* Canvas baja para dejar sitio a las dos barras */
   #canvas{
@@ -711,7 +713,13 @@ let _mobileTab='wire';
 // ══════════════════════════════════
 const SEEN_KEYS={wire:'nba_seen_news',youtube:'nba_seen_yt',podcast:'nba_seen_pod'};
 function getLastSeen(panel){const v=localStorage.getItem(SEEN_KEYS[panel]);return v?new Date(parseInt(v)):null;}
-function markSeen(panel){if(SEEN_KEYS[panel])localStorage.setItem(SEEN_KEYS[panel],Date.now().toString());updateTabBadge(panel);}
+function markSeen(panel){
+  if(SEEN_KEYS[panel])localStorage.setItem(SEEN_KEYS[panel],Date.now().toString());
+  const mob=document.getElementById('mtab-badge-'+panel);
+  if(mob)mob.style.display='none';
+  const pnb=document.getElementById('pnb-'+panel);
+  if(pnb)pnb.classList.remove('visible');
+}
 function countNewItems(panel){
   const ls=getLastSeen(panel);if(!ls)return 0;
   let items=[];
@@ -721,12 +729,12 @@ function countNewItems(panel){
   return items.filter(i=>i.pubDate&&new Date(i.pubDate)>ls).length;
 }
 function updateTabBadge(panel){
+  // Si el tab está activo en móvil, no repintar — markSeen ya lo limpió
+  if(window.innerWidth<=860&&_mobileTab===panel)return;
   const n=countNewItems(panel);
   const label=n>99?'99+':String(n);
-  // Mobile tab badge
   const mob=document.getElementById('mtab-badge-'+panel);
   if(mob){mob.textContent=label;mob.style.display=n>0?'flex':'none';}
-  // Desktop panel header badge
   const pnb=document.getElementById('pnb-'+panel);
   if(pnb){pnb.textContent=n>0?label+' nuevos':'';pnb.classList.toggle('visible',n>0);}
 }
@@ -760,7 +768,7 @@ function drainQueue(){while(activeCount<MAX_CONCURRENT&&fetchQueue.length){const
 // RSS
 // ══════════════════════════════════
 async function fetchRSS(url){
-  const r2j=async()=>{const r=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(9000)});const d=await r.json();if(d.status!=='ok'||!d.items?.length)throw new Error('empty');return{items:d.items.map(i=>({title:i.title||'',link:i.link||'',pubDate:i.pubDate||'',thumbnail:i.thumbnail||i.enclosure?.link||''})),feedImage:d.feed?.image||''};};
+  const r2j=async()=>{const r=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(9000)});const d=await r.json();if(d.status!=='ok'||!d.items?.length)throw new Error('empty');return{items:d.items.map(i=>({title:i.title||'',link:i.link||'',pubDate:i.pubDate||'',thumbnail:i.thumbnail||i.enclosure?.link||'',author:i.author||''})),feedImage:d.feed?.image||''};};
   const ao=async()=>{const r=await fetch(`https://allorigins.win/get?disableCache=true&url=${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(9000)});return{items:parseXML((await r.json()).contents),feedImage:''};};
   const cp=async()=>{const r=await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(9000)});return{items:parseXML(await r.text()),feedImage:''};};
   return Promise.any([r2j(),ao(),cp()]);
@@ -781,7 +789,8 @@ function parseXML(xml){
     // si es enclosure de imagen
     const encType=el.querySelector('enclosure')?.getAttribute('type')||'';
     if(!thumbnail&&enclosure&&encType.startsWith('image/'))thumbnail=enclosure;
-    if(title)items.push({title,link,pubDate,thumbnail});
+    const author=el.getElementsByTagName('creator')[0]?.textContent||el.querySelector('author name')?.textContent||el.querySelector('author')?.textContent||'';
+    if(title)items.push({title,link,pubDate,thumbnail,author:author.trim()});
   });
   if(!items.length)throw new Error('empty');return items;
 }
@@ -1018,12 +1027,16 @@ function matchesTeamFilter(item, strict=false){
 // ══════════════════════════════════
 // NOTICIAS
 // ══════════════════════════════════
+const BOOSTED_FEEDS=new Set(['agaitan','nbahouse']);
+const BOOST_MS=6*3600000;
+function sortScore(i){const base=i.pubDate?new Date(i.pubDate).getTime():0;const id=i.feedId||i.channelId||'';return base+(BOOSTED_FEEDS.has(id)?BOOST_MS:0);}
+
 function getAllNews(){
   const all=[];
   getActiveNewsFeeds().forEach(f=>{if(newsData[f.id])all.push(...newsData[f.id]);});
   const cutoff=Date.now()-LIMIT_NEWS;
   return all.filter(a=>!a.pubDate||new Date(a.pubDate).getTime()>cutoff)
-    .sort((a,b)=>new Date(b.pubDate)-new Date(a.pubDate));
+    .sort((a,b)=>sortScore(b)-sortScore(a));
 }
 function applyNewsFilter(items){
   let f=newsExcluded.length>0?items.filter(i=>!newsExcluded.includes(i.feedId)):items;
@@ -1059,7 +1072,7 @@ function newsItemHTML(a){
     <div class="article-content">
       <div class="article-meta">${logoHtml}<span class="article-source">${escHtml(a.source)}</span>${payB}${newB}</div>
       <div class="article-title">${escHtml(a.title)}</div>
-      <div class="article-date">${a.pubDate?formatDate(a.pubDate):''}</div>
+      <div class="article-date">${a.pubDate?formatDate(a.pubDate):''}${a.author?`<span class="article-author"> · ${escHtml(a.author)}</span>`:''}</div>
     </div>
   </div>`;
 }
@@ -1094,7 +1107,7 @@ function renderTeams(){
     allPod.filter(i=>(!i.pubDate||new Date(i.pubDate).getTime()>cutoffPod)&&matchesTeamFilter(i,true)&&(searchQuery?matchesSearch(i):true))
       .forEach(p=>items.push({...p,_type:'pod'}));
   }
-  items.sort((a,b)=>new Date(b.pubDate)-new Date(a.pubDate));
+  items.sort((a,b)=>sortScore(b)-sortScore(a));
   if(!items.length){body.innerHTML='<div class="empty-state">Sin contenido para los filtros seleccionados.</div>';setBadge('teams','0');return;}
   body.innerHTML=items.map(a=>{
     if(a._type==='yt'){
@@ -1338,7 +1351,7 @@ function renderStandingsTable(){
 function renderYT(){
   const body=document.getElementById('body-youtube');if(!body)return;
   let all=[];getActiveYTChannels().forEach(c=>{if(ytData[c.id])all.push(...ytData[c.id]);});
-  all.sort((a,b)=>new Date(b.pubDate)-new Date(a.pubDate));
+  all.sort((a,b)=>sortScore(b)-sortScore(a));
   const cutoff=Date.now()-LIMIT_YT;
   all=all.filter(i=>!i.pubDate||new Date(i.pubDate).getTime()>cutoff);
   if(ytExcluded.length>0)all=all.filter(i=>!ytExcluded.includes(i.channelId));
@@ -1364,7 +1377,7 @@ function renderYT(){
 function renderPod(){
   const body=document.getElementById('body-podcast');if(!body)return;
   let all=[];getActivePodFeeds().forEach(f=>{if(podData[f.id])all.push(...podData[f.id]);});
-  all.sort((a,b)=>new Date(b.pubDate)-new Date(a.pubDate));
+  all.sort((a,b)=>sortScore(b)-sortScore(a));
   const cutoff=Date.now()-LIMIT_POD;
   all=all.filter(i=>!i.pubDate||new Date(i.pubDate).getTime()>cutoff);
   if(podExcluded.length>0)all=all.filter(i=>!podExcluded.includes(i.feedId));
