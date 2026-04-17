@@ -440,21 +440,21 @@ i[data-lucide]{display:inline-block;}
 
 <!-- MOBILE TAB BAR -->
 <nav id="mobile-tabbar">
-  <button class="mob-tab" id="mtab-wire" onclick="mobileTab('wire')">
-    <span class="mob-tab-icon"><i data-lucide="newspaper"></i></span>
-    <span class="mob-tab-label">Noticias</span>
+  <button class="mob-tab" id="mtab-teams" onclick="mobileTab('teams')">
+    <span class="mob-tab-icon"><i data-lucide="star"></i></span>
+    <span class="mob-tab-label">Mi Equipo</span>
   </button>
   <button class="mob-tab" id="mtab-youtube" onclick="mobileTab('youtube')">
     <span class="mob-tab-icon"><i data-lucide="youtube"></i></span>
     <span class="mob-tab-label">YouTube</span>
   </button>
+  <button class="mob-tab" id="mtab-wire" onclick="mobileTab('wire')">
+    <span class="mob-tab-icon"><i data-lucide="newspaper"></i></span>
+    <span class="mob-tab-label">Noticias</span>
+  </button>
   <button class="mob-tab" id="mtab-podcast" onclick="mobileTab('podcast')">
     <span class="mob-tab-icon"><i data-lucide="mic"></i></span>
     <span class="mob-tab-label">Podcast</span>
-  </button>
-  <button class="mob-tab" id="mtab-teams" onclick="mobileTab('teams')">
-    <span class="mob-tab-icon"><i data-lucide="star"></i></span>
-    <span class="mob-tab-label">Mi Equipo</span>
   </button>
   <button class="mob-tab" id="mtab-results" onclick="mobileTab('results')">
     <span class="mob-tab-icon"><i data-lucide="calendar-days"></i></span>
@@ -692,7 +692,7 @@ function mobileTab(tab){
   else if(cfg.half){cfg.half.forEach(id=>document.getElementById(id)?.classList.add('mob-half'));}
 }
 // Init on load
-if(window.innerWidth<=860)mobileTab('wire');
+if(window.innerWidth<=860)mobileTab('teams');
 
 // ══════════════════════════════════
 // CONCURRENCIA
