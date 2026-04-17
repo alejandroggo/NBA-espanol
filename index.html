@@ -982,8 +982,7 @@ function matchesTeamFilter(item, strict=false){
     // En modo strict (YT/podcasts) no se usan keywords de jugadores —
     // son contenido general que menciona a cualquier estrella en passing
     const teamKws=strict?[]:(TEAM_KEYWORDS_HARDCODED[abbr]||[]);
-    return text.includes(abbr.toLowerCase())||
-      (full&&text.includes(full))||
+    return (full&&text.includes(full))||
       parts.some(w=>w.length>4&&text.includes(w))||
       teamKws.some(kw=>text.includes(kw));
   });
