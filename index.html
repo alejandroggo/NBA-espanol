@@ -175,6 +175,19 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 .playin-line td{border-top:1px solid rgba(155,111,212,.3)!important;}
 .playin-row td{background:rgba(155,111,212,.03);}
 
+/* BRACKET */
+.bracket-conf{margin-bottom:16px;}
+.bracket-conf-title{font-family:'Inter',sans-serif;font-weight:700;font-size:10px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;padding:6px 2px 5px;border-bottom:1px solid var(--border);margin-bottom:8px;}
+.bracket-round-title{font-family:'Inter',sans-serif;font-weight:700;font-size:9px;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin:10px 0 5px;}
+.bracket-series{display:flex;align-items:center;justify-content:space-between;padding:6px 8px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;margin-bottom:5px;gap:8px;}
+.bracket-series.series-done{opacity:.65;}
+.bracket-team{display:flex;align-items:center;gap:5px;min-width:0;}
+.bracket-seed{font-family:'Inter',sans-serif;font-weight:700;font-size:9px;color:var(--text3);width:12px;flex-shrink:0;}
+.bracket-abbr{font-family:'Inter',sans-serif;font-weight:700;font-size:12px;color:var(--text);}
+.bracket-abbr.winner{color:var(--gold);}
+.bracket-wins{font-family:'Inter',sans-serif;font-weight:700;font-size:13px;color:var(--text2);min-width:28px;text-align:center;flex-shrink:0;}
+.bracket-vs{font-size:9px;color:var(--text3);flex-shrink:0;}
+
 /* MEDIA con thumbnail — FIX #6 */
 .media-item{padding:8px 0;border-bottom:1px solid var(--item-sep);cursor:pointer;transition:background .1s;display:flex;gap:8px;align-items:flex-start;}
 .media-item:hover{background:var(--gold-bg);margin:0 -10px;padding:8px 10px;}
@@ -407,6 +420,7 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
     <div class="panel-tabs">
       <div class="panel-tab active" id="tab-east" onclick="switchConf('east')">Este</div>
       <div class="panel-tab" id="tab-west" onclick="switchConf('west')">Oeste</div>
+      <div class="panel-tab" id="tab-bracket" onclick="switchConf('bracket')">Bracket</div>
     </div>
     <div class="panel-body" id="body-standings" style="padding:0;overflow-y:auto;"></div>
   </div>
@@ -1186,7 +1200,77 @@ function switchConf(conf){
   standingsConf=conf;
   document.getElementById('tab-east').classList.toggle('active',conf==='east');
   document.getElementById('tab-west').classList.toggle('active',conf==='west');
-  renderStandingsTable();
+  document.getElementById('tab-bracket').classList.toggle('active',conf==='bracket');
+  if(conf==='bracket')loadBracket();
+  else renderStandingsTable();
+}
+
+const ROUND_LABELS={1:'Primera Ronda',2:'Semifinales de Conferencia',3:'Finales de Conferencia',4:'Finales NBA'};
+
+async function loadBracket(){
+  const body=document.getElementById('body-standings');
+  body.innerHTML='<div class="panel-loading">CARGANDO</div>';
+  const yr=new Date().getMonth()>=9?new Date().getFullYear()+1:new Date().getFullYear();
+  try{
+    const r=await fetch(`https://site.api.espn.com/apis/v2/sports/basketball/nba/playoff?season=${yr}`);
+    if(!r.ok)throw new Error('no data');
+    const data=await r.json();
+    renderBracket(data);
+  }catch(e){
+    body.innerHTML='<div class="empty-state">Bracket no disponible.<br>Estará activo cuando empiecen los playoffs.</div>';
+  }
+}
+
+function renderBracket(data){
+  const body=document.getElementById('body-standings');
+  // ESPN devuelve bracket.series[] con título que incluye "Eastern"/"Western"
+  const series=data?.bracket?.series||data?.series||[];
+  if(!series.length){body.innerHTML='<div class="empty-state">Sin datos de bracket todavía.</div>';return;}
+
+  const east=[],west=[],finals=[];
+  series.forEach(s=>{
+    const title=(s.title||s.name||'').toLowerCase();
+    if(title.includes('eastern'))east.push(s);
+    else if(title.includes('western'))west.push(s);
+    else finals.push(s);
+  });
+
+  const renderConf=(list,label)=>{
+    if(!list.length)return'';
+    const byRound={};
+    list.forEach(s=>{
+      const r=s.round?.number||s.bracketRound||1;
+      if(!byRound[r])byRound[r]=[];
+      byRound[r].push(s);
+    });
+    const rounds=Object.keys(byRound).sort((a,b)=>a-b).map(r=>{
+      const cards=byRound[r].map(s=>{
+        const away=s.away||s.competitors?.[0]||{};
+        const home=s.home||s.competitors?.[1]||{};
+        const awayW=parseInt(away.wins||0);
+        const homeW=parseInt(home.wins||0);
+        const done=s.completed||s.status?.type?.completed||false;
+        const awayWin=done&&awayW>homeW;
+        const homeWin=done&&homeW>awayW;
+        const awayAbbr=away.team?.abbreviation||away.abbreviation||'?';
+        const homeAbbr=home.team?.abbreviation||home.abbreviation||'?';
+        return`<div class="bracket-series${done?' series-done':''}">
+          <div class="bracket-team"><span class="bracket-seed">${away.seed||''}</span><span class="bracket-abbr${awayWin?' winner':''}">${escHtml(awayAbbr)}</span></div>
+          <div class="bracket-wins">${awayW}-${homeW}</div>
+          <div class="bracket-team"><span class="bracket-abbr${homeWin?' winner':''}">${escHtml(homeAbbr)}</span><span class="bracket-seed" style="text-align:right">${home.seed||''}</span></div>
+        </div>`;
+      }).join('');
+      return`<div class="bracket-round-title">${ROUND_LABELS[r]||'Ronda '+r}</div>${cards}`;
+    }).join('');
+    return`<div class="bracket-conf"><div class="bracket-conf-title">${label}</div>${rounds}</div>`;
+  };
+
+  let html=`<div style="padding:10px;overflow-y:auto;height:100%;">`;
+  html+=renderConf(east,'Conferencia Este');
+  html+=renderConf(west,'Conferencia Oeste');
+  if(finals.length)html+=renderConf(finals,'Finales NBA');
+  html+=`</div>`;
+  body.innerHTML=html;
 }
 function renderStandingsTable(){
   const body=document.getElementById('body-standings');if(!body||!window._sData)return;
