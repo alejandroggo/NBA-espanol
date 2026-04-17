@@ -132,6 +132,7 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 .article-source{font-family:'Inter',sans-serif;font-weight:700;font-size:10px;letter-spacing:.5px;color:var(--gold);text-transform:uppercase;}
 .article-title{font-family:'Inter',sans-serif;font-weight:500;font-size:var(--fs-title);color:var(--text);line-height:1.4;margin-bottom:2px;}
 .article-date{font-size:10px;color:var(--text3);font-family:'Inter',sans-serif;}
+.article-author{color:var(--text3);font-style:italic;}
 .badge{font-size:8px;letter-spacing:.5px;padding:1px 5px;border-radius:3px;text-transform:uppercase;flex-shrink:0;}
 .badge-pay{background:rgba(224,80,80,.12);color:var(--live-red);border:1px solid rgba(224,80,80,.25);}
 .badge-new{background:rgba(76,175,130,.1);color:var(--green);border:1px solid rgba(76,175,130,.25);}
@@ -767,7 +768,7 @@ function drainQueue(){while(activeCount<MAX_CONCURRENT&&fetchQueue.length){const
 // RSS
 // ══════════════════════════════════
 async function fetchRSS(url){
-  const r2j=async()=>{const r=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(9000)});const d=await r.json();if(d.status!=='ok'||!d.items?.length)throw new Error('empty');return{items:d.items.map(i=>({title:i.title||'',link:i.link||'',pubDate:i.pubDate||'',thumbnail:i.thumbnail||i.enclosure?.link||''})),feedImage:d.feed?.image||''};};
+  const r2j=async()=>{const r=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(9000)});const d=await r.json();if(d.status!=='ok'||!d.items?.length)throw new Error('empty');return{items:d.items.map(i=>({title:i.title||'',link:i.link||'',pubDate:i.pubDate||'',thumbnail:i.thumbnail||i.enclosure?.link||'',author:i.author||''})),feedImage:d.feed?.image||''};};
   const ao=async()=>{const r=await fetch(`https://allorigins.win/get?disableCache=true&url=${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(9000)});return{items:parseXML((await r.json()).contents),feedImage:''};};
   const cp=async()=>{const r=await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(9000)});return{items:parseXML(await r.text()),feedImage:''};};
   return Promise.any([r2j(),ao(),cp()]);
@@ -788,7 +789,8 @@ function parseXML(xml){
     // si es enclosure de imagen
     const encType=el.querySelector('enclosure')?.getAttribute('type')||'';
     if(!thumbnail&&enclosure&&encType.startsWith('image/'))thumbnail=enclosure;
-    if(title)items.push({title,link,pubDate,thumbnail});
+    const author=el.getElementsByTagName('creator')[0]?.textContent||el.querySelector('author name')?.textContent||el.querySelector('author')?.textContent||'';
+    if(title)items.push({title,link,pubDate,thumbnail,author:author.trim()});
   });
   if(!items.length)throw new Error('empty');return items;
 }
@@ -1066,7 +1068,7 @@ function newsItemHTML(a){
     <div class="article-content">
       <div class="article-meta">${logoHtml}<span class="article-source">${escHtml(a.source)}</span>${payB}${newB}</div>
       <div class="article-title">${escHtml(a.title)}</div>
-      <div class="article-date">${a.pubDate?formatDate(a.pubDate):''}</div>
+      <div class="article-date">${a.pubDate?formatDate(a.pubDate):''}${a.author?`<span class="article-author"> · ${escHtml(a.author)}</span>`:''}</div>
     </div>
   </div>`;
 }
