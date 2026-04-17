@@ -80,7 +80,9 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 .panel:hover{box-shadow:var(--shadow-hover);}
 .panel-header{height:var(--header-h);background:var(--panel-header);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 12px;flex-shrink:0;gap:7px;}
 .panel-title{font-family:'Inter',sans-serif;font-weight:700;font-size:12px;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;flex:1;}
-.panel-badge{font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);background:var(--bg);border:1px solid var(--border);padding:1px 7px;border-radius:10px;}
+.panel-badge{display:none;}
+.panel-new-badge{font-family:'Inter',sans-serif;font-size:9px;font-weight:700;color:#fff;background:var(--live-red);padding:1px 7px;border-radius:10px;display:none;letter-spacing:.2px;}
+.panel-new-badge.visible{display:inline-block;}
 .panel-btn{background:transparent;border:none;color:var(--text3);font-size:13px;cursor:pointer;padding:3px;transition:color .15s;line-height:1;}
 .panel-btn:hover{color:var(--gold);}
 .panel-updated{font-size:9px;color:var(--text3);font-family:'Inter',sans-serif;}
@@ -252,16 +254,27 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
    MOBILE: tab bar navigation
 ══════════════════════════════════ */
 #mobile-tabbar{display:none;}
+#mobile-actionbar{display:none;}
 .panel-collapse-btn{display:none;}
 
 @media(max-width:860px){
   body{overflow:hidden;}
   #topbar{overflow-x:auto;}
   .tb-label,.tb-slider,select.tb-select{display:none;}
+  /* Botones de acción se mueven a la segunda barra */
+  #theme-btn,#live-btn,.tb-btn-action{display:none;}
 
-  /* Canvas fills space between topbar and tab bar */
+  /* Segunda barra de acciones */
+  #mobile-actionbar{
+    display:flex;position:fixed;top:var(--topbar-h);left:0;right:0;height:38px;
+    background:var(--panel-header);border-bottom:1px solid var(--border);
+    z-index:999;align-items:center;justify-content:space-around;padding:0 8px;gap:6px;
+  }
+  #mobile-actionbar .tb-btn{flex:1;text-align:center;justify-content:center;display:flex;align-items:center;gap:4px;}
+
+  /* Canvas baja para dejar sitio a las dos barras */
   #canvas{
-    position:fixed;top:var(--topbar-h);left:0;right:0;bottom:58px;
+    position:fixed;top:calc(var(--topbar-h) + 38px);left:0;right:0;bottom:58px;
     display:flex;flex-direction:column;overflow:hidden;padding:0;gap:0;
   }
   /* Hide grid separators and spacer divs */
@@ -288,8 +301,9 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
     padding:8px 0 6px;transition:color .15s;-webkit-tap-highlight-color:transparent;
   }
   .mob-tab.active{color:var(--gold);}
-  .mob-tab-icon{font-size:19px;line-height:1;display:flex;align-items:center;justify-content:center;}
+  .mob-tab-icon{font-size:19px;line-height:1;display:flex;align-items:center;justify-content:center;position:relative;}
   .mob-tab-icon svg{width:20px;height:20px;stroke-width:2;}
+  .mob-tab-badge{position:absolute;top:-5px;right:-10px;background:var(--live-red);color:#fff;font-family:'Inter',sans-serif;font-size:8px;font-weight:700;border-radius:10px;min-width:15px;height:15px;display:none;align-items:center;justify-content:center;padding:0 3px;box-shadow:0 1px 4px rgba(0,0,0,0.5);letter-spacing:0;}
   .mob-tab-label{font-family:'Inter',sans-serif;font-size:9px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;}
 }
 /* Lucide icons global sizing */
@@ -309,10 +323,10 @@ i[data-lucide]{display:inline-block;}
 <div id="topbar">
   <div id="logo">NBA EN ESPAÑOL</div>
   <div class="tb-sep"></div>
-  <button class="tb-btn" onclick="refreshAll()"><i data-lucide="refresh-cw"></i> Actualizar</button>
-  <button class="tb-btn" onclick="openConfig()"><i data-lucide="settings"></i> Config</button>
-  <button class="tb-btn" id="live-btn" onclick="toggleLive()"><i data-lucide="radio"></i> En Vivo</button>
   <button class="tb-btn" id="theme-btn" onclick="toggleTheme()" title="Modo día/noche"><i data-lucide="moon"></i></button>
+  <button class="tb-btn tb-btn-action" onclick="refreshAll()"><i data-lucide="refresh-cw"></i> Actualizar</button>
+  <button class="tb-btn tb-btn-action" onclick="openConfig()"><i data-lucide="settings"></i> Config</button>
+  <button class="tb-btn tb-btn-action" id="live-btn" onclick="toggleLive()"><i data-lucide="radio"></i> En Vivo</button>
   <div class="tb-sep"></div>
   <span class="tb-label">TÍT.</span>
   <input type="range" class="tb-slider" id="fst-slider" min="11" max="20" value="14" oninput="updateFontSize(this.value)">
@@ -330,16 +344,25 @@ i[data-lucide]{display:inline-block;}
     <input type="text" id="global-search" placeholder="Buscar..." oninput="onSearch(this.value)">
   </div>
   <div id="attribution" style="display:flex;align-items:center;gap:5px;flex-shrink:0;">
-    <img id="agaitan-logo" src="" alt="" style="width:18px;height:18px;border-radius:50%;object-fit:cover;display:none;">
+    <img id="agaitan-logo" src="https://substackcdn.com/image/fetch/$s_!DL_x!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F70edbc31-2a69-49fa-b123-c8befebdb3c1_500x500.png" alt="Alejandro Gaitán" style="width:18px;height:18px;border-radius:50%;object-fit:cover;display:inline-block;">
     <span style="font-size:9px;color:var(--text3);letter-spacing:.4px;white-space:nowrap;">Creado por <a href="https://alejandroggo.com" target="_blank" style="color:var(--text2);text-decoration:none;font-weight:600;">Alejandro Gaitán</a> con Claude IA</span>
   </div>
 </div><!-- /topbar -->
+
+<!-- SEGUNDA BARRA MÓVIL (solo visible en móvil) -->
+<div id="mobile-actionbar">
+  <button class="tb-btn" id="mob-theme-btn" onclick="toggleTheme()" title="Modo día/noche"><i data-lucide="moon"></i></button>
+  <button class="tb-btn" onclick="refreshAll()"><i data-lucide="refresh-cw"></i> Actualizar</button>
+  <button class="tb-btn" onclick="openConfig()"><i data-lucide="settings"></i> Config</button>
+  <button class="tb-btn" id="mob-live-btn" onclick="toggleLive()"><i data-lucide="radio"></i> En Vivo</button>
+</div>
 
 <div id="canvas">
   <!-- NOTICIAS -->
   <div class="panel" id="panel-wire">
     <div class="panel-header" onclick="togglePanelMobile('panel-wire')">
       <span class="panel-title"><i data-lucide="newspaper"></i> Noticias</span>
+      <span class="panel-new-badge" id="pnb-wire"></span>
       <span class="panel-badge" id="badge-wire">—</span>
       <span class="panel-updated" id="upd-wire"></span>
       <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('wire')">↺</button>
@@ -357,7 +380,8 @@ i[data-lucide]{display:inline-block;}
   <!-- YOUTUBE -->
   <div class="panel" id="panel-youtube">
     <div class="panel-header" onclick="togglePanelMobile('panel-youtube')">
-      <span class="panel-title"><i data-lucide="youtube"></i> YouTube</span>
+      <span class="panel-title"><i data-lucide="video"></i> YouTube</span>
+      <span class="panel-new-badge" id="pnb-youtube"></span>
       <span class="panel-badge" id="badge-youtube">—</span>
       <span class="panel-updated" id="upd-youtube"></span>
       <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('youtube')">↺</button>
@@ -376,6 +400,7 @@ i[data-lucide]{display:inline-block;}
   <div class="panel" id="panel-podcast">
     <div class="panel-header" onclick="togglePanelMobile('panel-podcast')">
       <span class="panel-title"><i data-lucide="mic"></i> Podcast</span>
+      <span class="panel-new-badge" id="pnb-podcast"></span>
       <span class="panel-badge" id="badge-podcast">—</span>
       <span class="panel-updated" id="upd-podcast"></span>
       <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('podcast')">↺</button>
@@ -397,7 +422,7 @@ i[data-lucide]{display:inline-block;}
       <span class="panel-badge" id="badge-teams">—</span>
       <span class="panel-updated" id="upd-teams"></span>
       <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('teams')">↺</button>
-      <button class="panel-btn" onclick="event.stopPropagation();openConfig()" style="font-size:9px;letter-spacing:.4px;padding:2px 6px;border:1px solid var(--border);border-radius:4px;">Elige tus equipos</button>
+      <button class="panel-btn" onclick="event.stopPropagation();openConfig()" style="font-size:11px;letter-spacing:.4px;padding:2px 6px;border:1px solid var(--border);border-radius:4px;">Elige tus equipos</button>
       <span class="panel-collapse-btn">▾</span>
     </div>
     <!-- FIX #1: keyword filter bar + FIX #4: YT/pod chips -->
@@ -440,21 +465,21 @@ i[data-lucide]{display:inline-block;}
 
 <!-- MOBILE TAB BAR -->
 <nav id="mobile-tabbar">
-  <button class="mob-tab" id="mtab-wire" onclick="mobileTab('wire')">
-    <span class="mob-tab-icon"><i data-lucide="newspaper"></i></span>
-    <span class="mob-tab-label">Noticias</span>
-  </button>
-  <button class="mob-tab" id="mtab-youtube" onclick="mobileTab('youtube')">
-    <span class="mob-tab-icon"><i data-lucide="youtube"></i></span>
-    <span class="mob-tab-label">YouTube</span>
-  </button>
-  <button class="mob-tab" id="mtab-podcast" onclick="mobileTab('podcast')">
-    <span class="mob-tab-icon"><i data-lucide="mic"></i></span>
-    <span class="mob-tab-label">Podcast</span>
-  </button>
   <button class="mob-tab" id="mtab-teams" onclick="mobileTab('teams')">
     <span class="mob-tab-icon"><i data-lucide="star"></i></span>
-    <span class="mob-tab-label">Mi Equipo</span>
+    <span class="mob-tab-label">Mis Equipos</span>
+  </button>
+  <button class="mob-tab" id="mtab-youtube" onclick="mobileTab('youtube')">
+    <span class="mob-tab-icon"><i data-lucide="video"></i><span class="mob-tab-badge" id="mtab-badge-youtube"></span></span>
+    <span class="mob-tab-label">YouTube</span>
+  </button>
+  <button class="mob-tab" id="mtab-wire" onclick="mobileTab('wire')">
+    <span class="mob-tab-icon"><i data-lucide="newspaper"></i><span class="mob-tab-badge" id="mtab-badge-wire"></span></span>
+    <span class="mob-tab-label">Noticias</span>
+  </button>
+  <button class="mob-tab" id="mtab-podcast" onclick="mobileTab('podcast')">
+    <span class="mob-tab-icon"><i data-lucide="mic"></i><span class="mob-tab-badge" id="mtab-badge-podcast"></span></span>
+    <span class="mob-tab-label">Podcast</span>
   </button>
   <button class="mob-tab" id="mtab-results" onclick="mobileTab('results')">
     <span class="mob-tab-icon"><i data-lucide="calendar-days"></i></span>
@@ -681,9 +706,40 @@ const MOB_TAB_CFG={
   results: {half:['panel-scorecal','panel-standings']}
 };
 let _mobileTab='wire';
+// ══════════════════════════════════
+// TAB BADGES (contenido nuevo)
+// ══════════════════════════════════
+const SEEN_KEYS={wire:'nba_seen_news',youtube:'nba_seen_yt',podcast:'nba_seen_pod'};
+function getLastSeen(panel){const v=localStorage.getItem(SEEN_KEYS[panel]);return v?new Date(parseInt(v)):null;}
+function markSeen(panel){if(SEEN_KEYS[panel])localStorage.setItem(SEEN_KEYS[panel],Date.now().toString());updateTabBadge(panel);}
+function countNewItems(panel){
+  const ls=getLastSeen(panel);if(!ls)return 0;
+  let items=[];
+  if(panel==='wire')items=getAllNews();
+  else if(panel==='youtube')Object.values(ytData).forEach(ch=>items.push(...(ch||[])));
+  else if(panel==='podcast')Object.values(podData).forEach(f=>items.push(...(f||[])));
+  return items.filter(i=>i.pubDate&&new Date(i.pubDate)>ls).length;
+}
+function updateTabBadge(panel){
+  const n=countNewItems(panel);
+  const label=n>99?'99+':String(n);
+  // Mobile tab badge
+  const mob=document.getElementById('mtab-badge-'+panel);
+  if(mob){mob.textContent=label;mob.style.display=n>0?'flex':'none';}
+  // Desktop panel header badge
+  const pnb=document.getElementById('pnb-'+panel);
+  if(pnb){pnb.textContent=n>0?label+' nuevos':'';pnb.classList.toggle('visible',n>0);}
+}
+function updateAllTabBadges(){['wire','youtube','podcast'].forEach(updateTabBadge);}
+function attachSeenOnScroll(panel){
+  const el=document.getElementById('body-'+panel);
+  if(el)el.addEventListener('scroll',()=>markSeen(panel),{once:true});
+}
+
 function mobileTab(tab){
   if(window.innerWidth>860)return;
   _mobileTab=tab;
+  markSeen(tab);
   document.querySelectorAll('.mob-tab').forEach(b=>b.classList.remove('active'));
   document.getElementById('mtab-'+tab)?.classList.add('active');
   document.querySelectorAll('#canvas .panel').forEach(p=>p.classList.remove('mob-active','mob-half'));
@@ -779,9 +835,9 @@ async function loadPodFeed(feed){
   try{const {items}=await enqueueFetch(()=>fetchRSS(feed.url));podData[feed.id]=items.map(i=>({...i,source:feed.label,feedId:feed.id,logo:getSourceLogo(feed.id)})).slice(0,20);podHealth[feed.id]={status:'ok',count:items.length};}
   catch(e){podData[feed.id]=[];podHealth[feed.id]={status:'err',count:0};}
 }
-async function loadAllNews(){const active=getActiveNewsFeeds();setLoading('wire');setLoading('teams');await Promise.allSettled(active.map(f=>loadNewsFeed(f)));lastUpdate.news=new Date();renderWire();renderTeams();updateHealthUI();saveCache();}
-async function loadAllYT(){const active=getActiveYTChannels();setLoading('youtube');await Promise.allSettled(active.map(c=>loadYTChannel(c)));lastUpdate.yt=new Date();renderYT();renderTeams();updateHealthUI();saveCache();}
-async function loadAllPod(){const active=getActivePodFeeds();setLoading('podcast');await Promise.allSettled(active.map(f=>loadPodFeed(f)));lastUpdate.pod=new Date();renderPod();renderTeams();updateHealthUI();saveCache();}
+async function loadAllNews(){const active=getActiveNewsFeeds();setLoading('wire');setLoading('teams');await Promise.allSettled(active.map(f=>loadNewsFeed(f)));lastUpdate.news=new Date();renderWire();renderTeams();updateHealthUI();saveCache();updateTabBadge('wire');attachSeenOnScroll('wire');}
+async function loadAllYT(){const active=getActiveYTChannels();setLoading('youtube');await Promise.allSettled(active.map(c=>loadYTChannel(c)));lastUpdate.yt=new Date();renderYT();renderTeams();updateHealthUI();saveCache();updateTabBadge('youtube');attachSeenOnScroll('youtube');}
+async function loadAllPod(){const active=getActivePodFeeds();setLoading('podcast');await Promise.allSettled(active.map(f=>loadPodFeed(f)));lastUpdate.pod=new Date();renderPod();renderTeams();updateHealthUI();saveCache();updateTabBadge('podcast');attachSeenOnScroll('podcast');}
 function setLoading(id){const b=document.getElementById('body-'+id);if(b)b.innerHTML='<div class="panel-loading">CARGANDO</div>';}
 
 // ══════════════════════════════════
@@ -994,7 +1050,7 @@ function mediaThumbOrPlaceholder(src,emoji,logoSrc=''){
 
 function newsItemHTML(a){
   const payB=a.pay?'<span class="badge badge-pay">🔒</span>':'';
-  const newB=isNew(a.pubDate)?'<span class="badge badge-new">🆕</span>':'';
+  const newB=isNew(a.pubDate)?'<span class="badge badge-new">🚨</span>':'';
   const logo=getSourceLogo(a.feedId||'');
   const logoHtml=logo?`<img src="${escHtml(logo)}" class="source-logo" onerror="this.style.display='none'">`:'';
   const thumb=thumbOrPlaceholder(a.thumbnail||'','📰',logo);
@@ -1046,7 +1102,7 @@ function renderTeams(){
       return`<div class="media-item" onclick="window.open('${escHtml(a.link)}','_blank')">
         ${mediaThumbOrPlaceholder(thumb,'🎥',a.logo||getSourceLogo(a.channelId||''))}
         <div class="media-content">
-          <div class="media-source yt">🎥 ${escHtml(a.channelName||a.source||'')} ${isNew(a.pubDate)?'<span class="badge badge-new">🆕</span>':''}</div>
+          <div class="media-source yt"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg> ${escHtml(a.channelName||a.source||'')} ${isNew(a.pubDate)?'<span class="badge badge-new">🚨</span>':''}</div>
           <div class="media-title">${escHtml(a.title)}</div>
           <div class="media-date">${a.pubDate?formatDate(a.pubDate):''}</div>
         </div>
@@ -1056,7 +1112,7 @@ function renderTeams(){
       return`<div class="media-item" onclick="window.open('${escHtml(a.link)}','_blank')">
         ${mediaThumbOrPlaceholder(a.thumbnail||'','🎙',a.logo||getSourceLogo(a.feedId||''))}
         <div class="media-content">
-          <div class="media-source pod">🎙 ${escHtml(a.source||'')} ${isNew(a.pubDate)?'<span class="badge badge-new">🆕</span>':''}</div>
+          <div class="media-source pod"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> ${escHtml(a.source||'')} ${isNew(a.pubDate)?'<span class="badge badge-new">🚨</span>':''}</div>
           <div class="media-title">${escHtml(a.title)}</div>
           <div class="media-date">${a.pubDate?formatDate(a.pubDate):''}</div>
         </div>
@@ -1293,7 +1349,7 @@ function renderYT(){
     return`<div class="media-item" onclick="window.open('${escHtml(v.link)}','_blank')">
       ${mediaThumbOrPlaceholder(thumb,'🎥',v.logo||getSourceLogo(v.channelId||''))}
       <div class="media-content">
-        <div class="media-source yt">🎥 ${escHtml(v.channelName)} ${isNew(v.pubDate)?'<span class="badge badge-new">🆕</span>':''}</div>
+        <div class="media-source yt"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg> ${escHtml(v.channelName)} ${isNew(v.pubDate)?'<span class="badge badge-new">🚨</span>':''}</div>
         <div class="media-title">${escHtml(v.title)}</div>
         <div class="media-date">${v.pubDate?formatDate(v.pubDate):''}</div>
       </div>
@@ -1320,7 +1376,7 @@ function renderPod(){
     return`<div class="media-item" onclick="window.open('${escHtml(v.link)}','_blank')">
       ${mediaThumbOrPlaceholder(thumb,'🎙',v.logo||getSourceLogo(v.feedId||''))}
       <div class="media-content">
-        <div class="media-source pod">🎙 ${escHtml(v.source)} ${isNew(v.pubDate)?'<span class="badge badge-new">🆕</span>':''}</div>
+        <div class="media-source pod"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> ${escHtml(v.source)} ${isNew(v.pubDate)?'<span class="badge badge-new">🚨</span>':''}</div>
         <div class="media-title">${escHtml(v.title)}</div>
         <div class="media-date">${v.pubDate?formatDate(v.pubDate):''}</div>
       </div>
@@ -1332,7 +1388,7 @@ function renderPod(){
 // ══════════════════════════════════
 // AUTO REFRESH / LIVE / FONT
 // ══════════════════════════════════
-function toggleLive(){livePolling=!livePolling;const btn=document.getElementById('live-btn');if(livePolling){btn.classList.add('active');liveInterval=setInterval(loadPartidos,60000);loadPartidos();}else{btn.classList.remove('active');clearInterval(liveInterval);}}
+function toggleLive(){livePolling=!livePolling;['live-btn','mob-live-btn'].forEach(id=>{const btn=document.getElementById(id);if(!btn)return;if(livePolling)btn.classList.add('active');else btn.classList.remove('active');});if(livePolling){liveInterval=setInterval(loadPartidos,60000);loadPartidos();}else{clearInterval(liveInterval);}}
 function setAutoRefresh(val){clearInterval(autoRefreshTimer);const mins=parseInt(val);if(mins>0)autoRefreshTimer=setInterval(()=>{loadAllNews();loadAllYT();loadAllPod();},mins*60000);}
 function updateFontSize(val){document.documentElement.style.setProperty('--fs-title',val+'px');localStorage.setItem('nba_fst',val);}
 
@@ -1414,8 +1470,11 @@ function formatDate(d){if(!d)return '';try{const date=new Date(d);if(isNaN(date)
 // ══════════════════════════════════
 function applyTheme(theme){
   document.documentElement.dataset.theme=theme;
-  const btn=document.getElementById('theme-btn');
-  if(btn){btn.innerHTML=`<i data-lucide="${theme==='light'?'moon':'sun'}"></i>`;if(typeof lucide!=='undefined')lucide.createIcons({nodes:[btn]});}
+  const icon=`<i data-lucide="${theme==='light'?'moon':'sun'}"></i>`;
+  ['theme-btn','mob-theme-btn'].forEach(id=>{
+    const btn=document.getElementById(id);
+    if(btn){btn.innerHTML=icon;if(typeof lucide!=='undefined')lucide.createIcons({nodes:[btn]});}
+  });
 }
 function toggleTheme(){
   const next=document.documentElement.dataset.theme==='light'?'dark':'light';
