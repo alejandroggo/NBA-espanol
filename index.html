@@ -1333,7 +1333,7 @@ function togglePod(id,btn){if(state.disabledPod.includes(id)){state.disabledPod=
 function setBadge(id,val){const el=document.getElementById('badge-'+id);if(el)el.textContent=val;}
 function setUpdated(id,date){const el=document.getElementById('upd-'+id);if(el&&date)el.textContent='↺ '+formatDate(date);}
 function escHtml(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function formatDate(d){if(!d)return '';try{const date=new Date(d);if(isNaN(date))return '';const diff=Date.now()-date;if(diff<3600000)return'Hace '+Math.floor(diff/60000)+' min';if(diff<86400000)return'Hace '+Math.floor(diff/3600000)+'h';return date.toLocaleDateString('es-ES',{day:'numeric',month:'short'});}catch{return '';}}
+function formatDate(d){if(!d)return '';try{const date=new Date(d);if(isNaN(date))return '';const diff=Date.now()-date;if(diff<=0)return'Ahora';const mins=Math.floor(diff/60000);if(mins<60)return'Hace '+mins+' min';if(diff<86400000)return'Hace '+Math.floor(diff/3600000)+'h';return date.toLocaleDateString('es-ES',{day:'numeric',month:'short'});}catch{return '';}}
 
 // ══════════════════════════════════
 // INIT
