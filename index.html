@@ -1129,7 +1129,7 @@ async function loadPartidos(){
     }
     const results=await Promise.all(fetchesTodo);
     const[dY_or_T,dT_or_M,dM_maybe]=etHour<12?results:[null,...results];
-    _calData={dY:dY_or_T,dT:dT_or_M,dM:dM_maybe,ayerStr,todayStr,mananaStr};
+    _calData={dY:dY_or_T,dT:dT_or_M,dM:dM_maybe,etHour,ayerStr,todayStr,mananaStr};
     renderPartidos(dY_or_T,dT_or_M,dM_maybe,etHour,ayerStr,todayStr,mananaStr);
   }catch(e){
     document.getElementById('body-scorecal').innerHTML='<div class="panel-error">Error al cargar partidos.<br><button onclick="loadPartidos()" style="margin-top:8px;background:transparent;border:1px solid var(--border);color:var(--gold);padding:4px 10px;cursor:pointer;border-radius:4px;font-family:\'Inter\',sans-serif;">↺ Reintentar</button></div>';
