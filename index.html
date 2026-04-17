@@ -595,8 +595,8 @@ async function fetchYTFeed(ch){
   }
   for(const url of attempts){
     try{
-      const items=await enqueueFetch(()=>fetchRSS(url));
-      if(items&&items.length)return items;
+      const {items,feedImage}=await enqueueFetch(()=>fetchRSS(url));
+      if(items&&items.length)return{items,logo:feedImage||''};
     }catch(e){}
   }
   throw new Error('no feed found');
@@ -707,9 +707,9 @@ function drainQueue(){while(activeCount<MAX_CONCURRENT&&fetchQueue.length){const
 // RSS
 // ══════════════════════════════════
 async function fetchRSS(url){
-  const r2j=async()=>{const r=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(9000)});const d=await r.json();if(d.status!=='ok'||!d.items?.length)throw new Error('empty');return d.items.map(i=>({title:i.title||'',link:i.link||'',pubDate:i.pubDate||'',thumbnail:i.thumbnail||i.enclosure?.link||''}));};
-  const ao=async()=>{const r=await fetch(`https://allorigins.win/get?disableCache=true&url=${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(9000)});return parseXML((await r.json()).contents);};
-  const cp=async()=>{const r=await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(9000)});return parseXML(await r.text());};
+  const r2j=async()=>{const r=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(9000)});const d=await r.json();if(d.status!=='ok'||!d.items?.length)throw new Error('empty');return{items:d.items.map(i=>({title:i.title||'',link:i.link||'',pubDate:i.pubDate||'',thumbnail:i.thumbnail||i.enclosure?.link||''})),feedImage:d.feed?.image||''};};
+  const ao=async()=>{const r=await fetch(`https://allorigins.win/get?disableCache=true&url=${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(9000)});return{items:parseXML((await r.json()).contents),feedImage:''};};
+  const cp=async()=>{const r=await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(9000)});return{items:parseXML(await r.text()),feedImage:''};};
   return Promise.any([r2j(),ao(),cp()]);
 }
 function parseXML(xml){
@@ -788,21 +788,23 @@ function getActivePodFeeds(){return POD_FEEDS.filter(f=>!state.disabledPod.inclu
 
 async function loadNewsFeed(feed){
   newsHealth[feed.id]={status:'loading',count:0};
-  try{const items=await enqueueFetch(()=>fetchRSS(feed.url));newsData[feed.id]=items.map(i=>({...i,source:feed.label,pay:feed.pay,feedId:feed.id})).slice(0,30);newsHealth[feed.id]={status:'ok',count:items.length};}
+  try{const {items}=await enqueueFetch(()=>fetchRSS(feed.url));newsData[feed.id]=items.map(i=>({...i,source:feed.label,pay:feed.pay,feedId:feed.id})).slice(0,30);newsHealth[feed.id]={status:'ok',count:items.length};}
   catch(e){newsData[feed.id]=[];newsHealth[feed.id]={status:'err',count:0};}
 }
 async function loadYTChannel(ch){
   ytHealth[ch.id]={status:'loading',count:0};
   // FIX #2: usar fetchYTFeed con fallbacks
   try{
-    const items=await fetchYTFeed(ch);
-    ytData[ch.id]=items.map(i=>({...i,channelName:ch.label,channelId:ch.id,logo:getSourceLogo(ch.id)})).slice(0,15);
+    const {items,logo:feedLogo}=await fetchYTFeed(ch);
+    if(feedLogo&&!getSourceLogo(ch.id)){state.sourceLogos[ch.id]=feedLogo;localStorage.setItem('nba_logos',JSON.stringify(state.sourceLogos));}
+    const logo=getSourceLogo(ch.id);
+    ytData[ch.id]=items.map(i=>({...i,channelName:ch.label,channelId:ch.id,logo})).slice(0,15);
     ytHealth[ch.id]={status:'ok',count:items.length};
   }catch(e){ytData[ch.id]=[];ytHealth[ch.id]={status:'err',count:0};}
 }
 async function loadPodFeed(feed){
   podHealth[feed.id]={status:'loading',count:0};
-  try{const items=await enqueueFetch(()=>fetchRSS(feed.url));podData[feed.id]=items.map(i=>({...i,source:feed.label,feedId:feed.id,logo:getSourceLogo(feed.id)})).slice(0,20);podHealth[feed.id]={status:'ok',count:items.length};}
+  try{const {items}=await enqueueFetch(()=>fetchRSS(feed.url));podData[feed.id]=items.map(i=>({...i,source:feed.label,feedId:feed.id,logo:getSourceLogo(feed.id)})).slice(0,20);podHealth[feed.id]={status:'ok',count:items.length};}
   catch(e){podData[feed.id]=[];podHealth[feed.id]={status:'err',count:0};}
 }
 async function loadAllNews(){const active=getActiveNewsFeeds();setLoading('wire');setLoading('teams');await Promise.allSettled(active.map(f=>loadNewsFeed(f)));lastUpdate.news=new Date();renderWire();renderTeams();updateHealthUI();saveCache();}
