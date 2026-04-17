@@ -401,6 +401,7 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
     <div class="panel-header" onclick="togglePanelMobile('panel-scorecal')">
       <span class="panel-title">📊 Partidos</span>
       <span class="panel-badge" id="badge-scorecal">—</span>
+      <button class="panel-btn" id="spoiler-btn" onclick="event.stopPropagation();toggleSpoilerMode()" title="Modo sin spoilers">👁</button>
       <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('scorecal')">↺</button>
       <span class="panel-collapse-btn">▾</span>
     </div>
@@ -649,6 +650,7 @@ let state={
   // FIX #4: incluir YT y podcasts en Mis Equipos
   teamsIncYT:  JSON.parse(localStorage.getItem('nba_teams_yt')||'true'),
   teamsIncPod: JSON.parse(localStorage.getItem('nba_teams_pod')||'true'),
+  noSpoilers:  JSON.parse(localStorage.getItem('nba_nospoilers')||'false'),
   // FIX #3: logos manuales por id de fuente
   sourceLogos: JSON.parse(localStorage.getItem('nba_logos')||'{}'),
 };
@@ -1130,6 +1132,14 @@ async function loadPartidos(){
     document.getElementById('body-scorecal').innerHTML='<div class="panel-error">Error al cargar partidos.<br><button onclick="loadPartidos()" style="margin-top:8px;background:transparent;border:1px solid var(--border);color:var(--gold);padding:4px 10px;cursor:pointer;border-radius:4px;font-family:\'Inter\',sans-serif;">↺ Reintentar</button></div>';
   }
 }
+function toggleSpoilerMode(){
+  state.noSpoilers=!state.noSpoilers;
+  localStorage.setItem('nba_nospoilers',JSON.stringify(state.noSpoilers));
+  const btn=document.getElementById('spoiler-btn');
+  if(btn)btn.textContent=state.noSpoilers?'🙈':'👁';
+  if(_calData){const{dY,dT,dM,etHour,ayerStr,todayStr,mananaStr}=_calData;renderPartidos(dY,dT,dM,etHour,ayerStr,todayStr,mananaStr);}
+}
+
 function renderPartidos(dY,dT,dM,etHour,ayerStr,todayStr,mananaStr){
   const body=document.getElementById('body-scorecal');
   const logo=id=>`https://a.espncdn.com/i/teamlogos/nba/500/${(id||'').toLowerCase()}.png`;
@@ -1154,8 +1164,8 @@ function renderPartidos(dY,dT,dM,etHour,ayerStr,todayStr,mananaStr){
       const aS=parseInt(away.score||0),hS=parseInt(home.score||0);
       const cardCls=isLive?'live-card':sec.label==='HOY'?'today-card':'';
       const stCls=isLive?'live':isFinal?'final':'upcoming';
-      const stLabel=isLive?'<span class="live-dot"></span>EN VIVO':isFinal?'FINAL':stText;
-      const showScore=isFinal||isLive;
+      const showScore=(isFinal||isLive)&&!state.noSpoilers;
+      const stLabel=isLive?'<span class="live-dot"></span>EN VIVO':isFinal?(state.noSpoilers?'TERMINADO':'FINAL'):stText;
       const awayAbbr=(away.team?.abbreviation||'').toLowerCase();
       const homeAbbr=(home.team?.abbreviation||'').toLowerCase();
       const hoopsUrl=sec.dateStr?`https://hoopsjunkie.io/games/${sec.dateStr}/${awayAbbr}-vs-${homeAbbr}`:'';
@@ -1480,6 +1490,7 @@ function init(){
   initRowSep();
   renderTeamKwBar();
   updateAttributionLogo();
+  const sb=document.getElementById('spoiler-btn');if(sb&&state.noSpoilers)sb.textContent='🙈';
   // Mostrar cache inmediatamente si existe y es reciente
   if(loadCache()){renderWire();renderYT();renderPod();renderTeams();updateHealthUI();}
   // Luego actualizar en segundo plano siempre
