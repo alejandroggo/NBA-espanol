@@ -6,6 +6,7 @@
 <title>NBA EN ESPAÑOL</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <style>
 :root {
   --bg:#0a0a0f;--bg2:#0f0f16;--panel:#13131a;--panel-header:#16161f;
@@ -53,7 +54,6 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;heigh
 .tb-slider{-webkit-appearance:none;appearance:none;width:60px;height:3px;background:var(--border);border-radius:2px;outline:none;cursor:pointer;flex-shrink:0;}
 .tb-slider::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;background:var(--gold);border-radius:50%;}
 select.tb-select{background:var(--panel);border:1px solid var(--border);color:var(--text2);font-family:'Inter',sans-serif;font-size:11px;padding:3px 7px;cursor:pointer;border-radius:4px;outline:none;flex-shrink:0;}
-#clock{margin-left:auto;font-family:'Inter',sans-serif;font-weight:600;font-size:13px;color:var(--gold);letter-spacing:1px;flex-shrink:0;}
 #search-wrap{position:relative;flex-shrink:0;}
 #global-search{background:var(--bg2);border:1px solid var(--border);color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:4px 8px 4px 26px;width:150px;border-radius:4px;outline:none;transition:border-color .15s;}
 #global-search:focus{border-color:var(--gold);}
@@ -288,9 +288,20 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
     padding:8px 0 6px;transition:color .15s;-webkit-tap-highlight-color:transparent;
   }
   .mob-tab.active{color:var(--gold);}
-  .mob-tab-icon{font-size:19px;line-height:1;}
+  .mob-tab-icon{font-size:19px;line-height:1;display:flex;align-items:center;justify-content:center;}
+  .mob-tab-icon svg{width:20px;height:20px;stroke-width:2;}
   .mob-tab-label{font-family:'Inter',sans-serif;font-size:9px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;}
 }
+/* Lucide icons global sizing */
+i[data-lucide]{display:inline-block;}
+.panel-title svg{width:13px;height:13px;vertical-align:-2px;stroke-width:2.2;margin-right:2px;}
+.tb-btn svg{width:12px;height:12px;vertical-align:-1px;stroke-width:2.2;}
+.config-title svg{width:15px;height:15px;vertical-align:-3px;stroke-width:2.2;margin-right:3px;}
+.config-btn svg{width:11px;height:11px;vertical-align:-1px;stroke-width:2.2;margin-right:2px;}
+#spoiler-btn svg{width:11px;height:11px;vertical-align:-1px;stroke-width:2.2;}
+#theme-btn svg{width:14px;height:14px;vertical-align:-2px;stroke-width:2;}
+/* Playoff game label */
+.cal-playoff-label{font-size:8px;font-weight:700;letter-spacing:.8px;color:var(--gold);text-align:center;margin-bottom:2px;text-transform:uppercase;}
 </style>
 </head>
 <body>
@@ -298,10 +309,10 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 <div id="topbar">
   <div id="logo">NBA EN ESPAÑOL</div>
   <div class="tb-sep"></div>
-  <button class="tb-btn" onclick="refreshAll()">↺ Actualizar</button>
-  <button class="tb-btn" onclick="openConfig()">⚙ Config</button>
-  <button class="tb-btn" id="live-btn" onclick="toggleLive()">🏀 En Vivo</button>
-  <button class="tb-btn" id="theme-btn" onclick="toggleTheme()" title="Modo día/noche">🌙</button>
+  <button class="tb-btn" onclick="refreshAll()"><i data-lucide="refresh-cw"></i> Actualizar</button>
+  <button class="tb-btn" onclick="openConfig()"><i data-lucide="settings"></i> Config</button>
+  <button class="tb-btn" id="live-btn" onclick="toggleLive()"><i data-lucide="radio"></i> En Vivo</button>
+  <button class="tb-btn" id="theme-btn" onclick="toggleTheme()" title="Modo día/noche"><i data-lucide="moon"></i></button>
   <div class="tb-sep"></div>
   <span class="tb-label">TÍT.</span>
   <input type="range" class="tb-slider" id="fst-slider" min="11" max="20" value="14" oninput="updateFontSize(this.value)">
@@ -318,8 +329,6 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
     <span id="search-icon">🔍</span>
     <input type="text" id="global-search" placeholder="Buscar..." oninput="onSearch(this.value)">
   </div>
-  <div id="clock">--:--</div>
-  <div class="tb-sep"></div>
   <div id="attribution" style="display:flex;align-items:center;gap:5px;flex-shrink:0;">
     <img id="agaitan-logo" src="" alt="" style="width:18px;height:18px;border-radius:50%;object-fit:cover;display:none;">
     <span style="font-size:9px;color:var(--text3);letter-spacing:.4px;white-space:nowrap;">Creado por <a href="https://alejandroggo.com" target="_blank" style="color:var(--text2);text-decoration:none;font-weight:600;">Alejandro Gaitán</a> con Claude IA</span>
@@ -330,7 +339,7 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
   <!-- NOTICIAS -->
   <div class="panel" id="panel-wire">
     <div class="panel-header" onclick="togglePanelMobile('panel-wire')">
-      <span class="panel-title">✍️ Noticias</span>
+      <span class="panel-title"><i data-lucide="newspaper"></i> Noticias</span>
       <span class="panel-badge" id="badge-wire">—</span>
       <span class="panel-updated" id="upd-wire"></span>
       <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('wire')">↺</button>
@@ -348,7 +357,7 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
   <!-- YOUTUBE -->
   <div class="panel" id="panel-youtube">
     <div class="panel-header" onclick="togglePanelMobile('panel-youtube')">
-      <span class="panel-title">🎥 YouTube</span>
+      <span class="panel-title"><i data-lucide="youtube"></i> YouTube</span>
       <span class="panel-badge" id="badge-youtube">—</span>
       <span class="panel-updated" id="upd-youtube"></span>
       <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('youtube')">↺</button>
@@ -366,7 +375,7 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
   <!-- PODCAST -->
   <div class="panel" id="panel-podcast">
     <div class="panel-header" onclick="togglePanelMobile('panel-podcast')">
-      <span class="panel-title">🎙 Podcast</span>
+      <span class="panel-title"><i data-lucide="mic"></i> Podcast</span>
       <span class="panel-badge" id="badge-podcast">—</span>
       <span class="panel-updated" id="upd-podcast"></span>
       <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('podcast')">↺</button>
@@ -384,7 +393,7 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
   <!-- MIS EQUIPOS -->
   <div class="panel" id="panel-teams">
     <div class="panel-header" onclick="togglePanelMobile('panel-teams')">
-      <span class="panel-title">🏀 Mis Equipos</span>
+      <span class="panel-title"><i data-lucide="star"></i> Mis Equipos</span>
       <span class="panel-badge" id="badge-teams">—</span>
       <span class="panel-updated" id="upd-teams"></span>
       <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('teams')">↺</button>
@@ -401,9 +410,9 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
   <!-- PARTIDOS -->
   <div class="panel" id="panel-scorecal">
     <div class="panel-header" onclick="togglePanelMobile('panel-scorecal')">
-      <span class="panel-title">📊 Partidos</span>
+      <span class="panel-title"><i data-lucide="calendar-days"></i> Partidos</span>
       <span class="panel-badge" id="badge-scorecal">—</span>
-      <button class="panel-btn" id="spoiler-btn" onclick="event.stopPropagation();toggleSpoilerMode()" title="Modo sin spoilers" style="font-size:9px;letter-spacing:.4px;display:flex;align-items:center;gap:3px;padding:2px 6px;border:1px solid var(--border);border-radius:4px;"><span id="spoiler-icon">👁</span> NO SPOILERS</button>
+      <button class="panel-btn" id="spoiler-btn" onclick="event.stopPropagation();toggleSpoilerMode()" title="Modo sin spoilers" style="font-size:9px;letter-spacing:.4px;display:flex;align-items:center;gap:3px;padding:2px 6px;border:1px solid var(--border);border-radius:4px;"><span id="spoiler-icon"><i data-lucide="eye"></i></span> NO SPOILERS</button>
       <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('scorecal')">↺</button>
       <span class="panel-collapse-btn">▾</span>
     </div>
@@ -415,7 +424,7 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
   <!-- CLASIFICACIÓN -->
   <div class="panel" id="panel-standings">
     <div class="panel-header" onclick="togglePanelMobile('panel-standings')">
-      <span class="panel-title">🏆 Clasificación</span>
+      <span class="panel-title"><i data-lucide="trophy"></i> Clasificación</span>
       <span class="panel-badge" id="badge-standings">—</span>
       <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('standings')">↺</button>
       <span class="panel-collapse-btn">▾</span>
@@ -432,23 +441,23 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 <!-- MOBILE TAB BAR -->
 <nav id="mobile-tabbar">
   <button class="mob-tab" id="mtab-wire" onclick="mobileTab('wire')">
-    <span class="mob-tab-icon">✍️</span>
+    <span class="mob-tab-icon"><i data-lucide="newspaper"></i></span>
     <span class="mob-tab-label">Noticias</span>
   </button>
   <button class="mob-tab" id="mtab-youtube" onclick="mobileTab('youtube')">
-    <span class="mob-tab-icon">🎥</span>
+    <span class="mob-tab-icon"><i data-lucide="youtube"></i></span>
     <span class="mob-tab-label">YouTube</span>
   </button>
   <button class="mob-tab" id="mtab-podcast" onclick="mobileTab('podcast')">
-    <span class="mob-tab-icon">🎙</span>
+    <span class="mob-tab-icon"><i data-lucide="mic"></i></span>
     <span class="mob-tab-label">Podcast</span>
   </button>
   <button class="mob-tab" id="mtab-teams" onclick="mobileTab('teams')">
-    <span class="mob-tab-icon">🏀</span>
+    <span class="mob-tab-icon"><i data-lucide="star"></i></span>
     <span class="mob-tab-label">Mi Equipo</span>
   </button>
   <button class="mob-tab" id="mtab-results" onclick="mobileTab('results')">
-    <span class="mob-tab-icon">📊</span>
+    <span class="mob-tab-icon"><i data-lucide="calendar-days"></i></span>
     <span class="mob-tab-label">Resultados</span>
   </button>
 </nav>
@@ -457,7 +466,7 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 <div id="config-modal">
   <div class="config-box">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
-      <div class="config-title" style="margin-bottom:0">⚙ Configuración</div>
+      <div class="config-title" style="margin-bottom:0"><i data-lucide="settings"></i> Configuración</div>
       <button onclick="closeConfig()" style="background:transparent;border:1px solid var(--border);color:var(--text3);font-size:16px;width:28px;height:28px;cursor:pointer;border-radius:4px;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text3)'">✕</button>
     </div>
 
@@ -478,18 +487,6 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
     </div>
 
     <div class="config-section">
-      <div class="config-section-title">Fuentes desde Google Sheet</div>
-      <div class="sheet-info">
-        Publica tu Sheet como CSV y pega la URL aquí.<br>
-        Columnas: <code>id</code> <code>label</code> <code>url</code> <code>tipo</code> <code>pay</code> &nbsp;—&nbsp; tipo: <code>news</code> · <code>yt</code> · <code>pod</code>
-      </div>
-      <div class="config-row">
-        <input type="text" class="config-input" id="sheet-url" placeholder="https://docs.google.com/spreadsheets/d/.../pub?output=csv">
-        <button class="config-btn" onclick="loadFromSheet()">CARGAR</button>
-      </div>
-      <div id="sheet-status" style="margin-top:6px;font-size:10px;color:var(--text3);font-family:'Inter',sans-serif;"></div>
-    </div>
-
     <!-- FIX #8: Estado — orden correcto: noticias → news, podcast → pod, YT bajo su header -->
     <div class="config-section">
       <div class="config-section-title">Estado — Noticias</div>
@@ -507,8 +504,8 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
     <div class="config-section">
       <div class="config-section-title">Restablecer</div>
       <div class="config-row">
-        <button class="config-btn" onclick="resetFilters()" style="flex:1">↺ Reset filtros</button>
-        <button class="config-btn danger" onclick="resetAll()" style="flex:1">⚠ Reset completo</button>
+        <button class="config-btn" onclick="resetFilters()" style="flex:1"><i data-lucide="refresh-cw"></i> Reset filtros</button>
+        <button class="config-btn danger" onclick="resetAll()" style="flex:1"><i data-lucide="alert-triangle"></i> Reset completo</button>
       </div>
       <div style="margin-top:6px;font-size:9px;color:var(--text3);font-family:'Inter',sans-serif;">
         Reset filtros: limpia exclusiones activas. Reset completo: borra equipos, feeds y ajustes guardados.
@@ -646,7 +643,6 @@ let state={
   disabledNews:JSON.parse(localStorage.getItem('nba_dis_news')||'[]'),
   disabledYT:  JSON.parse(localStorage.getItem('nba_dis_yt')||'[]'),
   disabledPod: JSON.parse(localStorage.getItem('nba_dis_pod')||'[]'),
-  sheetUrl:    localStorage.getItem('nba_sheet_url')||'',
   // FIX #1: keywords libres
   teamKeywords: JSON.parse(localStorage.getItem('nba_kw')||'[]'),
   // FIX #4: incluir YT y podcasts en Mis Equipos
@@ -755,31 +751,6 @@ function normalizeLogo(url){
 }
 
 // ══════════════════════════════════
-async function loadFromSheet(){
-  const url=document.getElementById('sheet-url').value.trim();
-  if(!url){alert('Introduce la URL del Sheet');return;}
-  const el=document.getElementById('sheet-status');el.textContent='Cargando…';el.style.color='var(--text3)';
-  try{
-    const r=await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(10000)});
-    const csv=await r.text();
-    const rows=csv.trim().split('\n').slice(1);
-    let an=0,ay=0,ap=0;
-    rows.forEach(row=>{
-      const cols=row.split(',').map(c=>c.trim().replace(/^"|"$/g,''));
-      const[id,label,feedUrl,tipo,pay,logo]=cols;if(!id||!label||!tipo)return;
-      if(logo){state.sourceLogos[id]=normalizeLogo(logo);}
-      if(tipo==='news'&&!NEWS_FEEDS.find(f=>f.id===id)&&!state.customFeeds.find(f=>f.id===id)){NEWS_FEEDS.push({id,label,url:feedUrl,pay:pay==='1'||pay==='true',enabled:true});an++;}
-      if(tipo==='yt'&&!YT_CHANNELS.find(c=>c.id===id)&&!state.customYT.find(c=>c.id===id)){YT_CHANNELS.push({id,label});ay++;}
-      if(tipo==='pod'&&!POD_FEEDS.find(f=>f.id===id)){POD_FEEDS.push({id,label,url:feedUrl,enabled:true});ap++;}
-    });
-    localStorage.setItem('nba_sheet_url',url);state.sheetUrl=url;
-    localStorage.setItem('nba_logos',JSON.stringify(state.sourceLogos));
-    el.textContent=`✓ ${an} noticias, ${ay} YouTube, ${ap} podcast añadidos.`;el.style.color='var(--green)';
-    updateAttributionLogo();
-    refreshAll();updateHealthUI();
-  }catch(e){el.textContent='Error. Comprueba la URL y que el Sheet esté publicado.';el.style.color='var(--live-red)';}
-}
-
 // ══════════════════════════════════
 // FEEDS
 // ══════════════════════════════════
@@ -812,12 +783,6 @@ async function loadAllNews(){const active=getActiveNewsFeeds();setLoading('wire'
 async function loadAllYT(){const active=getActiveYTChannels();setLoading('youtube');await Promise.allSettled(active.map(c=>loadYTChannel(c)));lastUpdate.yt=new Date();renderYT();renderTeams();updateHealthUI();saveCache();}
 async function loadAllPod(){const active=getActivePodFeeds();setLoading('podcast');await Promise.allSettled(active.map(f=>loadPodFeed(f)));lastUpdate.pod=new Date();renderPod();renderTeams();updateHealthUI();saveCache();}
 function setLoading(id){const b=document.getElementById('body-'+id);if(b)b.innerHTML='<div class="panel-loading">CARGANDO</div>';}
-
-// ══════════════════════════════════
-// RELOJ
-// ══════════════════════════════════
-function updateClock(){const et=new Intl.DateTimeFormat('es-ES',{timeZone:'America/New_York',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date());document.getElementById('clock').textContent=et+' ET';}
-setInterval(updateClock,1000);updateClock();
 
 // ══════════════════════════════════
 // SEPARADORES ARRASTRABLES
@@ -1129,7 +1094,7 @@ async function loadPartidos(){
     }
     const results=await Promise.all(fetchesTodo);
     const[dY_or_T,dT_or_M,dM_maybe]=etHour<12?results:[null,...results];
-    _calData={dY:dY_or_T,dT:dT_or_M,dM:dM_maybe,ayerStr,todayStr,mananaStr};
+    _calData={dY:dY_or_T,dT:dT_or_M,dM:dM_maybe,etHour,ayerStr,todayStr,mananaStr};
     renderPartidos(dY_or_T,dT_or_M,dM_maybe,etHour,ayerStr,todayStr,mananaStr);
   }catch(e){
     document.getElementById('body-scorecal').innerHTML='<div class="panel-error">Error al cargar partidos.<br><button onclick="loadPartidos()" style="margin-top:8px;background:transparent;border:1px solid var(--border);color:var(--gold);padding:4px 10px;cursor:pointer;border-radius:4px;font-family:\'Inter\',sans-serif;">↺ Reintentar</button></div>';
@@ -1139,7 +1104,7 @@ function toggleSpoilerMode(){
   state.noSpoilers=!state.noSpoilers;
   localStorage.setItem('nba_nospoilers',JSON.stringify(state.noSpoilers));
   const icon=document.getElementById('spoiler-icon');
-  if(icon)icon.textContent=state.noSpoilers?'🙈':'👁';
+  if(icon){icon.innerHTML=`<i data-lucide="${state.noSpoilers?'eye-off':'eye'}"></i>`;lucide.createIcons({nodes:[icon]});}
   if(_calData){const{dY,dT,dM,etHour,ayerStr,todayStr,mananaStr}=_calData;renderPartidos(dY,dT,dM,etHour,ayerStr,todayStr,mananaStr);}
 }
 
@@ -1172,7 +1137,17 @@ function renderPartidos(dY,dT,dM,etHour,ayerStr,todayStr,mananaStr){
       const awayAbbr=(away.team?.abbreviation||'').toLowerCase();
       const homeAbbr=(home.team?.abbreviation||'').toLowerCase();
       const hoopsUrl=sec.dateStr?`https://hoopsjunkie.io/games/${sec.dateStr}/${awayAbbr}-vs-${homeAbbr}`:'';
+      // Playoff: detectar "Game X" desde notas ESPN o calcular de victorias de serie
+      const isPlayoff=ev.season?.type===3;
+      let gameLabel='';
+      if(isPlayoff){
+        const note=comp?.notes?.[0]?.headline||'';
+        const m=note.match(/game\s+(\d+)/i);
+        if(m){gameLabel=`JUEGO ${m[1]}`;}
+        else{const wins=(comp?.competitors||[]).reduce((s,c)=>s+(parseInt(c.record?.[0]?.summary?.split('-')[0])||0),0);gameLabel=wins>0?`JUEGO ${wins+1}`:'PLAYOFFS';}
+      }
       return`<div class="cal-card ${cardCls}"${hoopsUrl?` onclick="window.open('${hoopsUrl}','_blank')" style="cursor:pointer;"`:''}>
+        ${gameLabel?`<div class="cal-playoff-label">${gameLabel}</div>`:''}
         <div class="cal-status ${stCls}">${stLabel}</div>
         <div class="cal-teams">
           <div class="cal-team"><div class="cal-team-info"><img class="team-logo" src="${logo(away.team?.abbreviation)}" onerror="this.style.display='none'"><span class="cal-team-abbr">${escHtml(away.team?.abbreviation||'')}</span></div>${showScore?`<span class="cal-score${isFinal?' final':''}${aS>hS?' leader':''}">${away.score||0}</span>`:''}</div>
@@ -1383,7 +1358,6 @@ function resetAll(){
 
 function openConfig(){
   renderTeamsGrid();updateHealthUI();renderKwList();
-  if(state.sheetUrl)document.getElementById('sheet-url').value=state.sheetUrl;
   document.getElementById('config-modal').classList.add('open');
 }
 function closeConfig(){document.getElementById('config-modal').classList.remove('open');}
@@ -1441,7 +1415,7 @@ function formatDate(d){if(!d)return '';try{const date=new Date(d);if(isNaN(date)
 function applyTheme(theme){
   document.documentElement.dataset.theme=theme;
   const btn=document.getElementById('theme-btn');
-  if(btn)btn.textContent=theme==='light'?'🌙':'☀️';
+  if(btn){btn.innerHTML=`<i data-lucide="${theme==='light'?'moon':'sun'}"></i>`;if(typeof lucide!=='undefined')lucide.createIcons({nodes:[btn]});}
 }
 function toggleTheme(){
   const next=document.documentElement.dataset.theme==='light'?'dark':'light';
@@ -1493,7 +1467,8 @@ function init(){
   initRowSep();
   renderTeamKwBar();
   updateAttributionLogo();
-  const si=document.getElementById('spoiler-icon');if(si&&state.noSpoilers)si.textContent='🙈';
+  lucide.createIcons();
+  const si=document.getElementById('spoiler-icon');if(si&&state.noSpoilers){si.innerHTML='<i data-lucide="eye-off"></i>';lucide.createIcons({nodes:[si]});}
   // Mostrar cache inmediatamente si existe y es reciente
   if(loadCache()){renderWire();renderYT();renderPod();renderTeams();updateHealthUI();}
   // Luego actualizar en segundo plano siempre
