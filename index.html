@@ -309,10 +309,10 @@ i[data-lucide]{display:inline-block;}
 <div id="topbar">
   <div id="logo">NBA EN ESPAÑOL</div>
   <div class="tb-sep"></div>
+  <button class="tb-btn" id="theme-btn" onclick="toggleTheme()" title="Modo día/noche"><i data-lucide="moon"></i></button>
   <button class="tb-btn" onclick="refreshAll()"><i data-lucide="refresh-cw"></i> Actualizar</button>
   <button class="tb-btn" onclick="openConfig()"><i data-lucide="settings"></i> Config</button>
   <button class="tb-btn" id="live-btn" onclick="toggleLive()"><i data-lucide="radio"></i> En Vivo</button>
-  <button class="tb-btn" id="theme-btn" onclick="toggleTheme()" title="Modo día/noche"><i data-lucide="moon"></i></button>
   <div class="tb-sep"></div>
   <span class="tb-label">TÍT.</span>
   <input type="range" class="tb-slider" id="fst-slider" min="11" max="20" value="14" oninput="updateFontSize(this.value)">
