@@ -299,8 +299,9 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
     padding:8px 0 6px;transition:color .15s;-webkit-tap-highlight-color:transparent;
   }
   .mob-tab.active{color:var(--gold);}
-  .mob-tab-icon{font-size:19px;line-height:1;display:flex;align-items:center;justify-content:center;}
+  .mob-tab-icon{font-size:19px;line-height:1;display:flex;align-items:center;justify-content:center;position:relative;}
   .mob-tab-icon svg{width:20px;height:20px;stroke-width:2;}
+  .mob-tab-badge{position:absolute;top:-5px;right:-10px;background:var(--live-red);color:#fff;font-family:'Inter',sans-serif;font-size:8px;font-weight:700;border-radius:10px;min-width:15px;height:15px;display:none;align-items:center;justify-content:center;padding:0 3px;box-shadow:0 1px 4px rgba(0,0,0,0.5);letter-spacing:0;}
   .mob-tab-label{font-family:'Inter',sans-serif;font-size:9px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;}
 }
 /* Lucide icons global sizing */
@@ -464,15 +465,15 @@ i[data-lucide]{display:inline-block;}
     <span class="mob-tab-label">Mis Equipos</span>
   </button>
   <button class="mob-tab" id="mtab-youtube" onclick="mobileTab('youtube')">
-    <span class="mob-tab-icon"><i data-lucide="video"></i></span>
+    <span class="mob-tab-icon"><i data-lucide="video"></i><span class="mob-tab-badge" id="mtab-badge-youtube"></span></span>
     <span class="mob-tab-label">YouTube</span>
   </button>
   <button class="mob-tab" id="mtab-wire" onclick="mobileTab('wire')">
-    <span class="mob-tab-icon"><i data-lucide="newspaper"></i></span>
+    <span class="mob-tab-icon"><i data-lucide="newspaper"></i><span class="mob-tab-badge" id="mtab-badge-wire"></span></span>
     <span class="mob-tab-label">Noticias</span>
   </button>
   <button class="mob-tab" id="mtab-podcast" onclick="mobileTab('podcast')">
-    <span class="mob-tab-icon"><i data-lucide="mic"></i></span>
+    <span class="mob-tab-icon"><i data-lucide="mic"></i><span class="mob-tab-badge" id="mtab-badge-podcast"></span></span>
     <span class="mob-tab-label">Podcast</span>
   </button>
   <button class="mob-tab" id="mtab-results" onclick="mobileTab('results')">
@@ -700,9 +701,32 @@ const MOB_TAB_CFG={
   results: {half:['panel-scorecal','panel-standings']}
 };
 let _mobileTab='wire';
+// ══════════════════════════════════
+// TAB BADGES (contenido nuevo)
+// ══════════════════════════════════
+const SEEN_KEYS={wire:'nba_seen_news',youtube:'nba_seen_yt',podcast:'nba_seen_pod'};
+function getLastSeen(panel){const v=localStorage.getItem(SEEN_KEYS[panel]);return v?new Date(parseInt(v)):null;}
+function markSeen(panel){if(SEEN_KEYS[panel])localStorage.setItem(SEEN_KEYS[panel],Date.now().toString());updateTabBadge(panel);}
+function countNewItems(panel){
+  const ls=getLastSeen(panel);if(!ls)return 0;
+  let items=[];
+  if(panel==='wire')items=getAllNews();
+  else if(panel==='youtube')Object.values(ytData).forEach(ch=>items.push(...(ch||[])));
+  else if(panel==='podcast')Object.values(podData).forEach(f=>items.push(...(f||[])));
+  return items.filter(i=>i.pubDate&&new Date(i.pubDate)>ls).length;
+}
+function updateTabBadge(panel){
+  const badge=document.getElementById('mtab-badge-'+panel);if(!badge)return;
+  const n=countNewItems(panel);
+  badge.textContent=n>99?'99+':n;
+  badge.style.display=n>0?'flex':'none';
+}
+function updateAllTabBadges(){['wire','youtube','podcast'].forEach(updateTabBadge);}
+
 function mobileTab(tab){
   if(window.innerWidth>860)return;
   _mobileTab=tab;
+  markSeen(tab);
   document.querySelectorAll('.mob-tab').forEach(b=>b.classList.remove('active'));
   document.getElementById('mtab-'+tab)?.classList.add('active');
   document.querySelectorAll('#canvas .panel').forEach(p=>p.classList.remove('mob-active','mob-half'));
@@ -798,9 +822,9 @@ async function loadPodFeed(feed){
   try{const {items}=await enqueueFetch(()=>fetchRSS(feed.url));podData[feed.id]=items.map(i=>({...i,source:feed.label,feedId:feed.id,logo:getSourceLogo(feed.id)})).slice(0,20);podHealth[feed.id]={status:'ok',count:items.length};}
   catch(e){podData[feed.id]=[];podHealth[feed.id]={status:'err',count:0};}
 }
-async function loadAllNews(){const active=getActiveNewsFeeds();setLoading('wire');setLoading('teams');await Promise.allSettled(active.map(f=>loadNewsFeed(f)));lastUpdate.news=new Date();renderWire();renderTeams();updateHealthUI();saveCache();}
-async function loadAllYT(){const active=getActiveYTChannels();setLoading('youtube');await Promise.allSettled(active.map(c=>loadYTChannel(c)));lastUpdate.yt=new Date();renderYT();renderTeams();updateHealthUI();saveCache();}
-async function loadAllPod(){const active=getActivePodFeeds();setLoading('podcast');await Promise.allSettled(active.map(f=>loadPodFeed(f)));lastUpdate.pod=new Date();renderPod();renderTeams();updateHealthUI();saveCache();}
+async function loadAllNews(){const active=getActiveNewsFeeds();setLoading('wire');setLoading('teams');await Promise.allSettled(active.map(f=>loadNewsFeed(f)));lastUpdate.news=new Date();renderWire();renderTeams();updateHealthUI();saveCache();updateTabBadge('wire');}
+async function loadAllYT(){const active=getActiveYTChannels();setLoading('youtube');await Promise.allSettled(active.map(c=>loadYTChannel(c)));lastUpdate.yt=new Date();renderYT();renderTeams();updateHealthUI();saveCache();updateTabBadge('youtube');}
+async function loadAllPod(){const active=getActivePodFeeds();setLoading('podcast');await Promise.allSettled(active.map(f=>loadPodFeed(f)));lastUpdate.pod=new Date();renderPod();renderTeams();updateHealthUI();saveCache();updateTabBadge('podcast');}
 function setLoading(id){const b=document.getElementById('body-'+id);if(b)b.innerHTML='<div class="panel-loading">CARGANDO</div>';}
 
 // ══════════════════════════════════
