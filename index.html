@@ -994,7 +994,7 @@ function mediaThumbOrPlaceholder(src,emoji,logoSrc=''){
 
 function newsItemHTML(a){
   const payB=a.pay?'<span class="badge badge-pay">🔒</span>':'';
-  const newB=isNew(a.pubDate)?'<span class="badge badge-new">🆕</span>':'';
+  const newB=isNew(a.pubDate)?'<span class="badge badge-new">🔔</span>':'';
   const logo=getSourceLogo(a.feedId||'');
   const logoHtml=logo?`<img src="${escHtml(logo)}" class="source-logo" onerror="this.style.display='none'">`:'';
   const thumb=thumbOrPlaceholder(a.thumbnail||'','📰',logo);
@@ -1046,7 +1046,7 @@ function renderTeams(){
       return`<div class="media-item" onclick="window.open('${escHtml(a.link)}','_blank')">
         ${mediaThumbOrPlaceholder(thumb,'🎥',a.logo||getSourceLogo(a.channelId||''))}
         <div class="media-content">
-          <div class="media-source yt">🎥 ${escHtml(a.channelName||a.source||'')} ${isNew(a.pubDate)?'<span class="badge badge-new">🆕</span>':''}</div>
+          <div class="media-source yt">🎥 ${escHtml(a.channelName||a.source||'')} ${isNew(a.pubDate)?'<span class="badge badge-new">🔔</span>':''}</div>
           <div class="media-title">${escHtml(a.title)}</div>
           <div class="media-date">${a.pubDate?formatDate(a.pubDate):''}</div>
         </div>
@@ -1056,7 +1056,7 @@ function renderTeams(){
       return`<div class="media-item" onclick="window.open('${escHtml(a.link)}','_blank')">
         ${mediaThumbOrPlaceholder(a.thumbnail||'','🎙',a.logo||getSourceLogo(a.feedId||''))}
         <div class="media-content">
-          <div class="media-source pod">🎙 ${escHtml(a.source||'')} ${isNew(a.pubDate)?'<span class="badge badge-new">🆕</span>':''}</div>
+          <div class="media-source pod">🎙 ${escHtml(a.source||'')} ${isNew(a.pubDate)?'<span class="badge badge-new">🔔</span>':''}</div>
           <div class="media-title">${escHtml(a.title)}</div>
           <div class="media-date">${a.pubDate?formatDate(a.pubDate):''}</div>
         </div>
@@ -1293,7 +1293,7 @@ function renderYT(){
     return`<div class="media-item" onclick="window.open('${escHtml(v.link)}','_blank')">
       ${mediaThumbOrPlaceholder(thumb,'🎥',v.logo||getSourceLogo(v.channelId||''))}
       <div class="media-content">
-        <div class="media-source yt">🎥 ${escHtml(v.channelName)} ${isNew(v.pubDate)?'<span class="badge badge-new">🆕</span>':''}</div>
+        <div class="media-source yt">🎥 ${escHtml(v.channelName)} ${isNew(v.pubDate)?'<span class="badge badge-new">🔔</span>':''}</div>
         <div class="media-title">${escHtml(v.title)}</div>
         <div class="media-date">${v.pubDate?formatDate(v.pubDate):''}</div>
       </div>
@@ -1320,7 +1320,7 @@ function renderPod(){
     return`<div class="media-item" onclick="window.open('${escHtml(v.link)}','_blank')">
       ${mediaThumbOrPlaceholder(thumb,'🎙',v.logo||getSourceLogo(v.feedId||''))}
       <div class="media-content">
-        <div class="media-source pod">🎙 ${escHtml(v.source)} ${isNew(v.pubDate)?'<span class="badge badge-new">🆕</span>':''}</div>
+        <div class="media-source pod">🎙 ${escHtml(v.source)} ${isNew(v.pubDate)?'<span class="badge badge-new">🔔</span>':''}</div>
         <div class="media-title">${escHtml(v.title)}</div>
         <div class="media-date">${v.pubDate?formatDate(v.pubDate):''}</div>
       </div>
