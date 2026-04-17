@@ -80,7 +80,9 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 .panel:hover{box-shadow:var(--shadow-hover);}
 .panel-header{height:var(--header-h);background:var(--panel-header);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 12px;flex-shrink:0;gap:7px;}
 .panel-title{font-family:'Inter',sans-serif;font-weight:700;font-size:12px;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;flex:1;}
-.panel-badge{font-family:'Inter',sans-serif;font-size:10px;color:var(--text3);background:var(--bg);border:1px solid var(--border);padding:1px 7px;border-radius:10px;}
+.panel-badge{display:none;}
+.panel-new-badge{font-family:'Inter',sans-serif;font-size:9px;font-weight:700;color:#fff;background:var(--live-red);padding:1px 7px;border-radius:10px;display:none;letter-spacing:.2px;}
+.panel-new-badge.visible{display:inline-block;}
 .panel-btn{background:transparent;border:none;color:var(--text3);font-size:13px;cursor:pointer;padding:3px;transition:color .15s;line-height:1;}
 .panel-btn:hover{color:var(--gold);}
 .panel-updated{font-size:9px;color:var(--text3);font-family:'Inter',sans-serif;}
@@ -360,6 +362,7 @@ i[data-lucide]{display:inline-block;}
   <div class="panel" id="panel-wire">
     <div class="panel-header" onclick="togglePanelMobile('panel-wire')">
       <span class="panel-title"><i data-lucide="newspaper"></i> Noticias</span>
+      <span class="panel-new-badge" id="pnb-wire"></span>
       <span class="panel-badge" id="badge-wire">—</span>
       <span class="panel-updated" id="upd-wire"></span>
       <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('wire')">↺</button>
@@ -378,6 +381,7 @@ i[data-lucide]{display:inline-block;}
   <div class="panel" id="panel-youtube">
     <div class="panel-header" onclick="togglePanelMobile('panel-youtube')">
       <span class="panel-title"><i data-lucide="video"></i> YouTube</span>
+      <span class="panel-new-badge" id="pnb-youtube"></span>
       <span class="panel-badge" id="badge-youtube">—</span>
       <span class="panel-updated" id="upd-youtube"></span>
       <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('youtube')">↺</button>
@@ -396,6 +400,7 @@ i[data-lucide]{display:inline-block;}
   <div class="panel" id="panel-podcast">
     <div class="panel-header" onclick="togglePanelMobile('panel-podcast')">
       <span class="panel-title"><i data-lucide="mic"></i> Podcast</span>
+      <span class="panel-new-badge" id="pnb-podcast"></span>
       <span class="panel-badge" id="badge-podcast">—</span>
       <span class="panel-updated" id="upd-podcast"></span>
       <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('podcast')">↺</button>
@@ -716,12 +721,20 @@ function countNewItems(panel){
   return items.filter(i=>i.pubDate&&new Date(i.pubDate)>ls).length;
 }
 function updateTabBadge(panel){
-  const badge=document.getElementById('mtab-badge-'+panel);if(!badge)return;
   const n=countNewItems(panel);
-  badge.textContent=n>99?'99+':n;
-  badge.style.display=n>0?'flex':'none';
+  const label=n>99?'99+':String(n);
+  // Mobile tab badge
+  const mob=document.getElementById('mtab-badge-'+panel);
+  if(mob){mob.textContent=label;mob.style.display=n>0?'flex':'none';}
+  // Desktop panel header badge
+  const pnb=document.getElementById('pnb-'+panel);
+  if(pnb){pnb.textContent=n>0?label+' nuevos':'';pnb.classList.toggle('visible',n>0);}
 }
 function updateAllTabBadges(){['wire','youtube','podcast'].forEach(updateTabBadge);}
+function attachSeenOnScroll(panel){
+  const el=document.getElementById('body-'+panel);
+  if(el)el.addEventListener('scroll',()=>markSeen(panel),{once:true});
+}
 
 function mobileTab(tab){
   if(window.innerWidth>860)return;
@@ -822,9 +835,9 @@ async function loadPodFeed(feed){
   try{const {items}=await enqueueFetch(()=>fetchRSS(feed.url));podData[feed.id]=items.map(i=>({...i,source:feed.label,feedId:feed.id,logo:getSourceLogo(feed.id)})).slice(0,20);podHealth[feed.id]={status:'ok',count:items.length};}
   catch(e){podData[feed.id]=[];podHealth[feed.id]={status:'err',count:0};}
 }
-async function loadAllNews(){const active=getActiveNewsFeeds();setLoading('wire');setLoading('teams');await Promise.allSettled(active.map(f=>loadNewsFeed(f)));lastUpdate.news=new Date();renderWire();renderTeams();updateHealthUI();saveCache();updateTabBadge('wire');}
-async function loadAllYT(){const active=getActiveYTChannels();setLoading('youtube');await Promise.allSettled(active.map(c=>loadYTChannel(c)));lastUpdate.yt=new Date();renderYT();renderTeams();updateHealthUI();saveCache();updateTabBadge('youtube');}
-async function loadAllPod(){const active=getActivePodFeeds();setLoading('podcast');await Promise.allSettled(active.map(f=>loadPodFeed(f)));lastUpdate.pod=new Date();renderPod();renderTeams();updateHealthUI();saveCache();updateTabBadge('podcast');}
+async function loadAllNews(){const active=getActiveNewsFeeds();setLoading('wire');setLoading('teams');await Promise.allSettled(active.map(f=>loadNewsFeed(f)));lastUpdate.news=new Date();renderWire();renderTeams();updateHealthUI();saveCache();updateTabBadge('wire');attachSeenOnScroll('wire');}
+async function loadAllYT(){const active=getActiveYTChannels();setLoading('youtube');await Promise.allSettled(active.map(c=>loadYTChannel(c)));lastUpdate.yt=new Date();renderYT();renderTeams();updateHealthUI();saveCache();updateTabBadge('youtube');attachSeenOnScroll('youtube');}
+async function loadAllPod(){const active=getActivePodFeeds();setLoading('podcast');await Promise.allSettled(active.map(f=>loadPodFeed(f)));lastUpdate.pod=new Date();renderPod();renderTeams();updateHealthUI();saveCache();updateTabBadge('podcast');attachSeenOnScroll('podcast');}
 function setLoading(id){const b=document.getElementById('body-'+id);if(b)b.innerHTML='<div class="panel-loading">CARGANDO</div>';}
 
 // ══════════════════════════════════
