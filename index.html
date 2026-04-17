@@ -306,7 +306,11 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
     <input type="text" id="global-search" placeholder="Buscar..." oninput="onSearch(this.value)">
   </div>
   <div id="clock">--:--</div>
-</div>
+  <div class="tb-sep"></div>
+  <div id="attribution" style="display:flex;align-items:center;gap:5px;flex-shrink:0;">
+    <img id="agaitan-logo" src="" alt="" style="width:18px;height:18px;border-radius:50%;object-fit:cover;display:none;">
+    <span style="font-size:9px;color:var(--text3);letter-spacing:.4px;white-space:nowrap;">Creado por <a href="https://alejandroggo.com" target="_blank" style="color:var(--text2);text-decoration:none;font-weight:600;">Alejandro Gaitán</a> con Claude IA</span>
+  </div>
 
 <div id="canvas">
   <!-- NOTICIAS -->
@@ -753,6 +757,7 @@ async function loadFromSheet(){
     localStorage.setItem('nba_sheet_url',url);state.sheetUrl=url;
     localStorage.setItem('nba_logos',JSON.stringify(state.sourceLogos));
     el.textContent=`✓ ${an} noticias, ${ay} YouTube, ${ap} podcast añadidos.`;el.style.color='var(--green)';
+    updateAttributionLogo();
     refreshAll();updateHealthUI();
   }catch(e){el.textContent='Error. Comprueba la URL y que el Sheet esté publicado.';el.style.color='var(--live-red)';}
 }
@@ -1349,6 +1354,15 @@ function toggleTheme(){
 (function(){applyTheme(localStorage.getItem('nba_theme')||'dark');})();
 
 // ══════════════════════════════════
+// ATRIBUCIÓN
+// ══════════════════════════════════
+function updateAttributionLogo(){
+  const src=getSourceLogo('agaitan');
+  const img=document.getElementById('agaitan-logo');
+  if(img&&src){img.src=src;img.style.display='block';}
+}
+
+// ══════════════════════════════════
 // CACHE LOCAL
 // ══════════════════════════════════
 const CACHE_TTL=30*60*1000; // 30 minutos
@@ -1381,6 +1395,7 @@ function init(){
   initColSep('sep-col2','panel-youtube','panel-podcast','--col2','--col3');
   initRowSep();
   renderTeamKwBar();
+  updateAttributionLogo();
   // Mostrar cache inmediatamente si existe y es reciente
   if(loadCache()){renderWire();renderYT();renderPod();renderTeams();updateHealthUI();}
   // Luego actualizar en segundo plano siempre
