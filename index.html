@@ -711,7 +711,13 @@ let _mobileTab='wire';
 // ══════════════════════════════════
 const SEEN_KEYS={wire:'nba_seen_news',youtube:'nba_seen_yt',podcast:'nba_seen_pod'};
 function getLastSeen(panel){const v=localStorage.getItem(SEEN_KEYS[panel]);return v?new Date(parseInt(v)):null;}
-function markSeen(panel){if(SEEN_KEYS[panel])localStorage.setItem(SEEN_KEYS[panel],Date.now().toString());updateTabBadge(panel);}
+function markSeen(panel){
+  if(SEEN_KEYS[panel])localStorage.setItem(SEEN_KEYS[panel],Date.now().toString());
+  const mob=document.getElementById('mtab-badge-'+panel);
+  if(mob)mob.style.display='none';
+  const pnb=document.getElementById('pnb-'+panel);
+  if(pnb)pnb.classList.remove('visible');
+}
 function countNewItems(panel){
   const ls=getLastSeen(panel);if(!ls)return 0;
   let items=[];
@@ -721,12 +727,12 @@ function countNewItems(panel){
   return items.filter(i=>i.pubDate&&new Date(i.pubDate)>ls).length;
 }
 function updateTabBadge(panel){
+  // Si el tab está activo en móvil, no repintar — markSeen ya lo limpió
+  if(window.innerWidth<=860&&_mobileTab===panel)return;
   const n=countNewItems(panel);
   const label=n>99?'99+':String(n);
-  // Mobile tab badge
   const mob=document.getElementById('mtab-badge-'+panel);
   if(mob){mob.textContent=label;mob.style.display=n>0?'flex':'none';}
-  // Desktop panel header badge
   const pnb=document.getElementById('pnb-'+panel);
   if(pnb){pnb.textContent=n>0?label+' nuevos':'';pnb.classList.toggle('visible',n>0);}
 }
