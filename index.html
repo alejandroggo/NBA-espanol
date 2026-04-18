@@ -256,6 +256,7 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 ══════════════════════════════════ */
 #mobile-tabbar{display:none;}
 #mobile-actionbar{display:none;}
+#mob-results-subtabs{display:none;}
 .panel-collapse-btn{display:none;}
 
 @media(max-width:860px){
@@ -272,17 +273,23 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
     z-index:999;align-items:center;justify-content:space-around;padding:0 8px;gap:6px;
   }
   #mobile-actionbar .tb-btn{flex:1;text-align:center;justify-content:center;display:flex;align-items:center;gap:4px;}
-  #mob-theme-btn{flex:0 0 auto;padding:3px 6px;font-size:10px;min-width:0;}
+  #mobile-actionbar #mob-theme-btn{flex:0 0 auto;padding:3px 4px;font-size:10px;min-width:0;}
+
+  /* Sub-tabs de Resultados */
+  #mob-results-subtabs{position:fixed;top:calc(var(--topbar-h) + 38px);left:0;right:0;height:32px;background:var(--panel-header);border-bottom:1px solid var(--border);z-index:998;align-items:center;}
+  #mob-results-subtabs.active{display:flex;}
+  .mob-sub-tab{flex:1;text-align:center;padding:5px 0;font-family:'Inter',sans-serif;font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;color:var(--text3);background:none;border:none;border-bottom:2px solid transparent;-webkit-tap-highlight-color:transparent;}
+  .mob-sub-tab.active{color:var(--gold);border-bottom-color:var(--gold);}
 
   /* Canvas baja para dejar sitio a las dos barras */
   #canvas{
     position:fixed;top:calc(var(--topbar-h) + 38px);left:0;right:0;bottom:58px;
     display:flex;flex-direction:column;overflow:hidden;padding:0;gap:0;
   }
+  #canvas.has-subtabs{top:calc(var(--topbar-h) + 38px + 32px);}
   /* Hide grid separators and spacer divs */
-  #canvas>*:not(.panel){display:none!important;}
+  #canvas>*:not(.panel):not(#mob-results-subtabs){display:none!important;}
   .col-sep,.row-sep{display:none;}
-  .cal-grid{grid-template-columns:1fr;}
 
   /* All panels hidden by default */
   .panel{display:none;flex-direction:column;margin:0;border-radius:0;min-height:0;}
@@ -358,6 +365,12 @@ i[data-lucide]{display:inline-block;}
   <button class="tb-btn" onclick="refreshAll()"><i data-lucide="refresh-cw"></i> Actualizar</button>
   <button class="tb-btn" onclick="openConfig()"><i data-lucide="settings"></i> Config</button>
   <button class="tb-btn" id="mob-live-btn" onclick="toggleLive()"><i data-lucide="radio"></i> En Vivo</button>
+</div>
+
+<div id="mob-results-subtabs">
+  <button class="mob-sub-tab active" id="mrst-partidos" onclick="mobileResultsTab('partidos')">Partidos</button>
+  <button class="mob-sub-tab" id="mrst-clasif" onclick="mobileResultsTab('clasif')">Clasificación</button>
+  <button class="mob-sub-tab" id="mrst-bracket" onclick="mobileResultsTab('bracket')">Bracket</button>
 </div>
 
 <div id="canvas">
@@ -715,7 +728,7 @@ const MOB_TAB_CFG={
   youtube: {single:'panel-youtube'},
   podcast: {single:'panel-podcast'},
   teams:   {single:'panel-teams'},
-  results: {half:['panel-scorecal','panel-standings']}
+  results: {single:'panel-scorecal'}
 };
 let _mobileTab='wire';
 // ══════════════════════════════════
@@ -754,6 +767,17 @@ function attachSeenOnScroll(panel){
   if(el)el.addEventListener('scroll',()=>markSeen(panel),{once:true});
 }
 
+function mobileResultsTab(sub){
+  document.querySelectorAll('.mob-sub-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('mrst-'+sub)?.classList.add('active');
+  document.querySelectorAll('#canvas .panel').forEach(p=>p.classList.remove('mob-active','mob-half'));
+  if(sub==='partidos'){
+    document.getElementById('panel-scorecal')?.classList.add('mob-active');
+  } else {
+    document.getElementById('panel-standings')?.classList.add('mob-active');
+    switchConf(sub==='bracket'?'bracket':'east');
+  }
+}
 function mobileTab(tab){
   if(window.innerWidth>860)return;
   _mobileTab=tab;
@@ -761,9 +785,18 @@ function mobileTab(tab){
   document.querySelectorAll('.mob-tab').forEach(b=>b.classList.remove('active'));
   document.getElementById('mtab-'+tab)?.classList.add('active');
   document.querySelectorAll('#canvas .panel').forEach(p=>p.classList.remove('mob-active','mob-half'));
-  const cfg=MOB_TAB_CFG[tab];
-  if(cfg.single){document.getElementById(cfg.single)?.classList.add('mob-active');}
-  else if(cfg.half){cfg.half.forEach(id=>document.getElementById(id)?.classList.add('mob-half'));}
+  const subtabs=document.getElementById('mob-results-subtabs');
+  const canvas=document.getElementById('canvas');
+  if(tab==='results'){
+    subtabs?.classList.add('active');
+    canvas?.classList.add('has-subtabs');
+    mobileResultsTab('partidos');
+  } else {
+    subtabs?.classList.remove('active');
+    canvas?.classList.remove('has-subtabs');
+    const cfg=MOB_TAB_CFG[tab];
+    if(cfg.single)document.getElementById(cfg.single)?.classList.add('mob-active');
+  }
 }
 // Init on load
 if(window.innerWidth<=860)mobileTab('wire');
@@ -1052,7 +1085,7 @@ function applyNewsFilter(items){
   let f=newsExcluded.length>0?items.filter(i=>!newsExcluded.includes(i.feedId)):items;
   return searchQuery?f.filter(i=>matchesSearch(i)):f;
 }
-function isNew(pd){if(!pd)return false;try{return Date.now()-new Date(pd)<86400000;}catch{return false;}}
+function isNew(pd,ms=10800000){if(!pd)return false;try{return Date.now()-new Date(pd)<ms;}catch{return false;}}
 
 function thumbOrPlaceholder(src,emoji,logoSrc=''){
   if(src){
@@ -1125,7 +1158,7 @@ function renderTeams(){
       return`<div class="media-item" onclick="window.open('${escHtml(a.link)}','_blank')">
         ${mediaThumbOrPlaceholder(thumb,'🎥',a.logo||getSourceLogo(a.channelId||''))}
         <div class="media-content">
-          <div class="media-source yt"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg> ${escHtml(a.channelName||a.source||'')} ${isNew(a.pubDate)?'<span class="badge badge-new">🚨</span>':''}</div>
+          <div class="media-source yt"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg> ${escHtml(a.channelName||a.source||'')} ${isNew(a.pubDate,3600000)?'<span class="badge badge-new">🚨</span>':''}</div>
           <div class="media-title">${escHtml(a.title)}</div>
           <div class="media-date">${a.pubDate?formatDate(a.pubDate):''}</div>
         </div>
@@ -1135,7 +1168,7 @@ function renderTeams(){
       return`<div class="media-item" onclick="window.open('${escHtml(a.link)}','_blank')">
         ${mediaThumbOrPlaceholder(a.thumbnail||'','🎙',a.logo||getSourceLogo(a.feedId||''))}
         <div class="media-content">
-          <div class="media-source pod"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> ${escHtml(a.source||'')} ${isNew(a.pubDate)?'<span class="badge badge-new">🚨</span>':''}</div>
+          <div class="media-source pod"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> ${escHtml(a.source||'')} ${isNew(a.pubDate,3600000)?'<span class="badge badge-new">🚨</span>':''}</div>
           <div class="media-title">${escHtml(a.title)}</div>
           <div class="media-date">${a.pubDate?formatDate(a.pubDate):''}</div>
         </div>
@@ -1373,7 +1406,7 @@ function renderYT(){
     return`<div class="media-item" onclick="window.open('${escHtml(v.link)}','_blank')">
       ${mediaThumbOrPlaceholder(thumb,'🎥',v.logo||getSourceLogo(v.channelId||''))}
       <div class="media-content">
-        <div class="media-source yt"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg> ${escHtml(v.channelName)} ${isNew(v.pubDate)?'<span class="badge badge-new">🚨</span>':''}</div>
+        <div class="media-source yt"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg> ${escHtml(v.channelName)} ${isNew(v.pubDate,3600000)?'<span class="badge badge-new">🚨</span>':''}</div>
         <div class="media-title">${escHtml(v.title)}</div>
         <div class="media-date">${v.pubDate?formatDate(v.pubDate):''}</div>
       </div>
