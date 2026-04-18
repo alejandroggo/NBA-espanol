@@ -719,7 +719,7 @@ let standingsConf='east';
 let _calData=null;
 
 // Límites temporales de contenido
-const LIMIT_NEWS = 48 * 3600000;
+const LIMIT_NEWS = 72 * 3600000;
 const LIMIT_YT   = 72 * 3600000;
 const LIMIT_POD  =  7 * 86400000;
 
@@ -1116,7 +1116,7 @@ function newsItemHTML(a){
   const logo=getSourceLogo(a.feedId||'');
   const logoHtml=logo?`<img src="${escHtml(logo)}" class="source-logo" onerror="this.style.display='none'">`:'';
   const thumb=thumbOrPlaceholder(a.thumbnail||'','📰',logo);
-  return`<div class="article-item" onclick="window.open('${escHtml(a.link)}','_blank')">
+  return`<div class="article-item" onclick="openLink('${escHtml(a.link)}','noticia','${escHtml(a.feedId||'')}')">
     ${thumb}
     <div class="article-content">
       <div class="article-meta">${logoHtml}<span class="article-source">${escHtml(a.source)}</span>${payB}${newB}</div>
@@ -1128,7 +1128,7 @@ function newsItemHTML(a){
 function renderWire(){
   const body=document.getElementById('body-wire');
   const all=applyNewsFilter(getAllNews());
-  if(!all.length){body.innerHTML='<div class="empty-state">No hay artículos en las últimas 48h.<br>Comprueba los feeds en ⚙ Config</div>';setBadge('wire','0');return;}
+  if(!all.length){body.innerHTML='<div class="empty-state">No hay artículos en las últimas 72h.<br>Comprueba los feeds en ⚙ Config</div>';setBadge('wire','0');return;}
   body.innerHTML=all.map(a=>newsItemHTML(a)).join('');setBadge('wire',all.length);setUpdated('wire',lastUpdate.news);
 }
 
@@ -1161,7 +1161,7 @@ function renderTeams(){
   body.innerHTML=items.map(a=>{
     if(a._type==='yt'){
       const thumb=ytThumbFromLink(a.link||'');
-      return`<div class="media-item" onclick="window.open('${escHtml(a.link)}','_blank')">
+      return`<div class="media-item" onclick="openLink('${escHtml(a.link)}','video','${escHtml(a.channelId||'')}')">
         ${mediaThumbOrPlaceholder(thumb,'🎥',a.logo||getSourceLogo(a.channelId||''))}
         <div class="media-content">
           <div class="media-source yt"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg> ${escHtml(a.channelName||a.source||'')} ${isNew(a.pubDate,3600000)?'<span class="badge badge-new">🚨</span>':''}</div>
@@ -1171,7 +1171,7 @@ function renderTeams(){
       </div>`;
     }
     if(a._type==='pod'){
-      return`<div class="media-item" onclick="window.open('${escHtml(a.link)}','_blank')">
+      return`<div class="media-item" onclick="openLink('${escHtml((POD_FEEDS.find(f=>f.id===a.feedId)||{}).spotify||a.link)}','podcast','${escHtml(a.feedId||'')}')">
         ${mediaThumbOrPlaceholder(a.thumbnail||'','🎙',a.logo||getSourceLogo(a.feedId||''))}
         <div class="media-content">
           <div class="media-source pod"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> ${escHtml(a.source||'')} ${isNew(a.pubDate,3600000)?'<span class="badge badge-new">🚨</span>':''}</div>
@@ -1265,7 +1265,7 @@ function renderPartidos(dY,dT,dM,etHour,ayerStr,todayStr,mananaStr){
         if(m){gameLabel=`JUEGO ${m[1]}`;}
         else{const wins=(comp?.competitors||[]).reduce((s,c)=>s+(parseInt(c.record?.[0]?.summary?.split('-')[0])||0),0);gameLabel=wins>0?`JUEGO ${wins+1}`:'PLAYOFFS';}
       }
-      return`<div class="cal-card ${cardCls}"${hoopsUrl?` onclick="window.open('${hoopsUrl}','_blank')" style="cursor:pointer;"`:''}>
+      return`<div class="cal-card ${cardCls}"${hoopsUrl?` onclick="openLink('${hoopsUrl}','partido','')" style="cursor:pointer;"`:''}>
         ${gameLabel?`<div class="cal-playoff-label">${gameLabel}</div>`:''}
         <div class="cal-status ${stCls}">${stLabel}</div>${timeLabel}
         <div class="cal-teams">
@@ -1409,7 +1409,7 @@ function renderYT(){
   if(!all.length){body.innerHTML='<div class="empty-state">No hay vídeos en las últimas 72h.</div>';setBadge('youtube','0');return;}
   body.innerHTML=all.map(v=>{
     const thumb=ytThumbFromLink(v.link||'');
-    return`<div class="media-item" onclick="window.open('${escHtml(v.link)}','_blank')">
+    return`<div class="media-item" onclick="openLink('${escHtml(v.link)}','video','${escHtml(v.channelId||'')}')">
       ${mediaThumbOrPlaceholder(thumb,'🎥',v.logo||getSourceLogo(v.channelId||''))}
       <div class="media-content">
         <div class="media-source yt"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg> ${escHtml(v.channelName)} ${isNew(v.pubDate,3600000)?'<span class="badge badge-new">🚨</span>':''}</div>
@@ -1437,7 +1437,7 @@ function renderPod(){
     // FIX #6: thumbnail de podcast (itunes:image u otro)
     const thumb=v.thumbnail||'';
     const podLink=(POD_FEEDS.find(f=>f.id===v.feedId)||{}).spotify||v.link;
-    return`<div class="media-item" onclick="window.open('${escHtml(podLink)}','_blank')">
+    return`<div class="media-item" onclick="openLink('${escHtml(podLink)}','podcast','${escHtml(v.feedId||'')}')">
       ${mediaThumbOrPlaceholder(thumb,'🎙',v.logo||getSourceLogo(v.feedId||''))}
       <div class="media-content">
         <div class="media-source pod"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> ${escHtml(v.source)} ${isNew(v.pubDate)?'<span class="badge badge-new">🚨</span>':''}</div>
@@ -1556,6 +1556,10 @@ function applyTheme(theme){
     const btn=document.getElementById(id);
     if(btn){btn.innerHTML=icon;if(typeof lucide!=='undefined')lucide.createIcons({nodes:[btn]});}
   });
+}
+function openLink(url,type,source){
+  if(typeof gtag!=='undefined')gtag('event','content_click',{content_type:type,link_url:url,source:source||''});
+  window.open(url,'_blank');
 }
 function toggleTheme(){
   const next=document.documentElement.dataset.theme==='light'?'dark':'light';
