@@ -523,6 +523,10 @@ i[data-lucide]{display:inline-block;}
     <div class="config-section">
       <div class="config-section-title">Estado — Podcast</div>
       <div id="feed-health-pod"></div>
+      <div style="margin-top:10px;">
+        <div style="font-size:10px;color:var(--text3);font-family:'Inter',sans-serif;margin-bottom:6px;display:flex;align-items:center;gap:5px;"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="color:#1DB954"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg> Links de Spotify por programa</div>
+        <div id="pod-spotify-list"></div>
+      </div>
     </div>
     <div class="config-section">
       <div class="config-section-title">Estado — YouTube</div>
@@ -680,6 +684,7 @@ let state={
   disabledNews:JSON.parse(localStorage.getItem('nba_dis_news')||'[]'),
   disabledYT:  JSON.parse(localStorage.getItem('nba_dis_yt')||'[]'),
   disabledPod: JSON.parse(localStorage.getItem('nba_dis_pod')||'[]'),
+  podSpotify:  JSON.parse(localStorage.getItem('nba_pod_spotify')||'{}'),
   // FIX #1: keywords libres
   teamKeywords: JSON.parse(localStorage.getItem('nba_kw')||'[]'),
   // FIX #4: incluir YT y podcasts en Mis Equipos
@@ -1397,7 +1402,8 @@ function renderPod(){
   body.innerHTML=all.map(v=>{
     // FIX #6: thumbnail de podcast (itunes:image u otro)
     const thumb=v.thumbnail||'';
-    return`<div class="media-item" onclick="window.open('${escHtml(v.link)}','_blank')">
+    const podLink=state.podSpotify[v.feedId]||v.link;
+    return`<div class="media-item" onclick="window.open('${escHtml(podLink)}','_blank')">
       ${mediaThumbOrPlaceholder(thumb,'🎙',v.logo||getSourceLogo(v.feedId||''))}
       <div class="media-content">
         <div class="media-source pod"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> ${escHtml(v.source)} ${isNew(v.pubDate)?'<span class="badge badge-new">🚨</span>':''}</div>
@@ -1491,8 +1497,22 @@ function updateHealthUI(){
   }).join('');
 
   renderYTConfig();
+  renderSpotifyLinks();
 }
 function toggleNews(id,btn){if(state.disabledNews.includes(id)){state.disabledNews=state.disabledNews.filter(x=>x!==id);btn.textContent='ACTIVO';btn.classList.add('on');}else{state.disabledNews.push(id);btn.textContent='DESACT.';btn.classList.remove('on');}localStorage.setItem('nba_dis_news',JSON.stringify(state.disabledNews));updateHealthUI();renderWire();renderTeams();}
+function renderSpotifyLinks(){
+  const el=document.getElementById('pod-spotify-list');if(!el)return;
+  el.innerHTML=POD_FEEDS.map(f=>`
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;">
+      <span style="font-size:10px;color:var(--text2);font-family:'Inter',sans-serif;min-width:120px;flex-shrink:0;">${escHtml(f.label)}</span>
+      <input type="text" class="config-input" style="flex:1;font-size:10px;padding:3px 7px;" placeholder="https://open.spotify.com/show/..." value="${escHtml(state.podSpotify[f.id]||'')}" onchange="saveSpotifyUrl('${f.id}',this.value)">
+    </div>`).join('');
+}
+function saveSpotifyUrl(id,url){
+  if(url.trim())state.podSpotify[id]=url.trim();
+  else delete state.podSpotify[id];
+  localStorage.setItem('nba_pod_spotify',JSON.stringify(state.podSpotify));
+}
 function togglePod(id,btn){if(state.disabledPod.includes(id)){state.disabledPod=state.disabledPod.filter(x=>x!==id);btn.textContent='ACTIVO';btn.classList.add('on');}else{state.disabledPod.push(id);btn.textContent='DESACT.';btn.classList.remove('on');}localStorage.setItem('nba_dis_pod',JSON.stringify(state.disabledPod));updateHealthUI();renderPod();}
 
 // ══════════════════════════════════
