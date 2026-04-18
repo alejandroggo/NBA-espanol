@@ -527,6 +527,15 @@ i[data-lucide]{display:inline-block;}
     <div class="config-section">
       <div class="config-section-title">Estado — YouTube</div>
       <div id="feed-health-yt"></div>
+      <div style="margin-top:10px;">
+        <div style="font-size:10px;color:var(--text3);font-family:'Inter',sans-serif;margin-bottom:6px;">Añadir canal (ID, @handle o URL de YouTube)</div>
+        <div class="config-row">
+          <input type="text" class="config-input" id="cyt-label" placeholder="Nombre del canal" style="flex:1">
+          <input type="text" class="config-input" id="cyt-id" placeholder="UCxxxxx o @handle" style="flex:2">
+          <button class="config-btn" onclick="addCustomYT()">AÑADIR</button>
+        </div>
+        <div id="cyt-status" style="margin-top:5px;font-size:10px;color:var(--text3);font-family:'Inter',sans-serif;"></div>
+      </div>
     </div>
 
     <div class="config-section">
@@ -1446,6 +1455,23 @@ function renderYTConfig(){
   }).join('');
 }
 function removeCustomYT(i){state.customYT.splice(i,1);localStorage.setItem('nba_yt_extra',JSON.stringify(state.customYT));renderYTConfig();}
+function addCustomYT(){
+  const label=document.getElementById('cyt-label').value.trim();
+  const raw=document.getElementById('cyt-id').value.trim();
+  const st=document.getElementById('cyt-status');
+  if(!label||!raw){st.textContent='Rellena el nombre y el canal.';st.style.color='var(--live-red)';return;}
+  // Extraer ID o handle de una URL si hace falta
+  let id=raw;
+  const mUrl=raw.match(/youtube\.com\/channel\/(UC[\w-]+)/i)||raw.match(/youtube\.com\/(@[\w-]+)/i);
+  if(mUrl)id=mUrl[1];
+  if(getActiveYTChannels().find(c=>c.id===id)){st.textContent='Ese canal ya está añadido.';st.style.color='var(--live-red)';return;}
+  state.customYT.push({id,label});
+  localStorage.setItem('nba_yt_extra',JSON.stringify(state.customYT));
+  document.getElementById('cyt-label').value='';
+  document.getElementById('cyt-id').value='';
+  st.textContent=`✓ ${label} añadido.`;st.style.color='var(--green)';
+  renderYTConfig();loadAllYT();
+}
 function toggleYT(id,btn){if(state.disabledYT.includes(id)){state.disabledYT=state.disabledYT.filter(x=>x!==id);btn.textContent='ACTIVO';btn.classList.add('on');}else{state.disabledYT.push(id);btn.textContent='DESACT.';btn.classList.remove('on');}localStorage.setItem('nba_dis_yt',JSON.stringify(state.disabledYT));renderYTConfig();loadAllYT();}
 
 // FIX #8: updateHealthUI — orden: noticias, podcast, YT (YT ahora también tiene su sección Estado separada)
