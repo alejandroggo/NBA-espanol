@@ -318,6 +318,7 @@ i[data-lucide]{display:inline-block;}
 #theme-btn svg,#mob-theme-btn svg{width:13px;height:13px;vertical-align:-2px;stroke-width:2;}
 /* Playoff game label */
 .cal-playoff-label{font-size:8px;font-weight:700;letter-spacing:.8px;color:var(--gold);text-align:center;margin-bottom:2px;text-transform:uppercase;}
+.cal-game-time{font-size:9px;font-weight:600;color:var(--live-red);text-align:center;margin-top:3px;letter-spacing:.3px;}
 </style>
 </head>
 <body>
@@ -1203,6 +1204,7 @@ function renderPartidos(dY,dT,dM,etHour,ayerStr,todayStr,mananaStr){
       const stCls=isLive?'live':isFinal?'final':'upcoming';
       const showScore=(isFinal||isLive)&&!state.noSpoilers;
       const stLabel=isLive?'<span class="live-dot"></span>EN VIVO':isFinal?(state.noSpoilers?'TERMINADO':'FINAL'):stText;
+      const timeLabel=isLive&&stText?`<div class="cal-game-time">${escHtml(stText)}</div>`:'';
       const awayAbbr=(away.team?.abbreviation||'').toLowerCase();
       const homeAbbr=(home.team?.abbreviation||'').toLowerCase();
       const hoopsUrl=sec.dateStr?`https://hoopsjunkie.io/games/${sec.dateStr}/${awayAbbr}-vs-${homeAbbr}`:'';
@@ -1217,7 +1219,7 @@ function renderPartidos(dY,dT,dM,etHour,ayerStr,todayStr,mananaStr){
       }
       return`<div class="cal-card ${cardCls}"${hoopsUrl?` onclick="window.open('${hoopsUrl}','_blank')" style="cursor:pointer;"`:''}>
         ${gameLabel?`<div class="cal-playoff-label">${gameLabel}</div>`:''}
-        <div class="cal-status ${stCls}">${stLabel}</div>
+        <div class="cal-status ${stCls}">${stLabel}</div>${timeLabel}
         <div class="cal-teams">
           <div class="cal-team"><div class="cal-team-info"><img class="team-logo" src="${logo(away.team?.abbreviation)}" onerror="this.style.display='none'"><span class="cal-team-abbr">${escHtml(away.team?.abbreviation||'')}</span></div>${showScore?`<span class="cal-score${isFinal?' final':''}${aS>hS?' leader':''}">${away.score||0}</span>`:''}</div>
           <div class="cal-divider"></div>
