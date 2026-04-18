@@ -719,9 +719,9 @@ let standingsConf='east';
 let _calData=null;
 
 // Límites temporales de contenido
-const LIMIT_NEWS = 48 * 3600000;
+const LIMIT_NEWS = 72 * 3600000;
 const LIMIT_YT   = 72 * 3600000;
-const LIMIT_POD  =  7 * 86400000;
+const LIMIT_POD  = 72 * 3600000;
 
 // ══════════════════════════════════
 // FIX #7 — MOBILE COLLAPSE
@@ -1128,7 +1128,7 @@ function newsItemHTML(a){
 function renderWire(){
   const body=document.getElementById('body-wire');
   const all=applyNewsFilter(getAllNews());
-  if(!all.length){body.innerHTML='<div class="empty-state">No hay artículos en las últimas 48h.<br>Comprueba los feeds en ⚙ Config</div>';setBadge('wire','0');return;}
+  if(!all.length){body.innerHTML='<div class="empty-state">No hay artículos en las últimas 72h.<br>Comprueba los feeds en ⚙ Config</div>';setBadge('wire','0');return;}
   body.innerHTML=all.map(a=>newsItemHTML(a)).join('');setBadge('wire',all.length);setUpdated('wire',lastUpdate.news);
 }
 
