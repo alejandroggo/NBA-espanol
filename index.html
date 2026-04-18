@@ -1072,7 +1072,7 @@ function newsItemHTML(a){
     <div class="article-content">
       <div class="article-meta">${logoHtml}<span class="article-source">${escHtml(a.source)}</span>${payB}${newB}</div>
       <div class="article-title">${escHtml(a.title)}</div>
-      <div class="article-date">${a.pubDate?formatDate(a.pubDate):''}${a.author?`<span class="article-author"> · ${escHtml(a.author)}</span>`:''}</div>
+      <div class="article-date">${a.pubDate?formatDate(a.pubDate):''}</div>
     </div>
   </div>`;
 }
