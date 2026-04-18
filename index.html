@@ -272,7 +272,7 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
     z-index:999;align-items:center;justify-content:space-around;padding:0 8px;gap:6px;
   }
   #mobile-actionbar .tb-btn{flex:1;text-align:center;justify-content:center;display:flex;align-items:center;gap:4px;}
-  #mob-theme-btn{flex:0 0 auto;padding:4px 8px;}
+  #mob-theme-btn{flex:0 0 auto;padding:3px 6px;font-size:10px;min-width:0;}
 
   /* Canvas baja para dejar sitio a las dos barras */
   #canvas{
@@ -315,9 +315,10 @@ i[data-lucide]{display:inline-block;}
 .config-title svg{width:15px;height:15px;vertical-align:-3px;stroke-width:2.2;margin-right:3px;}
 .config-btn svg{width:11px;height:11px;vertical-align:-1px;stroke-width:2.2;margin-right:2px;}
 #spoiler-btn svg{width:11px;height:11px;vertical-align:-1px;stroke-width:2.2;}
-#theme-btn svg{width:14px;height:14px;vertical-align:-2px;stroke-width:2;}
+#theme-btn svg,#mob-theme-btn svg{width:13px;height:13px;vertical-align:-2px;stroke-width:2;}
 /* Playoff game label */
 .cal-playoff-label{font-size:8px;font-weight:700;letter-spacing:.8px;color:var(--gold);text-align:center;margin-bottom:2px;text-transform:uppercase;}
+.cal-game-time{font-size:9px;font-weight:600;color:var(--live-red);text-align:center;margin-top:3px;letter-spacing:.3px;}
 </style>
 </head>
 <body>
@@ -526,6 +527,15 @@ i[data-lucide]{display:inline-block;}
     <div class="config-section">
       <div class="config-section-title">Estado — YouTube</div>
       <div id="feed-health-yt"></div>
+      <div style="margin-top:10px;">
+        <div style="font-size:10px;color:var(--text3);font-family:'Inter',sans-serif;margin-bottom:6px;">Añadir canal (ID, @handle o URL de YouTube)</div>
+        <div class="config-row">
+          <input type="text" class="config-input" id="cyt-label" placeholder="Nombre del canal" style="flex:1">
+          <input type="text" class="config-input" id="cyt-id" placeholder="UCxxxxx o @handle" style="flex:2">
+          <button class="config-btn" onclick="addCustomYT()">AÑADIR</button>
+        </div>
+        <div id="cyt-status" style="margin-top:5px;font-size:10px;color:var(--text3);font-family:'Inter',sans-serif;"></div>
+      </div>
     </div>
 
     <div class="config-section">
@@ -650,14 +660,14 @@ let YT_CHANNELS=[
 ];
 
 let POD_FEEDS=[
-  {id:'tresmas',  label:'3+1',                        url:'https://feeds.ivoox.com/feed_fg_f12314873_filtro_1.xml',enabled:true},
-  {id:'buzzbeet', label:'Buzzer Beater',               url:'https://feeds.ivoox.com/feed_fg_f11091103_filtro_1.xml',enabled:true},
-  {id:'reverso',  label:'El Reverso',                  url:'https://feeds.ivoox.com/feed_fg_f1404265_filtro_1.xml',enabled:true},
-  {id:'enopnba',  label:'Esto no es un podcast NBA',   url:'https://www.spreaker.com/show/5970729/episodes/feed',enabled:true},
-  {id:'nbaadict', label:'NBA Adictos',                 url:'https://feeds.ivoox.com/feed_fg_f1584844_filtro_1.xml',enabled:true},
-  {id:'nbahouse', label:'NBA House',                   url:'https://www.spreaker.com/show/6150962/episodes/feed',enabled:true},
-  {id:'massball', label:'Massive Ball',                url:'https://feeds.ivoox.com/feed_fg_f1583803_filtro_1.xml',enabled:true},
-  {id:'minvet',   label:'Mínimo de Veterano',          url:'https://omny.fm/shows/nba-m-nimo-de-veterano/playlists/podcast.rss',enabled:true},
+  {id:'tresmas',  label:'3+1',                        url:'https://feeds.ivoox.com/feed_fg_f12314873_filtro_1.xml',enabled:true, spotify:'https://open.spotify.com/show/0xkHMHfTleDMkGi0DymhMX'},
+  {id:'buzzbeet', label:'Buzzer Beater',               url:'https://feeds.ivoox.com/feed_fg_f11091103_filtro_1.xml',enabled:true, spotify:'https://open.spotify.com/show/1bNaUi5EgLFXCqeKyI4yqf'},
+  {id:'reverso',  label:'El Reverso',                  url:'https://feeds.ivoox.com/feed_fg_f1404265_filtro_1.xml',enabled:true, spotify:'https://open.spotify.com/show/5pwnnA0JasRVcknejixMCF'},
+  {id:'enopnba',  label:'Esto no es un podcast NBA',   url:'https://www.spreaker.com/show/5970729/episodes/feed',enabled:true, spotify:'https://open.spotify.com/show/2U0nqkk7IDSskvtzbpkwwM'},
+  {id:'nbaadict', label:'NBA Adictos',                 url:'https://feeds.ivoox.com/feed_fg_f1584844_filtro_1.xml',enabled:true, spotify:'https://open.spotify.com/show/2Sey2ganiixj23DQPkvF86'},
+  {id:'nbahouse', label:'NBA House',                   url:'https://www.spreaker.com/show/6150962/episodes/feed',enabled:true, spotify:'https://open.spotify.com/show/35jXKwi2OvZSBYY3hytanV'},
+  {id:'massball', label:'Massive Ball',                url:'https://feeds.ivoox.com/feed_fg_f1583803_filtro_1.xml',enabled:true, spotify:'https://open.spotify.com/show/5cFpt8nd2fI5T2EQX97AmS'},
+  {id:'minvet',   label:'Mínimo de Veterano',          url:'https://omny.fm/shows/nba-m-nimo-de-veterano/playlists/podcast.rss',enabled:true, spotify:'https://open.spotify.com/show/72NnqMJzg6m3vzE4BDREE5'},
 ];
 
 // ══════════════════════════════════
@@ -1072,7 +1082,7 @@ function newsItemHTML(a){
     <div class="article-content">
       <div class="article-meta">${logoHtml}<span class="article-source">${escHtml(a.source)}</span>${payB}${newB}</div>
       <div class="article-title">${escHtml(a.title)}</div>
-      <div class="article-date">${a.pubDate?formatDate(a.pubDate):''}${a.author?`<span class="article-author"> · ${escHtml(a.author)}</span>`:''}</div>
+      <div class="article-date">${a.pubDate?formatDate(a.pubDate):''}</div>
     </div>
   </div>`;
 }
@@ -1202,7 +1212,8 @@ function renderPartidos(dY,dT,dM,etHour,ayerStr,todayStr,mananaStr){
       const cardCls=isLive?'live-card':sec.label==='HOY'?'today-card':'';
       const stCls=isLive?'live':isFinal?'final':'upcoming';
       const showScore=(isFinal||isLive)&&!state.noSpoilers;
-      const stLabel=isLive?'<span class="live-dot"></span>EN VIVO':isFinal?(state.noSpoilers?'TERMINADO':'FINAL'):stText;
+      const stLabel=isLive?`<span class="live-dot"></span>${escHtml(stText)||'EN VIVO'}`:isFinal?(state.noSpoilers?'TERMINADO':'FINAL'):stText;
+      const timeLabel='';
       const awayAbbr=(away.team?.abbreviation||'').toLowerCase();
       const homeAbbr=(home.team?.abbreviation||'').toLowerCase();
       const hoopsUrl=sec.dateStr?`https://hoopsjunkie.io/games/${sec.dateStr}/${awayAbbr}-vs-${homeAbbr}`:'';
@@ -1217,7 +1228,7 @@ function renderPartidos(dY,dT,dM,etHour,ayerStr,todayStr,mananaStr){
       }
       return`<div class="cal-card ${cardCls}"${hoopsUrl?` onclick="window.open('${hoopsUrl}','_blank')" style="cursor:pointer;"`:''}>
         ${gameLabel?`<div class="cal-playoff-label">${gameLabel}</div>`:''}
-        <div class="cal-status ${stCls}">${stLabel}</div>
+        <div class="cal-status ${stCls}">${stLabel}</div>${timeLabel}
         <div class="cal-teams">
           <div class="cal-team"><div class="cal-team-info"><img class="team-logo" src="${logo(away.team?.abbreviation)}" onerror="this.style.display='none'"><span class="cal-team-abbr">${escHtml(away.team?.abbreviation||'')}</span></div>${showScore?`<span class="cal-score${isFinal?' final':''}${aS>hS?' leader':''}">${away.score||0}</span>`:''}</div>
           <div class="cal-divider"></div>
@@ -1386,7 +1397,8 @@ function renderPod(){
   body.innerHTML=all.map(v=>{
     // FIX #6: thumbnail de podcast (itunes:image u otro)
     const thumb=v.thumbnail||'';
-    return`<div class="media-item" onclick="window.open('${escHtml(v.link)}','_blank')">
+    const podLink=(POD_FEEDS.find(f=>f.id===v.feedId)||{}).spotify||v.link;
+    return`<div class="media-item" onclick="window.open('${escHtml(podLink)}','_blank')">
       ${mediaThumbOrPlaceholder(thumb,'🎙',v.logo||getSourceLogo(v.feedId||''))}
       <div class="media-content">
         <div class="media-source pod"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> ${escHtml(v.source)} ${isNew(v.pubDate)?'<span class="badge badge-new">🚨</span>':''}</div>
@@ -1444,6 +1456,23 @@ function renderYTConfig(){
   }).join('');
 }
 function removeCustomYT(i){state.customYT.splice(i,1);localStorage.setItem('nba_yt_extra',JSON.stringify(state.customYT));renderYTConfig();}
+function addCustomYT(){
+  const label=document.getElementById('cyt-label').value.trim();
+  const raw=document.getElementById('cyt-id').value.trim();
+  const st=document.getElementById('cyt-status');
+  if(!label||!raw){st.textContent='Rellena el nombre y el canal.';st.style.color='var(--live-red)';return;}
+  // Extraer ID o handle de una URL si hace falta
+  let id=raw;
+  const mUrl=raw.match(/youtube\.com\/channel\/(UC[\w-]+)/i)||raw.match(/youtube\.com\/(@[\w-]+)/i);
+  if(mUrl)id=mUrl[1];
+  if(getActiveYTChannels().find(c=>c.id===id)){st.textContent='Ese canal ya está añadido.';st.style.color='var(--live-red)';return;}
+  state.customYT.push({id,label});
+  localStorage.setItem('nba_yt_extra',JSON.stringify(state.customYT));
+  document.getElementById('cyt-label').value='';
+  document.getElementById('cyt-id').value='';
+  st.textContent=`✓ ${label} añadido.`;st.style.color='var(--green)';
+  renderYTConfig();loadAllYT();
+}
 function toggleYT(id,btn){if(state.disabledYT.includes(id)){state.disabledYT=state.disabledYT.filter(x=>x!==id);btn.textContent='ACTIVO';btn.classList.add('on');}else{state.disabledYT.push(id);btn.textContent='DESACT.';btn.classList.remove('on');}localStorage.setItem('nba_dis_yt',JSON.stringify(state.disabledYT));renderYTConfig();loadAllYT();}
 
 // FIX #8: updateHealthUI — orden: noticias, podcast, YT (YT ahora también tiene su sección Estado separada)
