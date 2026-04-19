@@ -1322,27 +1322,24 @@ async function loadBracket(){
   const body=document.getElementById('body-standings');
   body.innerHTML='<div class="panel-loading">CARGANDO</div>';
   const yr=new Date().getMonth()>=9?new Date().getFullYear()+1:new Date().getFullYear();
-  const endpoints=[
-    `https://site.api.espn.com/apis/site/v2/sports/basketball/nba/playoff?season=${yr}`,
-    `https://site.api.espn.com/apis/site/v2/sports/basketball/nba/playoff`,
-    `https://site.api.espn.com/apis/site/v2/sports/basketball/nba/series?season=${yr}`,
-    `https://site.api.espn.com/apis/site/v2/sports/basketball/nba/series`,
+  const base=`https://site.api.espn.com/apis/site/v2/sports/basketball/nba/playoff?season=${yr}`;
+  const attempts=[
+    ()=>fetch(base),
+    ()=>fetch(`https://corsproxy.io/?${encodeURIComponent(base)}`),
+    ()=>fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(base)}`),
+    ()=>fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(base)}`),
   ];
   let data=null;
-  for(const url of endpoints){
+  for(const fn of attempts){
     try{
-      const r=await fetch(url);
-      if(!r.ok)continue;
-      const d=await r.json();
-      const series=d?.bracket?.series||d?.series||d?.playoffs?.series||[];
-      console.log('[bracket]',url,series.length,'series',d);
+      const r=await fn();if(!r.ok)continue;
+      let d=await r.json();
+      if(typeof d.contents==='string')d=JSON.parse(d.contents);
+      const series=d?.bracket?.series||d?.series||[];
       if(series.length){data=d;break;}
-    }catch(e){console.warn('[bracket] failed:',url,e);}
+    }catch(e){}
   }
-  if(!data){
-    body.innerHTML='<div class="empty-state">Bracket no disponible.<br>Estará activo cuando empiecen los playoffs.</div>';
-    return;
-  }
+  if(!data){body.innerHTML='<div class="empty-state">Bracket no disponible.<br>Estará activo cuando empiecen los playoffs.</div>';return;}
   renderBracket(data);
 }
 
