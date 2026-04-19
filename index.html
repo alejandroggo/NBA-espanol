@@ -696,8 +696,8 @@ let POD_FEEDS=[
   {id:'nbahouse', label:'NBA House',                   url:'https://www.spreaker.com/show/6150962/episodes/feed',enabled:true, spotify:'https://open.spotify.com/show/35jXKwi2OvZSBYY3hytanV'},
   {id:'massball', label:'Massive Ball',                url:'https://feeds.ivoox.com/feed_fg_f1583803_filtro_1.xml',enabled:true, spotify:'https://open.spotify.com/show/5cFpt8nd2fI5T2EQX97AmS'},
   {id:'minvet',   label:'Mínimo de Veterano',          url:'https://omny.fm/shows/nba-m-nimo-de-veterano/playlists/podcast.rss',enabled:true, spotify:'https://open.spotify.com/show/72NnqMJzg6m3vzE4BDREE5'},
-  {id:'sofapod',  label:'Podcast desde el Sofá',       url:'https://www.ivoox.com/podcast-podcast-desde-el-sofa-epdes_fg_f170725_filtro_1.xml',enabled:true, spotify:'https://open.spotify.com/show/4xvFUYZmsPylnn8DdBFH86'},
-  {id:'racionba', label:'Ración de NBA',               url:'https://raciondenba.libsyn.com/rss',enabled:true, spotify:'https://open.spotify.com/show/7hb2fZ0QCocoxrnH6CBBGH'},
+  {id:'sofapod',  label:'Podcast desde el Sofá',       url:'https://feeds.ivoox.com/feed_fg_f170725_filtro_1.xml',enabled:true, spotify:'https://open.spotify.com/show/4xvFUYZmsPylnn8DdBFH86'},
+  {id:'racionba', label:'Ración de NBA',               url:'https://feeds.ivoox.com/feed_fg_f114050_filtro_1.xml',enabled:true, spotify:'https://open.spotify.com/show/7hb2fZ0QCocoxrnH6CBBGH'},
 ];
 
 // ══════════════════════════════════
@@ -833,7 +833,7 @@ async function fetchRSS(url){
   const ac=new AbortController();
   const t=setTimeout(()=>ac.abort(),7000);
   const s=ac.signal;
-  const r2j=async()=>{const r=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`,{signal:s});const d=await r.json();if(d.status!=='ok'||!d.items?.length)throw new Error('empty');return{items:d.items.map(i=>({title:i.title||'',link:i.link||'',pubDate:i.pubDate||'',thumbnail:i.thumbnail||i.enclosure?.link||'',author:i.author||''})),feedImage:d.feed?.image||''};};
+  const r2j=async()=>{const r=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`,{signal:s});const d=await r.json();if(d.status!=='ok'||!d.items?.length)throw new Error('empty');return{items:d.items.map(i=>({title:i.title||'',link:i.link||'',pubDate:i.pubDate?(i.pubDate.includes('T')?i.pubDate:i.pubDate.replace(' ','T')+'Z'):'',thumbnail:i.thumbnail||i.enclosure?.link||'',author:i.author||''})),feedImage:d.feed?.image||''};};
   const cp=async()=>{const r=await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`,{signal:s});if(!r.ok)throw new Error('not ok');const tx=await r.text();const items=parseXML(tx);if(!items.length)throw new Error('empty');return{items,feedImage:''};};
   try{const res=await Promise.any([r2j(),cp()]);clearTimeout(t);ac.abort();return res;}
   catch(e){clearTimeout(t);throw e;}
