@@ -1341,6 +1341,16 @@ async function loadBracket(){
 
 function renderBracket(events){
   const body=document.getElementById('body-standings');
+  // Debug: log first playoff event to inspect data structure
+  const sample=events[0];
+  if(sample)console.log('[bracket] sample event:',JSON.stringify({
+    seasonType:sample.season?.type,
+    name:sample.name,
+    note:sample.competitions?.[0]?.notes?.[0],
+    series:sample.competitions?.[0]?.series,
+    status:sample.status?.type?.state,
+    competitors:sample.competitions?.[0]?.competitors?.map(c=>({homeAway:c.homeAway,abbr:c.team?.abbreviation,seed:c.seed,winner:c.winner,score:c.score}))
+  },null,2));
   const seriesMap=new Map();
   for(const ev of events){
     const comp=ev.competitions?.[0];if(!comp)continue;
