@@ -817,7 +817,7 @@ function drainQueue(){while(activeCount<MAX_CONCURRENT&&fetchQueue.length){const
 // ══════════════════════════════════
 async function fetchRSS(url){
   const r2j=async()=>{const r=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(9000)});const d=await r.json();if(d.status!=='ok'||!d.items?.length)throw new Error('empty');return{items:d.items.map(i=>({title:i.title||'',link:i.link||'',pubDate:i.pubDate||'',thumbnail:i.thumbnail||i.enclosure?.link||'',author:i.author||''})),feedImage:d.feed?.image||''};};
-  const ao=async()=>{const r=await fetch(`https://allorigins.win/get?disableCache=true&url=${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(9000)});return{items:parseXML((await r.json()).contents),feedImage:''};};
+  const ao=async()=>{const r=await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(9000)});return{items:parseXML((await r.json()).contents),feedImage:''};};
   const cp=async()=>{const r=await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(9000)});return{items:parseXML(await r.text()),feedImage:''};};
   const cb=async()=>{const r=await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(9000)});const t=await r.text();if(!t.includes('<item')&&!t.includes('<entry'))throw new Error('empty');return{items:parseXML(t),feedImage:''};};
   return Promise.any([r2j(),ao(),cp(),cb()]);
@@ -1319,9 +1319,9 @@ async function loadBracket(){
   body.innerHTML='<div class="panel-loading">CARGANDO</div>';
   const yr=new Date().getMonth()>=9?new Date().getFullYear()+1:new Date().getFullYear();
   const endpoints=[
-    `https://site.api.espn.com/apis/v2/sports/basketball/nba/playoff?season=${yr}`,
-    `https://site.api.espn.com/apis/v2/sports/basketball/nba/playoff`,
-    `https://site.web.api.espn.com/apis/v2/sports/basketball/nba/playoff?season=${yr}`,
+    `https://site.api.espn.com/apis/site/v2/sports/basketball/nba/playoff?season=${yr}`,
+    `https://site.api.espn.com/apis/site/v2/sports/basketball/nba/playoff`,
+    `https://site.api.espn.com/apis/site/v2/sports/basketball/nba/series?season=${yr}`,
     `https://site.api.espn.com/apis/site/v2/sports/basketball/nba/series`,
   ];
   let data=null;
