@@ -95,6 +95,12 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 
 /* FILTER BAR */
 .filter-bar{padding:5px 10px;border-bottom:1px solid var(--border);background:var(--bg2);position:relative;flex-shrink:0;}
+/* YT SUB-TABS */
+.yt-subtabs{display:flex;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0;}
+.yt-sub-btn{flex:1;padding:6px 4px;font-family:'Inter',sans-serif;font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;color:var(--text3);background:none;border:none;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;}
+.yt-sub-btn:hover{color:var(--text2);}
+.yt-sub-btn.active{color:var(--gold);border-bottom-color:var(--gold);}
+.yt-sub-btn .yt-cnt{font-weight:400;opacity:.7;margin-left:3px;}
 .filter-btn{background:transparent;border:1px solid var(--border);color:var(--text2);font-family:'Inter',sans-serif;font-weight:600;font-size:11px;letter-spacing:.5px;text-transform:uppercase;padding:3px 9px;border-radius:4px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px;width:100%;}
 .filter-btn:hover{border-color:var(--gold);color:var(--gold);}
 .filter-count{background:var(--live-red);color:#fff;font-size:9px;padding:1px 6px;border-radius:8px;margin-left:auto;display:none;}
@@ -409,6 +415,10 @@ i[data-lucide]{display:inline-block;}
       <button class="filter-btn" onclick="toggleFilterDropdown('youtube')"><span>Canales</span><span class="filter-count" id="filter-count-youtube"></span></button>
       <div class="filter-dropdown" id="filter-dd-youtube"></div>
     </div>
+    <div class="yt-subtabs">
+      <button class="yt-sub-btn active" id="ytst-videos" onclick="switchYTSubTab('videos')">Videos<span class="yt-cnt" id="ytst-cnt-videos"></span></button>
+      <button class="yt-sub-btn" id="ytst-shorts" onclick="switchYTSubTab('shorts')">Shorts<span class="yt-cnt" id="ytst-cnt-shorts"></span></button>
+    </div>
     <div class="panel-body" id="body-youtube"></div>
   </div>
 
@@ -669,7 +679,7 @@ let NEWS_FEEDS=[
 let YT_CHANNELS=[
   {id:'UCoCXWfhkSuT4DOolxFsPoYQ', label:'Basket 365'},
   {id:'UCTJNmeP0HiOU4-qOMNVNoGA',label:'Drafteados'},
-  {id:'@Gigantesbasket',          label:'Gigantes del Basket'},
+  {id:'UCXJnFRcssT0Q1ID_V6Or1sQ', label:'Gigantes del Basket'},
   {id:'UCev6qJYN5x_OD3YuQepnyNQ',label:'Leo Carranza'},
   {id:'UCiQsjWR-lS6ZtPK1_Zm2oeQ', label:'Maxi YT Basket'},
   {id:'UCvfhPZKiTP7qlsCFbENRuwA', label:'Nacho Losilla'},
@@ -686,6 +696,7 @@ let POD_FEEDS=[
   {id:'nbahouse', label:'NBA House',                   url:'https://www.spreaker.com/show/6150962/episodes/feed',enabled:true, spotify:'https://open.spotify.com/show/35jXKwi2OvZSBYY3hytanV'},
   {id:'massball', label:'Massive Ball',                url:'https://feeds.ivoox.com/feed_fg_f1583803_filtro_1.xml',enabled:true, spotify:'https://open.spotify.com/show/5cFpt8nd2fI5T2EQX97AmS'},
   {id:'minvet',   label:'Mínimo de Veterano',          url:'https://omny.fm/shows/nba-m-nimo-de-veterano/playlists/podcast.rss',enabled:true, spotify:'https://open.spotify.com/show/72NnqMJzg6m3vzE4BDREE5'},
+  {id:'sofapod',  label:'Podcast desde el Sofá',       url:'https://www.ivoox.com/podcast-podcast-desde-el-sofa-epdes_fg_f170725_filtro_1.xml',enabled:true, spotify:'https://open.spotify.com/show/4xvFUYZmsPylnn8DdBFH86'},
 ];
 
 // ══════════════════════════════════
@@ -710,6 +721,8 @@ let state={
 let newsData={},ytData={},podData={};
 let newsHealth={},ytHealth={},podHealth={};
 let newsExcluded=[],ytExcluded=[],podExcluded=[];
+let ytSubTab='videos';
+function switchYTSubTab(sub){ytSubTab=sub;document.querySelectorAll('.yt-sub-btn').forEach(b=>b.classList.remove('active'));document.getElementById('ytst-'+sub)?.classList.add('active');renderYT();}
 let searchQuery='';
 let livePolling=false,liveInterval=null,autoRefreshTimer=null;
 let fetchQueue=[],activeCount=0;
@@ -1435,8 +1448,14 @@ function renderYT(){
   all=all.filter(i=>!i.pubDate||new Date(i.pubDate).getTime()>cutoff);
   if(ytExcluded.length>0)all=all.filter(i=>!ytExcluded.includes(i.channelId));
   if(searchQuery)all=all.filter(i=>matchesSearch(i));
-  if(!all.length){body.innerHTML='<div class="empty-state">No hay vídeos en las últimas 72h.</div>';setBadge('youtube','0');return;}
-  body.innerHTML=all.map(v=>{
+  const videos=all.filter(v=>!v.title.includes('#'));
+  const shorts=all.filter(v=>v.title.includes('#'));
+  const vcnt=document.getElementById('ytst-cnt-videos');const scnt=document.getElementById('ytst-cnt-shorts');
+  if(vcnt)vcnt.textContent=videos.length?` (${videos.length})`:'';
+  if(scnt)scnt.textContent=shorts.length?` (${shorts.length})`:'';
+  const items=ytSubTab==='shorts'?shorts:videos;
+  if(!items.length){body.innerHTML=`<div class="empty-state">No hay ${ytSubTab==='shorts'?'shorts':'vídeos'} en las últimas 72h.</div>`;setBadge('youtube',all.length?(all.length+' VÍD.'):'0');setUpdated('youtube',lastUpdate.yt);return;}
+  body.innerHTML=items.map(v=>{
     const thumb=ytThumbFromLink(v.link||'');
     return`<div class="media-item" onclick="openLink('${escHtml(v.link)}','video','${escHtml(v.channelId||'')}')">
       ${mediaThumbOrPlaceholder(thumb,'🎥',v.logo||getSourceLogo(v.channelId||''))}
