@@ -1341,46 +1341,47 @@ async function loadBracket(){
 
 function renderBracket(events){
   const body=document.getElementById('body-standings');
-  // Debug: log first playoff event to inspect data structure
-  const sample=events[0];
-  if(sample)console.log('[bracket] sample event:',JSON.stringify({
-    seasonType:sample.season?.type,
-    name:sample.name,
-    note:sample.competitions?.[0]?.notes?.[0],
-    series:sample.competitions?.[0]?.series,
-    status:sample.status?.type?.state,
-    competitors:sample.competitions?.[0]?.competitors?.map(c=>({homeAway:c.homeAway,abbr:c.team?.abbreviation,seed:c.seed,winner:c.winner,score:c.score}))
-  },null,2));
-  const seriesMap=new Map();
+  // Group by series key, keep the latest game per series (highest game number)
+  const latest=new Map();
   for(const ev of events){
     const comp=ev.competitions?.[0];if(!comp)continue;
     const teams=comp.competitors||[];if(teams.length!==2)continue;
-    const a=teams.find(t=>t.homeAway==='away')||teams[0];
-    const h=teams.find(t=>t.homeAway==='home')||teams[1];
-    const aAbbr=(a.team?.abbreviation||'').toUpperCase();
+    const h=teams.find(t=>t.homeAway==='home')||teams[0];
+    const a=teams.find(t=>t.homeAway==='away')||teams[1];
     const hAbbr=(h.team?.abbreviation||'').toUpperCase();
-    if(!aAbbr||!hAbbr)continue;
-    const key=[aAbbr,hAbbr].sort().join('-');
-    const note=(comp.notes?.[0]?.headline||'');
-    const noteLow=note.toLowerCase();
-    const conf=noteLow.includes('eastern')?'east':noteLow.includes('western')?'west':noteLow.includes('final')?'finals':'unknown';
-    const round=noteLow.includes('first')?1:(noteLow.includes('second')||noteLow.includes('semifinal'))?2:noteLow.includes('conference final')?3:noteLow.includes('nba final')||conf==='finals'?4:0;
-    if(conf==='unknown'||round===0)continue; // skip non-playoff or unrecognized
-    const isFinished=ev.status?.type?.state==='post';
-    const aWon=isFinished&&(a.winner===true||(parseFloat(a.score||0)>parseFloat(h.score||0)));
-    const hWon=isFinished&&(h.winner===true||(parseFloat(h.score||0)>parseFloat(a.score||0)));
-    if(!seriesMap.has(key)){
-      seriesMap.set(key,{aAbbr,hAbbr,aSeed:a.seed||'',hSeed:h.seed||'',conf,round,aWins:0,hWins:0,completed:false});
-    }
-    const s=seriesMap.get(key);
-    if(aWon)s.aWins++;
-    if(hWon)s.hWins++;
-    if(s.aWins===4||s.hWins===4)s.completed=true;
+    const aAbbr=(a.team?.abbreviation||'').toUpperCase();
+    if(!hAbbr||!aAbbr)continue;
+    const key=[hAbbr,aAbbr].sort().join('-');
+    const note=comp.notes?.[0]?.headline||'';
+    const gameNum=parseInt(note.match(/game\s*(\d+)/i)?.[1]||0);
+    const prev=latest.get(key);
+    if(!prev||gameNum>prev.gameNum)latest.set(key,{hAbbr,aAbbr,hSeed:h.seed||'',aSeed:a.seed||'',comp,note,gameNum});
   }
-  const valid=[...seriesMap.values()].filter(s=>s.conf!=='unknown'&&s.round>0);
-  if(!valid.length){body.innerHTML='<div class="empty-state">Sin datos de bracket todavía.</div>';return;}
+  if(!latest.size){body.innerHTML='<div class="empty-state">Sin datos de bracket todavía.</div>';return;}
+
+  const seriesMap=new Map();
+  for(const{hAbbr,aAbbr,hSeed,aSeed,comp,note}of latest.values()){
+    const key=[hAbbr,aAbbr].sort().join('-');
+    const noteLow=note.toLowerCase();
+    const conf=noteLow.includes('east')?'east':noteLow.includes('west')?'west':'finals';
+    const round=noteLow.includes('1st')||noteLow.includes('first')?1:
+                noteLow.includes('2nd')||noteLow.includes('second')||noteLow.includes('semifinal')?2:
+                (noteLow.includes('conf')||noteLow.includes('conference'))&&noteLow.includes('final')?3:4;
+    // Get wins directly from series.competitors, matched by team id
+    const seriesComps=comp.series?.competitors||[];
+    const hId=String(comp.competitors?.find(t=>t.homeAway==='home')?.team?.id||'');
+    let hWins=0,aWins=0;
+    seriesComps.forEach(sc=>{
+      if(String(sc.id)===hId)hWins=sc.wins||0;
+      else aWins=sc.wins||0;
+    });
+    const completed=!!(comp.series?.completed)||(hWins===4||aWins===4);
+    seriesMap.set(key,{hAbbr,aAbbr,hSeed,aSeed,hWins,aWins,conf,round,completed});
+  }
+
   const groups={east:[],west:[],finals:[]};
-  valid.forEach(s=>groups[s.conf]?.push(s));
+  for(const s of seriesMap.values())if(groups[s.conf])groups[s.conf].push(s);
+
   const renderGroup=(list,label)=>{
     if(!list.length)return'';
     const byRound={};
@@ -1388,7 +1389,7 @@ function renderBracket(events){
     const rounds=Object.keys(byRound).sort((a,b)=>a-b).map(r=>{
       const cards=byRound[r].map(s=>{
         const done=s.completed;
-        const aWin=done&&s.aWins>s.hWins,hWin=done&&s.hWins>s.aWins;
+        const hWin=done&&s.hWins>s.aWins,aWin=done&&s.aWins>s.hWins;
         return`<div class="bracket-series${done?' series-done':''}">
           <div class="bracket-team"><span class="bracket-seed">${s.aSeed}</span><span class="bracket-abbr${aWin?' winner':''}">${escHtml(s.aAbbr)}</span></div>
           <div class="bracket-wins">${s.aWins}-${s.hWins}</div>
@@ -1399,6 +1400,7 @@ function renderBracket(events){
     }).join('');
     return`<div class="bracket-conf"><div class="bracket-conf-title">${label}</div>${rounds}</div>`;
   };
+
   let html=`<div style="padding:10px;overflow-y:auto;height:100%;">`;
   html+=renderGroup(groups.east,'Conferencia Este');
   html+=renderGroup(groups.west,'Conferencia Oeste');
