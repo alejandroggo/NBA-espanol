@@ -816,11 +816,15 @@ function drainQueue(){while(activeCount<MAX_CONCURRENT&&fetchQueue.length){const
 // RSS
 // ══════════════════════════════════
 async function fetchRSS(url){
-  const r2j=async()=>{const r=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(9000)});const d=await r.json();if(d.status!=='ok'||!d.items?.length)throw new Error('empty');return{items:d.items.map(i=>({title:i.title||'',link:i.link||'',pubDate:i.pubDate||'',thumbnail:i.thumbnail||i.enclosure?.link||'',author:i.author||''})),feedImage:d.feed?.image||''};};
-  const ao=async()=>{const r=await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(9000)});return{items:parseXML((await r.json()).contents),feedImage:''};};
-  const cp=async()=>{const r=await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(9000)});return{items:parseXML(await r.text()),feedImage:''};};
-  const cb=async()=>{const r=await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,{signal:AbortSignal.timeout(9000)});const t=await r.text();if(!t.includes('<item')&&!t.includes('<entry'))throw new Error('empty');return{items:parseXML(t),feedImage:''};};
-  return Promise.any([r2j(),ao(),cp(),cb()]);
+  const ac=new AbortController();
+  const t=setTimeout(()=>ac.abort(),8000);
+  const s=ac.signal;
+  const r2j=async()=>{const r=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`,{signal:s});const d=await r.json();if(d.status!=='ok'||!d.items?.length)throw new Error('empty');return{items:d.items.map(i=>({title:i.title||'',link:i.link||'',pubDate:i.pubDate||'',thumbnail:i.thumbnail||i.enclosure?.link||'',author:i.author||''})),feedImage:d.feed?.image||''};};
+  const ao=async()=>{const r=await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,{signal:s});return{items:parseXML((await r.json()).contents),feedImage:''};};
+  const cp=async()=>{const r=await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`,{signal:s});return{items:parseXML(await r.text()),feedImage:''};};
+  const cb=async()=>{const r=await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,{signal:s});const tx=await r.text();if(!tx.includes('<item')&&!tx.includes('<entry'))throw new Error('empty');return{items:parseXML(tx),feedImage:''};};
+  try{const res=await Promise.any([r2j(),ao(),cp(),cb()]);clearTimeout(t);ac.abort();return res;}
+  catch(e){clearTimeout(t);throw e;}
 }
 function parseXML(xml){
   const doc=new DOMParser().parseFromString(xml,'text/xml');const items=[];
