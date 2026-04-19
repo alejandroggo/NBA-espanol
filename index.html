@@ -833,7 +833,7 @@ async function fetchRSS(url){
   const ac=new AbortController();
   const t=setTimeout(()=>ac.abort(),7000);
   const s=ac.signal;
-  const r2j=async()=>{const r=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`,{signal:s});const d=await r.json();if(d.status!=='ok'||!d.items?.length)throw new Error('empty');return{items:d.items.map(i=>({title:i.title||'',link:i.link||'',pubDate:i.pubDate?(i.pubDate.includes('T')?i.pubDate:i.pubDate.replace(' ','T')+'Z'):'',thumbnail:i.thumbnail||i.enclosure?.link||'',author:i.author||''})),feedImage:d.feed?.image||''};};
+  const r2j=async()=>{const r=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`,{signal:s});const d=await r.json();if(d.status!=='ok'||!d.items?.length)throw new Error('empty');return{items:d.items.map(i=>{const m=(i.content||i.description||'').match(/<img[^>]+src=["']([^"']+)["']/i);const descImg=m?m[1]:'';return{title:i.title||'',link:i.link||'',pubDate:i.pubDate?(i.pubDate.includes('T')?i.pubDate:i.pubDate.replace(' ','T')+'Z'):'',thumbnail:i.thumbnail||i.enclosure?.link||descImg||'',author:i.author||''};}),feedImage:d.feed?.image||''};};
   const cp=async()=>{const r=await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`,{signal:s});if(!r.ok)throw new Error('not ok');const tx=await r.text();const items=parseXML(tx);if(!items.length)throw new Error('empty');return{items,feedImage:''};};
   try{const res=await Promise.any([r2j(),cp()]);clearTimeout(t);ac.abort();return res;}
   catch(e){clearTimeout(t);throw e;}
@@ -844,15 +844,14 @@ function parseXML(xml){
     const title=el.querySelector('title')?.textContent||'';
     const link=el.querySelector('link')?.getAttribute('href')||el.querySelector('link')?.textContent||el.querySelector('guid')?.textContent||'';
     const pubDate=el.querySelector('pubDate')?.textContent||el.querySelector('published')?.textContent||el.querySelector('updated')?.textContent||'';
-    // FIX #6: intentar extraer thumbnail del RSS
-    const mediaThumb=el.querySelector('thumbnail')?.getAttribute('url')||el.querySelector('thumbnail')?.textContent||'';
+    const mediaThumb=el.getElementsByTagName('media:thumbnail')[0]?.getAttribute('url')||el.getElementsByTagName('media:thumbnail')[0]?.textContent||el.getElementsByTagName('media:content')[0]?.getAttribute('url')||'';
+    const itunesImg=el.getElementsByTagName('itunes:image')[0]?.getAttribute('href')||'';
     const enclosure=el.querySelector('enclosure')?.getAttribute('url')||'';
-    const mediaContent=el.querySelector('content')?.getAttribute('url')||'';
-    // itunes:image
-    const itunesImg=el.querySelector('image')?.getAttribute('href')||'';
-    let thumbnail=mediaThumb||itunesImg||'';
-    // si es enclosure de imagen
     const encType=el.querySelector('enclosure')?.getAttribute('type')||'';
+    const htmlContent=el.getElementsByTagName('content:encoded')[0]?.textContent||el.querySelector('description')?.textContent||el.querySelector('summary')?.textContent||'';
+    const imgMatch=htmlContent.match(/<img[^>]+src=["']([^"']+)["']/i);
+    const descImg=imgMatch?imgMatch[1]:'';
+    let thumbnail=mediaThumb||itunesImg||descImg||'';
     if(!thumbnail&&enclosure&&encType.startsWith('image/'))thumbnail=enclosure;
     const author=el.getElementsByTagName('creator')[0]?.textContent||el.querySelector('author name')?.textContent||el.querySelector('author')?.textContent||'';
     if(title)items.push({title,link,pubDate,thumbnail,author:author.trim()});
