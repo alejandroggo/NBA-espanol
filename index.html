@@ -1319,65 +1319,68 @@ const ROUND_LABELS={1:'Primera Ronda',2:'Semifinales de Conferencia',3:'Finales 
 async function loadBracket(){
   const body=document.getElementById('body-standings');
   body.innerHTML='<div class="panel-loading">CARGANDO</div>';
-  const yr=new Date().getMonth()>=9?new Date().getFullYear()+1:new Date().getFullYear();
-  const base=`https://site.api.espn.com/apis/site/v2/sports/basketball/nba/playoff?season=${yr}`;
-  const attempts=[
-    ()=>fetch(base),
-    ()=>fetch(`https://corsproxy.io/?${encodeURIComponent(base)}`),
-    ()=>fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(base)}`),
-    ()=>fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(base)}`),
-  ];
-  let data=null;
-  for(const fn of attempts){
-    try{
-      const r=await fn();if(!r.ok)continue;
-      let d=await r.json();
-      if(typeof d.contents==='string')d=JSON.parse(d.contents);
-      const series=d?.bracket?.series||d?.series||[];
-      if(series.length){data=d;break;}
-    }catch(e){}
-  }
-  if(!data){body.innerHTML='<div class="empty-state">Bracket no disponible.<br>Estará activo cuando empiecen los playoffs.</div>';return;}
-  renderBracket(data);
+  // Fetch last 56 days in parallel (covers up to ~8 weeks of playoffs)
+  const today=new Date();
+  const dates=Array.from({length:56},(_,i)=>{
+    const d=new Date(today-i*86400000);
+    return d.toISOString().slice(0,10).replace(/-/g,'');
+  });
+  const results=await Promise.allSettled(dates.map(async date=>{
+    const r=await fetch(`https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?seasontype=3&dates=${date}`);
+    if(!r.ok)return[];
+    const d=await r.json();
+    return d.events||[];
+  }));
+  const allEvents=results.flatMap(r=>r.status==='fulfilled'?r.value:[]);
+  if(!allEvents.length){body.innerHTML='<div class="empty-state">Bracket no disponible.<br>Estará activo cuando empiecen los playoffs.</div>';return;}
+  renderBracket(allEvents);
 }
 
-function renderBracket(data){
+function renderBracket(events){
   const body=document.getElementById('body-standings');
-  // ESPN devuelve bracket.series[] con título que incluye "Eastern"/"Western"
-  const series=data?.bracket?.series||data?.series||[];
-  if(!series.length){body.innerHTML='<div class="empty-state">Sin datos de bracket todavía.</div>';return;}
+  // Build series map keyed by sorted team abbreviations
+  const seriesMap=new Map();
+  for(const ev of events){
+    const comp=ev.competitions?.[0];if(!comp)continue;
+    const teams=comp.competitors||[];if(teams.length!==2)continue;
+    const a=teams.find(t=>t.homeAway==='away')||teams[0];
+    const h=teams.find(t=>t.homeAway==='home')||teams[1];
+    const aAbbr=(a.team?.abbreviation||'').toUpperCase();
+    const hAbbr=(h.team?.abbreviation||'').toUpperCase();
+    const key=[aAbbr,hAbbr].sort().join('-');
+    const note=comp.notes?.[0]?.headline||'';
+    const conf=note.includes('Eastern')?'east':note.includes('Western')?'west':'finals';
+    const round=note.includes('First')?1:note.includes('Second')||note.includes('Semifinal')?2:note.includes('Conference Final')?3:4;
+    const summary=comp.series?.summary||'';
+    const completed=!!(comp.series?.completed);
+    const prev=seriesMap.get(key)||{aAbbr,hAbbr,aSeed:a.seed||'',hSeed:h.seed||'',conf,round,summary:'',completed:false};
+    seriesMap.set(key,{...prev,summary:summary||prev.summary,completed:completed||prev.completed});
+  }
+  if(!seriesMap.size){body.innerHTML='<div class="empty-state">Sin datos de bracket todavía.</div>';return;}
 
-  const east=[],west=[],finals=[];
-  series.forEach(s=>{
-    const title=(s.title||s.name||'').toLowerCase();
-    if(title.includes('eastern'))east.push(s);
-    else if(title.includes('western'))west.push(s);
-    else finals.push(s);
-  });
+  const parseWins=(summary,abbr)=>{
+    const m=summary.match(/(\d+)-(\d+)/);if(!m)return{w0:0,w1:0};
+    const hi=parseInt(m[1]),lo=parseInt(m[2]);
+    const leaderMatch=summary.match(/^([A-Z]+)\s+(leads|wins)/i);
+    if(leaderMatch)return leaderMatch[1].toUpperCase()===abbr.toUpperCase()?{w0:hi,w1:lo}:{w0:lo,w1:hi};
+    return{w0:hi,w1:lo};
+  };
 
-  const renderConf=(list,label)=>{
+  const groups={east:[],west:[],finals:[]};
+  for(const s of seriesMap.values())groups[s.conf]?.push(s);
+
+  const renderGroup=(list,label)=>{
     if(!list.length)return'';
     const byRound={};
-    list.forEach(s=>{
-      const r=s.round?.number||s.bracketRound||1;
-      if(!byRound[r])byRound[r]=[];
-      byRound[r].push(s);
-    });
+    list.forEach(s=>{if(!byRound[s.round])byRound[s.round]=[];byRound[s.round].push(s);});
     const rounds=Object.keys(byRound).sort((a,b)=>a-b).map(r=>{
       const cards=byRound[r].map(s=>{
-        const away=s.away||s.competitors?.[0]||{};
-        const home=s.home||s.competitors?.[1]||{};
-        const awayW=parseInt(away.wins||0);
-        const homeW=parseInt(home.wins||0);
-        const done=s.completed||s.status?.type?.completed||false;
-        const awayWin=done&&awayW>homeW;
-        const homeWin=done&&homeW>awayW;
-        const awayAbbr=away.team?.abbreviation||away.abbreviation||'?';
-        const homeAbbr=home.team?.abbreviation||home.abbreviation||'?';
+        const{w0,w1}=parseWins(s.summary,s.aAbbr);
+        const done=s.completed;
         return`<div class="bracket-series${done?' series-done':''}">
-          <div class="bracket-team"><span class="bracket-seed">${away.seed||''}</span><span class="bracket-abbr${awayWin?' winner':''}">${escHtml(awayAbbr)}</span></div>
-          <div class="bracket-wins">${awayW}-${homeW}</div>
-          <div class="bracket-team"><span class="bracket-abbr${homeWin?' winner':''}">${escHtml(homeAbbr)}</span><span class="bracket-seed" style="text-align:right">${home.seed||''}</span></div>
+          <div class="bracket-team"><span class="bracket-seed">${s.aSeed}</span><span class="bracket-abbr${done&&w0>w1?' winner':''}">${escHtml(s.aAbbr)}</span></div>
+          <div class="bracket-wins">${w0}-${w1}</div>
+          <div class="bracket-team"><span class="bracket-abbr${done&&w1>w0?' winner':''}">${escHtml(s.hAbbr)}</span><span class="bracket-seed" style="text-align:right">${s.hSeed}</span></div>
         </div>`;
       }).join('');
       return`<div class="bracket-round-title">${ROUND_LABELS[r]||'Ronda '+r}</div>${cards}`;
@@ -1386,9 +1389,9 @@ function renderBracket(data){
   };
 
   let html=`<div style="padding:10px;overflow-y:auto;height:100%;">`;
-  html+=renderConf(east,'Conferencia Este');
-  html+=renderConf(west,'Conferencia Oeste');
-  if(finals.length)html+=renderConf(finals,'Finales NBA');
+  html+=renderGroup(groups.east,'Conferencia Este');
+  html+=renderGroup(groups.west,'Conferencia Oeste');
+  if(groups.finals.length)html+=renderGroup(groups.finals,'Finales NBA');
   html+=`</div>`;
   body.innerHTML=html;
 }
