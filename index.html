@@ -865,7 +865,7 @@ function parseXML(xml){
 
 // FIX #6: thumbnail para YT desde link
 function ytThumbFromLink(link){
-  const m=link.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  const m=link.match(/(?:v=|youtu\.be\/|shorts\/)([a-zA-Z0-9_-]{11})/);
   return m?`https://img.youtube.com/vi/${m[1]}/mqdefault.jpg`:'';
 }
 
@@ -1117,7 +1117,7 @@ function thumbOrPlaceholder(src,emoji,logoSrc=''){
     const err=logoSrc?`this.onerror=null;this.src='${escHtml(logoSrc)}';this.style.objectFit='contain';this.style.padding='8px'`:`this.style.display='none'`;
     return`<img class="article-thumb" src="${escHtml(src)}" onerror="${err}" loading="lazy">`;
   }
-  if(logoSrc)return`<div class="article-thumb-placeholder"><img src="${escHtml(logoSrc)}" style="width:26px;height:26px;object-fit:contain;opacity:.8" onerror="this.style.display='none'"></div>`;
+  if(logoSrc)return`<div class="article-thumb-placeholder"><img src="${escHtml(logoSrc)}" style="width:26px;height:26px;object-fit:contain;opacity:.8" onerror="this.parentElement.innerHTML='${emoji}'"></div>`;
   return`<div class="article-thumb-placeholder">${emoji}</div>`;
 }
 function mediaThumbOrPlaceholder(src,emoji,logoSrc=''){
@@ -1125,7 +1125,7 @@ function mediaThumbOrPlaceholder(src,emoji,logoSrc=''){
     const err=logoSrc?`this.onerror=null;this.src='${escHtml(logoSrc)}';this.style.objectFit='contain';this.style.padding='8px'`:`this.style.display='none'`;
     return`<img class="media-thumb" src="${escHtml(src)}" onerror="${err}" loading="lazy">`;
   }
-  if(logoSrc)return`<div class="media-thumb-placeholder"><img src="${escHtml(logoSrc)}" style="width:26px;height:26px;object-fit:contain;opacity:.8" onerror="this.style.display='none'"></div>`;
+  if(logoSrc)return`<div class="media-thumb-placeholder"><img src="${escHtml(logoSrc)}" style="width:26px;height:26px;object-fit:contain;opacity:.8" onerror="this.parentElement.innerHTML='${emoji}'"></div>`;
   return`<div class="media-thumb-placeholder">${emoji}</div>`;
 }
 
