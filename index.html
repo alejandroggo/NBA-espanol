@@ -634,24 +634,29 @@ const TEAM_NAMES={ATL:'Atlanta Hawks',BOS:'Boston Celtics',BKN:'Brooklyn Nets',C
 
 // FIX #3: logos por defecto para medios conocidos (se puede ampliar con col en Sheet)
 const SOURCE_LOGOS={
-  'agaitan':    '',
-  'as_nba':     'https://e00-marca.uecdn.es/assets/najax/img/favicon/as.ico',
-  'gigantes':   'https://www.gigantes.com/wp-content/uploads/gigantes-favicon.png',
-  'marca_nba':  'https://e00-marca.uecdn.es/assets/najax/img/favicon/marca.ico',
-  'md_nba':     'https://www.mundodeportivo.com/favicon.ico',
-  'kike':       '',
-  'maniacs':    'https://www.nbamaniacs.com/favicon.ico',
-  'sport_nba':  'https://www.sport.es/favicon.ico',
+  'agaitan':    'https://www.google.com/s2/favicons?domain=alejandroggo.com&sz=64',
+  'as_nba':     'https://www.google.com/s2/favicons?domain=as.com&sz=64',
+  'gigantes':   'https://www.google.com/s2/favicons?domain=gigantes.com&sz=64',
+  'juanipac':   'https://substackcdn.com/image/fetch/$s_!PTgm!,w_80,h_80,c_fill,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F1b65348b-5e91-4b31-8a4d-77cbfe256f40_520x520.jpeg',
+  'marca_nba':  'https://www.google.com/s2/favicons?domain=marca.com&sz=64',
+  'md_nba':     'https://www.google.com/s2/favicons?domain=mundodeportivo.com&sz=64',
+  'kike':       'https://substackcdn.com/image/fetch/$s_!r1pc!,w_120,h_120,c_fill,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F669f2b5c-b6a6-4bfd-a15d-66339f0340d9_600x600.png',
+  'maniacs':    'https://www.google.com/s2/favicons?domain=nbamaniacs.com&sz=64',
+  'piratas':    'https://www.google.com/s2/favicons?domain=piratasdelbasket.net&sz=64',
+  'sport_nba':  'https://www.google.com/s2/favicons?domain=sport.es&sz=64',
+  'unouno':     'https://www.google.com/s2/favicons?domain=unocontraunoweb.com&sz=64',
   // YT channels — se infiere del channelId si no hay logo manual
   // Podcasts
-  'tresmas':    '',
-  'buzzbeet':   '',
-  'reverso':    '',
-  'enopnba':    '',
-  'nbaadict':   '',
-  'nbahouse':   '',
-  'massball':   '',
-  'minvet':     '',
+  'tresmas':    'https://static-2.ivoox.com/canales/5/c/d/d/5cdd4da7514ac966a3cd9415399c567d_XXL.jpg',
+  'buzzbeet':   'https://static-1.ivoox.com/canales/8/c/2/5/8c25b1d4f117ccb97329682b0cdf5686_XXL.jpg',
+  'reverso':    'https://static-2.ivoox.com/canales/5/1/a/e/51aedb294911ade92666c8c90de0ba31_XXL.jpg',
+  'enopnba':    'https://d3wo5wojvuv7l.cloudfront.net/t_rss_itunes_square_1400/images.spreaker.com/original/37a358abf9f3b180b1415d867a837acb.jpg',
+  'nbaadict':   'https://static-1.ivoox.com/canales/c/2/3/c/c23cd38cf2fdc973933d9133e45d72bf_XXL.jpg',
+  'nbahouse':   'https://d3wo5wojvuv7l.cloudfront.net/t_rss_itunes_square_1400/images.spreaker.com/original/c23e046f58d678ed9b6e736cff30cdf9.jpg',
+  'massball':   'https://static-1.ivoox.com/canales/c/1/3/0/c130edd91f9d5fa71a6929bb2bab58e5_XXL.jpg',
+  'minvet':     'https://www.omnycontent.com/d/playlist/c98df85b-3c4c-4c41-bc67-ad4000e63551/f662a295-2552-4b87-ab36-adc500904257/b99e3b59-e1a5-4908-9b7c-adc50090d00a/image.jpg?t=1635385525&size=Large',
+  'sofapod':    'https://static-2.ivoox.com/canales/7/a/5/6/7a56506a91d3883d0ab6654e3222c2a0_XXL.jpg',
+  'racionba':   'https://static.libsyn.com/p/assets/8/5/d/7/85d76470996c34e3d959afa2a1bf1c87/RDNBA2500px-20251213-j1apnp9g0m.jpg',
 };
 
 async function fetchYTFeed(ch){
@@ -692,6 +697,7 @@ let NEWS_FEEDS=[
 ];
   
 let YT_CHANNELS=[
+  {id:'UC8cJQkY_XQv3YVaRIyGmQWA', label:'Basket 365'},
   {id:'UCoCXWfhkSuT4DOolxFsPoYQ', label:'Basket 365'},
   {id:'UCTJNmeP0HiOU4-qOMNVNoGA',label:'Drafteados'},
   {id:'UCXJnFRcssT0Q1ID_V6Or1sQ', label:'Gigantes del Basket'},
@@ -1326,7 +1332,6 @@ async function loadStandings(){
   body.innerHTML='<div class="panel-loading">CARGANDO</div>';
   const yr=new Date().getMonth()>=9?new Date().getFullYear()+1:new Date().getFullYear();
   const endpoints=[
-    `https://site.api.espn.com/apis/v2/sports/basketball/nba/standings?season=${yr}&seasontype=3`,
     `https://site.api.espn.com/apis/v2/sports/basketball/nba/standings?season=${yr}&seasontype=2`,
     'https://site.api.espn.com/apis/site/v2/sports/basketball/nba/standings',
   ];
