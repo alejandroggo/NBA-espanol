@@ -739,6 +739,7 @@ let livePolling=false,liveInterval=null,autoRefreshTimer=null;
 let fetchQueue=[],activeCount=0;
 const MAX_CONCURRENT=3;
 let lastUpdate={};
+let fromCache=false;
 let standingsConf='east';
 let _calData=null;
 
@@ -922,9 +923,9 @@ async function loadPodFeed(feed){
   try{const {items}=await enqueueFetch(()=>fetchRSS(feed.url));podData[feed.id]=items.map(i=>({...i,source:feed.label,feedId:feed.id,logo:getSourceLogo(feed.id)})).slice(0,20);podHealth[feed.id]={status:'ok',count:items.length};}
   catch(e){podData[feed.id]=[];podHealth[feed.id]={status:'err',count:0};}
 }
-async function loadAllNews(){const active=getActiveNewsFeeds();setLoading('wire');setLoading('teams');await Promise.allSettled(active.map(f=>loadNewsFeed(f)));lastUpdate.news=new Date();renderWire();renderTeams();updateHealthUI();saveCache();updateTabBadge('wire');attachSeenOnScroll('wire');}
-async function loadAllYT(){const active=getActiveYTChannels();setLoading('youtube');await Promise.allSettled(active.map(c=>loadYTChannel(c)));lastUpdate.yt=new Date();renderYT();renderTeams();updateHealthUI();saveCache();updateTabBadge('youtube');attachSeenOnScroll('youtube');}
-async function loadAllPod(){const active=getActivePodFeeds();setLoading('podcast');await Promise.allSettled(active.map(f=>loadPodFeed(f)));lastUpdate.pod=new Date();renderPod();renderTeams();updateHealthUI();saveCache();updateTabBadge('podcast');attachSeenOnScroll('podcast');}
+async function loadAllNews(){const active=getActiveNewsFeeds();setLoading('wire');setLoading('teams');await Promise.allSettled(active.map(f=>loadNewsFeed(f)));lastUpdate.news=new Date();fromCache=false;renderWire();renderTeams();updateHealthUI();saveCache();updateTabBadge('wire');attachSeenOnScroll('wire');}
+async function loadAllYT(){const active=getActiveYTChannels();setLoading('youtube');await Promise.allSettled(active.map(c=>loadYTChannel(c)));lastUpdate.yt=new Date();fromCache=false;renderYT();renderTeams();updateHealthUI();saveCache();updateTabBadge('youtube');attachSeenOnScroll('youtube');}
+async function loadAllPod(){const active=getActivePodFeeds();setLoading('podcast');await Promise.allSettled(active.map(f=>loadPodFeed(f)));lastUpdate.pod=new Date();fromCache=false;renderPod();renderTeams();updateHealthUI();saveCache();updateTabBadge('podcast');attachSeenOnScroll('podcast');}
 function setLoading(id){const b=document.getElementById('body-'+id);if(b)b.innerHTML='<div class="panel-loading">CARGANDO</div>';}
 
 // ══════════════════════════════════
@@ -1601,7 +1602,7 @@ function togglePod(id,btn){if(state.disabledPod.includes(id)){state.disabledPod=
 // UTILS
 // ══════════════════════════════════
 function setBadge(id,val){const el=document.getElementById('badge-'+id);if(el)el.textContent=val;}
-function setUpdated(id,date){const el=document.getElementById('upd-'+id);if(el&&date)el.textContent='↺ '+formatDate(date);}
+function setUpdated(id,date){const el=document.getElementById('upd-'+id);if(el&&date)el.textContent=fromCache?'Desde caché · actualizado '+formatDate(date).toLowerCase():'↺ '+formatDate(date);}
 function escHtml(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function formatDate(d){if(!d)return '';try{const date=new Date(d);if(isNaN(date))return '';const diff=Date.now()-date;if(diff<=0)return'Ahora';const mins=Math.floor(diff/60000);if(mins<60)return'Hace '+mins+' min';if(diff<86400000)return'Hace '+Math.floor(diff/3600000)+'h';return date.toLocaleDateString('es-ES',{day:'numeric',month:'short'});}catch{return '';}}
 
@@ -1642,7 +1643,7 @@ function updateAttributionLogo(){
 // ══════════════════════════════════
 // CACHE LOCAL
 // ══════════════════════════════════
-const CACHE_TTL=30*60*1000; // 30 minutos
+const CACHE_TTL=10*60*1000; // 10 minutos
 function saveCache(){
   try{
     localStorage.setItem('nba_cache',JSON.stringify({
@@ -1661,7 +1662,7 @@ function loadCache(){
     Object.assign(ytData,c.yt||{});
     Object.assign(podData,c.pod||{});
     if(c.lu){lastUpdate.news=c.lu.news?new Date(c.lu.news):null;lastUpdate.yt=c.lu.yt?new Date(c.lu.yt):null;lastUpdate.pod=c.lu.pod?new Date(c.lu.pod):null;}
-    return true;
+    fromCache=true;return true;
   }catch(e){return false;}
 }
 
