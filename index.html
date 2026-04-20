@@ -2,8 +2,23 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta name="description" content="Agrega noticias, vídeos y podcasts de la NBA en español en una sola pantalla. Sin algoritmos, sin registro. Creado por Alejandro Gaitán.">
+<meta name="language" content="es">
+<meta name="author" content="Alejandro Gaitán">
+<link rel="canonical" href="https://alejandroggo.github.io/NBA-espanol/">
+<meta name="robots" content="index, follow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NBA EN ESPAÑOL</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏀</text></svg>">
+<meta property="og:title" content="NBA en Español">
+<meta property="og:description" content="Agrega noticias, vídeos y podcasts de la NBA en español en una sola pantalla. Sin algoritmos, sin registro.">
+<meta property="og:image" content="https://raw.githubusercontent.com/alejandroggo/NBA-espanol/main/preview.png">
+<meta property="og:url" content="https://alejandroggo.github.io/NBA-espanol/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="NBA en Español">
+<meta name="twitter:description" content="Agrega noticias, vídeos y podcasts de la NBA en español en una sola pantalla. Sin algoritmos, sin registro.">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/alejandroggo/NBA-espanol/main/preview.png">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-R24LXRCRXP"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-R24LXRCRXP');</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -729,6 +744,7 @@ let livePolling=false,liveInterval=null,autoRefreshTimer=null;
 let fetchQueue=[],activeCount=0;
 const MAX_CONCURRENT=3;
 let lastUpdate={};
+let fromCache=false;
 let standingsConf='east';
 let _calData=null;
 
@@ -835,8 +851,11 @@ async function fetchRSS(url){
   const s=ac.signal;
   const r2j=async()=>{const r=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`,{signal:s});const d=await r.json();if(d.status!=='ok'||!d.items?.length)throw new Error('empty');return{items:d.items.map(i=>({title:i.title||'',link:i.link||'',pubDate:i.pubDate?(i.pubDate.includes('T')?i.pubDate:i.pubDate.replace(' ','T')+'Z'):'',thumbnail:i.thumbnail||i.enclosure?.link||'',author:i.author||''})),feedImage:d.feed?.image||''};};
   const cp=async()=>{const r=await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`,{signal:s});if(!r.ok)throw new Error('not ok');const tx=await r.text();const items=parseXML(tx);if(!items.length)throw new Error('empty');return{items,feedImage:''};};
+  const ao=async()=>{const r=await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,{signal:s});if(!r.ok)throw new Error('not ok');const d=await r.json();const tx=d.contents;if(!tx)throw new Error('empty');const items=parseXML(tx);if(!items.length)throw new Error('empty');return{items,feedImage:''};};
+  const tp=async()=>{const r=await fetch(`https://thingproxy.freeboard.io/fetch/${encodeURIComponent(url)}`,{signal:s});if(!r.ok)throw new Error('not ok');const tx=await r.text();const items=parseXML(tx);if(!items.length)throw new Error('empty');return{items,feedImage:''};};
+  const ct=async()=>{const r=await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,{signal:s});if(!r.ok)throw new Error('not ok');const tx=await r.text();const items=parseXML(tx);if(!items.length)throw new Error('empty');return{items,feedImage:''};};
   try{const res=await Promise.any([r2j(),cp()]);clearTimeout(t);ac.abort();return res;}
-  catch(e){clearTimeout(t);throw e;}
+  catch(e){for(const fn of[ao,tp,ct]){try{const res=await fn();clearTimeout(t);ac.abort();return res;}catch(ex){}}clearTimeout(t);throw e;}
 }
 function parseXML(xml){
   const doc=new DOMParser().parseFromString(xml,'text/xml');const items=[];
@@ -909,9 +928,9 @@ async function loadPodFeed(feed){
   try{const {items}=await enqueueFetch(()=>fetchRSS(feed.url));podData[feed.id]=items.map(i=>({...i,source:feed.label,feedId:feed.id,logo:getSourceLogo(feed.id)})).slice(0,20);podHealth[feed.id]={status:'ok',count:items.length};}
   catch(e){podData[feed.id]=[];podHealth[feed.id]={status:'err',count:0};}
 }
-async function loadAllNews(){const active=getActiveNewsFeeds();setLoading('wire');setLoading('teams');await Promise.allSettled(active.map(f=>loadNewsFeed(f)));lastUpdate.news=new Date();renderWire();renderTeams();updateHealthUI();saveCache();updateTabBadge('wire');attachSeenOnScroll('wire');}
-async function loadAllYT(){const active=getActiveYTChannels();setLoading('youtube');await Promise.allSettled(active.map(c=>loadYTChannel(c)));lastUpdate.yt=new Date();renderYT();renderTeams();updateHealthUI();saveCache();updateTabBadge('youtube');attachSeenOnScroll('youtube');}
-async function loadAllPod(){const active=getActivePodFeeds();setLoading('podcast');await Promise.allSettled(active.map(f=>loadPodFeed(f)));lastUpdate.pod=new Date();renderPod();renderTeams();updateHealthUI();saveCache();updateTabBadge('podcast');attachSeenOnScroll('podcast');}
+async function loadAllNews(){const active=getActiveNewsFeeds();setLoading('wire');setLoading('teams');await Promise.allSettled(active.map(f=>loadNewsFeed(f)));lastUpdate.news=new Date();fromCache=false;renderWire();renderTeams();updateHealthUI();saveCache();updateTabBadge('wire');attachSeenOnScroll('wire');}
+async function loadAllYT(){const active=getActiveYTChannels();setLoading('youtube');await Promise.allSettled(active.map(c=>loadYTChannel(c)));lastUpdate.yt=new Date();fromCache=false;renderYT();renderTeams();updateHealthUI();saveCache();updateTabBadge('youtube');attachSeenOnScroll('youtube');}
+async function loadAllPod(){const active=getActivePodFeeds();setLoading('podcast');await Promise.allSettled(active.map(f=>loadPodFeed(f)));lastUpdate.pod=new Date();fromCache=false;renderPod();renderTeams();updateHealthUI();saveCache();updateTabBadge('podcast');attachSeenOnScroll('podcast');}
 function setLoading(id){const b=document.getElementById('body-'+id);if(b)b.innerHTML='<div class="panel-loading">CARGANDO</div>';}
 
 // ══════════════════════════════════
@@ -1162,7 +1181,7 @@ function renderTeams(){
   if(state.teamsIncYT!==false){
     let allYT=[];getActiveYTChannels().forEach(c=>{if(ytData[c.id])allYT.push(...ytData[c.id]);});
     const cutoffYT=Date.now()-LIMIT_YT;
-    allYT.filter(i=>(!i.pubDate||new Date(i.pubDate).getTime()>cutoffYT)&&matchesTeamFilter(i,true)&&(searchQuery?matchesSearch(i):true))
+    allYT.filter(i=>(!i.pubDate||new Date(i.pubDate).getTime()>cutoffYT)&&!isShort(i)&&matchesTeamFilter(i,true)&&(searchQuery?matchesSearch(i):true))
       .forEach(v=>items.push({...v,_type:'yt',source:v.channelName,feedId:v.channelId}));
   }
   // FIX #4: podcasts
@@ -1187,7 +1206,8 @@ function renderTeams(){
       </div>`;
     }
     if(a._type==='pod'){
-      return`<div class="media-item" onclick="openLink('${escHtml((POD_FEEDS.find(f=>f.id===a.feedId)||{}).spotify||a.link)}','podcast','${escHtml(a.feedId||'')}')">
+      const {link:_pl,title:_pt}=podLinkFor(a.feedId,a.link);
+      return`<div class="media-item" title="${escHtml(_pt)}"${_pl?` onclick="openLink('${escHtml(_pl)}','podcast','${escHtml(a.feedId||'')}')"`:''}>
         ${mediaThumbOrPlaceholder(a.thumbnail||'','🎙',a.logo||getSourceLogo(a.feedId||''))}
         <div class="media-content">
           <div class="media-source pod"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> ${escHtml(a.source||'')} ${isNew(a.pubDate,3600000)?'<span class="badge badge-new">🚨</span>':''}</div>
@@ -1243,6 +1263,7 @@ function toggleSpoilerMode(){
 }
 
 function renderPartidos(dY,dT,dM,etHour,ayerStr,todayStr,mananaStr){
+  const noSpoilers=state.noSpoilers;
   const body=document.getElementById('body-scorecal');
   const logo=id=>`https://a.espncdn.com/i/teamlogos/nba/500/${(id||'').toLowerCase()}.png`;
   const toHoopsDate=s=>s?`${s.slice(0,4)}-${s.slice(4,6)}-${s.slice(6,8)}`:'';
@@ -1266,8 +1287,8 @@ function renderPartidos(dY,dT,dM,etHour,ayerStr,todayStr,mananaStr){
       const aS=parseInt(away.score||0),hS=parseInt(home.score||0);
       const cardCls=isLive?'live-card':sec.label==='HOY'?'today-card':'';
       const stCls=isLive?'live':isFinal?'final':'upcoming';
-      const showScore=(isFinal||isLive)&&!state.noSpoilers;
-      const stLabel=isLive?`<span class="live-dot"></span>${escHtml(stText)||'EN VIVO'}`:isFinal?(state.noSpoilers?'TERMINADO':'FINAL'):stText;
+      const showScore=(isFinal||isLive)&&!noSpoilers;
+      const stLabel=isLive?`<span class="live-dot"></span>${escHtml(stText)||'EN VIVO'}`:isFinal?(noSpoilers?'TERMINADO':'FINAL'):stText;
       const timeLabel='';
       const awayAbbr=(away.team?.abbreviation||'').toLowerCase();
       const homeAbbr=(home.team?.abbreviation||'').toLowerCase();
@@ -1305,6 +1326,7 @@ async function loadStandings(){
   body.innerHTML='<div class="panel-loading">CARGANDO</div>';
   const yr=new Date().getMonth()>=9?new Date().getFullYear()+1:new Date().getFullYear();
   const endpoints=[
+    `https://site.api.espn.com/apis/v2/sports/basketball/nba/standings?season=${yr}&seasontype=3`,
     `https://site.api.espn.com/apis/v2/sports/basketball/nba/standings?season=${yr}&seasontype=2`,
     'https://site.api.espn.com/apis/site/v2/sports/basketball/nba/standings',
   ];
@@ -1333,24 +1355,38 @@ const ROUND_LABELS={1:'Primera Ronda',2:'Semifinales de Conferencia',3:'Finales 
 async function loadBracket(){
   const body=document.getElementById('body-standings');
   body.innerHTML='<div class="panel-loading">CARGANDO</div>';
-  const today=new Date();
-  const yr=today.getMonth()>=9?today.getFullYear()+1:today.getFullYear();
-  // Generate dates from April 1 of current playoff year to today
-  const start=new Date(`${yr}-04-01`);
-  const dates=[];
-  for(let d=new Date(start);d<=today;d.setDate(d.getDate()+1)){
-    dates.push(d.toISOString().slice(0,10).replace(/-/g,''));
+  try{
+    const year=new Date().getFullYear();
+    const r=await fetch(`https://site.api.espn.com/apis/v2/sports/basketball/nba/playoff?season=${year}`);
+    if(!r.ok)throw new Error('not ok');
+    const data=await r.json();
+    const seriesList=data.series||data.bracket?.series||[];
+    if(!seriesList.length)throw new Error('empty');
+    // Map each series to a fake game-event shaped object that renderBracket() can parse unchanged
+    const events=seriesList.flatMap(s=>{
+      const comps=s.competitors||[];if(comps.length<2)return[];
+      const h=comps.find(c=>c.homeAway==='home')||comps[0];
+      const a=comps.find(c=>c.homeAway==='away')||comps[1];
+      const hId=String(h.team?.id||h.id||'');
+      const aId=String(a.team?.id||a.id||'');
+      const noteSrc=(s.note||s.title||'').toLowerCase();
+      const confStr=noteSrc.includes('east')?'east ':noteSrc.includes('west')?'west ':'';
+      const rn=s.round?.number||1;
+      const roundStr=rn===1?'1st Round':rn===2?'2nd Round':rn===3?'Conference Final':'Finals';
+      return[{competitions:[{
+        competitors:[
+          {homeAway:'home',team:{abbreviation:(h.team?.abbreviation||'').toUpperCase(),id:hId},seed:h.seed||'',id:hId},
+          {homeAway:'away',team:{abbreviation:(a.team?.abbreviation||'').toUpperCase(),id:aId},seed:a.seed||'',id:aId}
+        ],
+        series:{completed:!!(s.status?.type?.completed||s.completed),competitors:[{id:hId,wins:h.wins||0},{id:aId,wins:a.wins||0}]},
+        notes:[{headline:'Game 1 - '+confStr+roundStr}]
+      }]}];
+    });
+    if(!events.length)throw new Error('empty');
+    renderBracket(events);
+  }catch(e){
+    body.innerHTML='<div class="empty-state">Bracket no disponible.<br>Estará activo cuando empiecen los playoffs.</div>';
   }
-  const results=await Promise.allSettled(dates.map(async date=>{
-    const r=await fetch(`https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${date}`);
-    if(!r.ok)return[];
-    const d=await r.json();
-    // Only playoff games (season.type===3)
-    return(d.events||[]).filter(ev=>ev.season?.type===3);
-  }));
-  const allEvents=results.flatMap(r=>r.status==='fulfilled'?r.value:[]);
-  if(!allEvents.length){body.innerHTML='<div class="empty-state">Bracket no disponible.<br>Estará activo cuando empiecen los playoffs.</div>';return;}
-  renderBracket(allEvents);
 }
 
 function renderBracket(events){
@@ -1441,6 +1477,7 @@ function renderStandingsTable(){
 // ══════════════════════════════════
 // YOUTUBE — límite 72h
 // ══════════════════════════════════
+function isShort(item){return (item.link||'').includes('/shorts/');}
 function renderYT(){
   const body=document.getElementById('body-youtube');if(!body)return;
   let all=[];getActiveYTChannels().forEach(c=>{if(ytData[c.id])all.push(...ytData[c.id]);});
@@ -1449,8 +1486,8 @@ function renderYT(){
   all=all.filter(i=>!i.pubDate||new Date(i.pubDate).getTime()>cutoff);
   if(ytExcluded.length>0)all=all.filter(i=>!ytExcluded.includes(i.channelId));
   if(searchQuery)all=all.filter(i=>matchesSearch(i));
-  const videos=all.filter(v=>!v.title.includes('#'));
-  const shorts=all.filter(v=>v.title.includes('#'));
+  const videos=all.filter(v=>!isShort(v));
+  const shorts=all.filter(v=>isShort(v));
   const vcnt=document.getElementById('ytst-cnt-videos');const scnt=document.getElementById('ytst-cnt-shorts');
   if(vcnt)vcnt.textContent=videos.length?` (${videos.length})`:'';
   if(scnt)scnt.textContent=shorts.length?` (${shorts.length})`:'';
@@ -1473,6 +1510,12 @@ function renderYT(){
 // ══════════════════════════════════
 // PODCAST — límite 1 semana
 // ══════════════════════════════════
+function podLinkFor(feedId,rawLink){
+  const sp=(POD_FEEDS.find(f=>f.id===feedId)||{}).spotify||'';
+  const isAudio=/\.(mp3|ogg|aac|m4a)(\?|$)/i.test(rawLink||'');
+  const link=sp||(isAudio?'':rawLink)||'';
+  return{link,title:sp?'Abrir en Spotify':'Ver episodio'};
+}
 function renderPod(){
   const body=document.getElementById('body-podcast');if(!body)return;
   let all=[];getActivePodFeeds().forEach(f=>{if(podData[f.id])all.push(...podData[f.id]);});
@@ -1485,8 +1528,8 @@ function renderPod(){
   body.innerHTML=all.map(v=>{
     // FIX #6: thumbnail de podcast (itunes:image u otro)
     const thumb=v.thumbnail||'';
-    const podLink=(POD_FEEDS.find(f=>f.id===v.feedId)||{}).spotify||v.link;
-    return`<div class="media-item" onclick="openLink('${escHtml(podLink)}','podcast','${escHtml(v.feedId||'')}')">
+    const {link:podLink,title:podTitle}=podLinkFor(v.feedId,v.link);
+    return`<div class="media-item" title="${escHtml(podTitle)}"${podLink?` onclick="openLink('${escHtml(podLink)}','podcast','${escHtml(v.feedId||'')}')"`:''}>
       ${mediaThumbOrPlaceholder(thumb,'🎙',v.logo||getSourceLogo(v.feedId||''))}
       <div class="media-content">
         <div class="media-source pod"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> ${escHtml(v.source)} ${isNew(v.pubDate)?'<span class="badge badge-new">🚨</span>':''}</div>
@@ -1501,7 +1544,7 @@ function renderPod(){
 // ══════════════════════════════════
 // AUTO REFRESH / LIVE / FONT
 // ══════════════════════════════════
-function toggleLive(){livePolling=!livePolling;['live-btn','mob-live-btn'].forEach(id=>{const btn=document.getElementById(id);if(!btn)return;if(livePolling)btn.classList.add('active');else btn.classList.remove('active');});if(livePolling){liveInterval=setInterval(loadPartidos,60000);loadPartidos();}else{clearInterval(liveInterval);}}
+function toggleLive(){livePolling=!livePolling;['live-btn','mob-live-btn'].forEach(id=>{const btn=document.getElementById(id);if(!btn)return;if(livePolling)btn.classList.add('active');else btn.classList.remove('active');});if(livePolling){liveInterval=setInterval(()=>loadPartidos(),60000);loadPartidos();}else{clearInterval(liveInterval);}}
 function setAutoRefresh(val){clearInterval(autoRefreshTimer);const mins=parseInt(val);if(mins>0)autoRefreshTimer=setInterval(()=>{loadAllNews();loadAllYT();loadAllPod();},mins*60000);}
 function updateFontSize(val){document.documentElement.style.setProperty('--fs-title',val+'px');localStorage.setItem('nba_fst',val);}
 
@@ -1588,7 +1631,7 @@ function togglePod(id,btn){if(state.disabledPod.includes(id)){state.disabledPod=
 // UTILS
 // ══════════════════════════════════
 function setBadge(id,val){const el=document.getElementById('badge-'+id);if(el)el.textContent=val;}
-function setUpdated(id,date){const el=document.getElementById('upd-'+id);if(el&&date)el.textContent='↺ '+formatDate(date);}
+function setUpdated(id,date){const el=document.getElementById('upd-'+id);if(el&&date)el.textContent=fromCache?'Desde caché · actualizado '+formatDate(date).toLowerCase():'↺ '+formatDate(date);}
 function escHtml(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function formatDate(d){if(!d)return '';try{const date=new Date(d);if(isNaN(date))return '';const diff=Date.now()-date;if(diff<=0)return'Ahora';const mins=Math.floor(diff/60000);if(mins<60)return'Hace '+mins+' min';if(diff<86400000)return'Hace '+Math.floor(diff/3600000)+'h';return date.toLocaleDateString('es-ES',{day:'numeric',month:'short'});}catch{return '';}}
 
@@ -1629,7 +1672,7 @@ function updateAttributionLogo(){
 // ══════════════════════════════════
 // CACHE LOCAL
 // ══════════════════════════════════
-const CACHE_TTL=30*60*1000; // 30 minutos
+const CACHE_TTL=10*60*1000; // 10 minutos
 function saveCache(){
   try{
     localStorage.setItem('nba_cache',JSON.stringify({
@@ -1648,7 +1691,7 @@ function loadCache(){
     Object.assign(ytData,c.yt||{});
     Object.assign(podData,c.pod||{});
     if(c.lu){lastUpdate.news=c.lu.news?new Date(c.lu.news):null;lastUpdate.yt=c.lu.yt?new Date(c.lu.yt):null;lastUpdate.pod=c.lu.pod?new Date(c.lu.pod):null;}
-    return true;
+    fromCache=true;return true;
   }catch(e){return false;}
 }
 
