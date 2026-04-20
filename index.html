@@ -1347,24 +1347,38 @@ const ROUND_LABELS={1:'Primera Ronda',2:'Semifinales de Conferencia',3:'Finales 
 async function loadBracket(){
   const body=document.getElementById('body-standings');
   body.innerHTML='<div class="panel-loading">CARGANDO</div>';
-  const today=new Date();
-  const yr=today.getMonth()>=9?today.getFullYear()+1:today.getFullYear();
-  // Generate dates from April 1 of current playoff year to today
-  const start=new Date(`${yr}-04-01`);
-  const dates=[];
-  for(let d=new Date(start);d<=today;d.setDate(d.getDate()+1)){
-    dates.push(d.toISOString().slice(0,10).replace(/-/g,''));
+  try{
+    const year=new Date().getFullYear();
+    const r=await fetch(`https://site.api.espn.com/apis/v2/sports/basketball/nba/playoff?season=${year}`);
+    if(!r.ok)throw new Error('not ok');
+    const data=await r.json();
+    const seriesList=data.series||data.bracket?.series||[];
+    if(!seriesList.length)throw new Error('empty');
+    // Map each series to a fake game-event shaped object that renderBracket() can parse unchanged
+    const events=seriesList.flatMap(s=>{
+      const comps=s.competitors||[];if(comps.length<2)return[];
+      const h=comps.find(c=>c.homeAway==='home')||comps[0];
+      const a=comps.find(c=>c.homeAway==='away')||comps[1];
+      const hId=String(h.team?.id||h.id||'');
+      const aId=String(a.team?.id||a.id||'');
+      const noteSrc=(s.note||s.title||'').toLowerCase();
+      const confStr=noteSrc.includes('east')?'east ':noteSrc.includes('west')?'west ':'';
+      const rn=s.round?.number||1;
+      const roundStr=rn===1?'1st Round':rn===2?'2nd Round':rn===3?'Conference Final':'Finals';
+      return[{competitions:[{
+        competitors:[
+          {homeAway:'home',team:{abbreviation:(h.team?.abbreviation||'').toUpperCase(),id:hId},seed:h.seed||'',id:hId},
+          {homeAway:'away',team:{abbreviation:(a.team?.abbreviation||'').toUpperCase(),id:aId},seed:a.seed||'',id:aId}
+        ],
+        series:{completed:!!(s.status?.type?.completed||s.completed),competitors:[{id:hId,wins:h.wins||0},{id:aId,wins:a.wins||0}]},
+        notes:[{headline:'Game 1 - '+confStr+roundStr}]
+      }]}];
+    });
+    if(!events.length)throw new Error('empty');
+    renderBracket(events);
+  }catch(e){
+    body.innerHTML='<div class="empty-state">Bracket no disponible.<br>Estará activo cuando empiecen los playoffs.</div>';
   }
-  const results=await Promise.allSettled(dates.map(async date=>{
-    const r=await fetch(`https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${date}`);
-    if(!r.ok)return[];
-    const d=await r.json();
-    // Only playoff games (season.type===3)
-    return(d.events||[]).filter(ev=>ev.season?.type===3);
-  }));
-  const allEvents=results.flatMap(r=>r.status==='fulfilled'?r.value:[]);
-  if(!allEvents.length){body.innerHTML='<div class="empty-state">Bracket no disponible.<br>Estará activo cuando empiecen los playoffs.</div>';return;}
-  renderBracket(allEvents);
 }
 
 function renderBracket(events){
