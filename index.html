@@ -1263,6 +1263,7 @@ function toggleSpoilerMode(){
 }
 
 function renderPartidos(dY,dT,dM,etHour,ayerStr,todayStr,mananaStr){
+  const noSpoilers=state.noSpoilers;
   const body=document.getElementById('body-scorecal');
   const logo=id=>`https://a.espncdn.com/i/teamlogos/nba/500/${(id||'').toLowerCase()}.png`;
   const toHoopsDate=s=>s?`${s.slice(0,4)}-${s.slice(4,6)}-${s.slice(6,8)}`:'';
@@ -1286,8 +1287,8 @@ function renderPartidos(dY,dT,dM,etHour,ayerStr,todayStr,mananaStr){
       const aS=parseInt(away.score||0),hS=parseInt(home.score||0);
       const cardCls=isLive?'live-card':sec.label==='HOY'?'today-card':'';
       const stCls=isLive?'live':isFinal?'final':'upcoming';
-      const showScore=(isFinal||isLive)&&!state.noSpoilers;
-      const stLabel=isLive?`<span class="live-dot"></span>${escHtml(stText)||'EN VIVO'}`:isFinal?(state.noSpoilers?'TERMINADO':'FINAL'):stText;
+      const showScore=(isFinal||isLive)&&!noSpoilers;
+      const stLabel=isLive?`<span class="live-dot"></span>${escHtml(stText)||'EN VIVO'}`:isFinal?(noSpoilers?'TERMINADO':'FINAL'):stText;
       const timeLabel='';
       const awayAbbr=(away.team?.abbreviation||'').toLowerCase();
       const homeAbbr=(home.team?.abbreviation||'').toLowerCase();
@@ -1543,7 +1544,7 @@ function renderPod(){
 // ══════════════════════════════════
 // AUTO REFRESH / LIVE / FONT
 // ══════════════════════════════════
-function toggleLive(){livePolling=!livePolling;['live-btn','mob-live-btn'].forEach(id=>{const btn=document.getElementById(id);if(!btn)return;if(livePolling)btn.classList.add('active');else btn.classList.remove('active');});if(livePolling){liveInterval=setInterval(loadPartidos,60000);loadPartidos();}else{clearInterval(liveInterval);}}
+function toggleLive(){livePolling=!livePolling;['live-btn','mob-live-btn'].forEach(id=>{const btn=document.getElementById(id);if(!btn)return;if(livePolling)btn.classList.add('active');else btn.classList.remove('active');});if(livePolling){liveInterval=setInterval(()=>loadPartidos(),60000);loadPartidos();}else{clearInterval(liveInterval);}}
 function setAutoRefresh(val){clearInterval(autoRefreshTimer);const mins=parseInt(val);if(mins>0)autoRefreshTimer=setInterval(()=>{loadAllNews();loadAllYT();loadAllPod();},mins*60000);}
 function updateFontSize(val){document.documentElement.style.setProperty('--fs-title',val+'px');localStorage.setItem('nba_fst',val);}
 
