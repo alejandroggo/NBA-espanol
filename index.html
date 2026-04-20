@@ -1201,7 +1201,8 @@ function renderTeams(){
       </div>`;
     }
     if(a._type==='pod'){
-      return`<div class="media-item" onclick="openLink('${escHtml((POD_FEEDS.find(f=>f.id===a.feedId)||{}).spotify||a.link)}','podcast','${escHtml(a.feedId||'')}')">
+      const {link:_pl,title:_pt}=podLinkFor(a.feedId,a.link);
+      return`<div class="media-item" title="${escHtml(_pt)}"${_pl?` onclick="openLink('${escHtml(_pl)}','podcast','${escHtml(a.feedId||'')}')"`:''}>
         ${mediaThumbOrPlaceholder(a.thumbnail||'','🎙',a.logo||getSourceLogo(a.feedId||''))}
         <div class="media-content">
           <div class="media-source pod"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> ${escHtml(a.source||'')} ${isNew(a.pubDate,3600000)?'<span class="badge badge-new">🚨</span>':''}</div>
@@ -1502,6 +1503,12 @@ function renderYT(){
 // ══════════════════════════════════
 // PODCAST — límite 1 semana
 // ══════════════════════════════════
+function podLinkFor(feedId,rawLink){
+  const sp=(POD_FEEDS.find(f=>f.id===feedId)||{}).spotify||'';
+  const isAudio=/\.(mp3|ogg|aac|m4a)(\?|$)/i.test(rawLink||'');
+  const link=sp||(isAudio?'':rawLink)||'';
+  return{link,title:sp?'Abrir en Spotify':'Ver episodio'};
+}
 function renderPod(){
   const body=document.getElementById('body-podcast');if(!body)return;
   let all=[];getActivePodFeeds().forEach(f=>{if(podData[f.id])all.push(...podData[f.id]);});
@@ -1514,8 +1521,8 @@ function renderPod(){
   body.innerHTML=all.map(v=>{
     // FIX #6: thumbnail de podcast (itunes:image u otro)
     const thumb=v.thumbnail||'';
-    const podLink=(POD_FEEDS.find(f=>f.id===v.feedId)||{}).spotify||v.link;
-    return`<div class="media-item" onclick="openLink('${escHtml(podLink)}','podcast','${escHtml(v.feedId||'')}')">
+    const {link:podLink,title:podTitle}=podLinkFor(v.feedId,v.link);
+    return`<div class="media-item" title="${escHtml(podTitle)}"${podLink?` onclick="openLink('${escHtml(podLink)}','podcast','${escHtml(v.feedId||'')}')"`:''}>
       ${mediaThumbOrPlaceholder(thumb,'🎙',v.logo||getSourceLogo(v.feedId||''))}
       <div class="media-content">
         <div class="media-source pod"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> ${escHtml(v.source)} ${isNew(v.pubDate)?'<span class="badge badge-new">🚨</span>':''}</div>
