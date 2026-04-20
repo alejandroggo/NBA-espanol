@@ -1332,7 +1332,6 @@ async function loadStandings(){
   body.innerHTML='<div class="panel-loading">CARGANDO</div>';
   const yr=new Date().getMonth()>=9?new Date().getFullYear()+1:new Date().getFullYear();
   const endpoints=[
-    `https://site.api.espn.com/apis/v2/sports/basketball/nba/standings?season=${yr}&seasontype=3`,
     `https://site.api.espn.com/apis/v2/sports/basketball/nba/standings?season=${yr}&seasontype=2`,
     'https://site.api.espn.com/apis/site/v2/sports/basketball/nba/standings',
   ];
