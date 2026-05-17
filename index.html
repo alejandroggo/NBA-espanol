@@ -80,6 +80,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;heigh
 #logo{font-family:'Inter',sans-serif;font-weight:700;font-size:17px;color:var(--gold);letter-spacing:2px;flex-shrink:0;text-transform:uppercase;}
 .ag-update-badge{display:none;font-size:9px;color:var(--text3);letter-spacing:.3px;flex-shrink:0;white-space:nowrap;}
 .ag-update-badge.visible{display:block;}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px;}
 .tb-sep{width:1px;height:20px;background:var(--border);margin:0 2px;}
 .tb-btn{background:transparent;border:1px solid var(--border);color:var(--text2);font-family:'Inter',sans-serif;font-weight:600;font-size:11px;padding:4px 10px;cursor:pointer;border-radius:4px;letter-spacing:.5px;transition:all .15s;flex-shrink:0;text-transform:uppercase;}
 .tb-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-bg);}
@@ -383,7 +384,7 @@ i[data-lucide]{display:inline-block;}
 <body>
 
 <div id="topbar">
-  <div id="logo">NBA EN ESPAÑOL</div>
+  <h1 id="logo">NBA EN ESPAÑOL</h1>
   <span id="ag-update-badge" class="ag-update-badge"></span>
   <div class="tb-sep"></div>
   <button class="tb-btn" id="theme-btn" onclick="toggleTheme()" aria-label="Tema: Auto"><i data-lucide="monitor"></i> Auto</button>
@@ -420,10 +421,10 @@ i[data-lucide]{display:inline-block;}
   <button class="tb-btn" id="mob-live-btn" onclick="toggleLive()"><i data-lucide="radio"></i> En Vivo</button>
 </div>
 
-<div id="mob-results-subtabs">
-  <button class="mob-sub-tab active" id="mrst-partidos" onclick="mobileResultsTab('partidos')">Partidos</button>
-  <button class="mob-sub-tab" id="mrst-clasif" onclick="mobileResultsTab('clasif')">Clasificación</button>
-  <button class="mob-sub-tab" id="mrst-bracket" onclick="mobileResultsTab('bracket')">Bracket</button>
+<div id="mob-results-subtabs" role="tablist" aria-label="Sección de resultados">
+  <button class="mob-sub-tab active" id="mrst-partidos" role="tab" aria-selected="true" aria-controls="panel-scorecal" onclick="mobileResultsTab('partidos')">Partidos</button>
+  <button class="mob-sub-tab" id="mrst-clasif" role="tab" aria-selected="false" aria-controls="panel-standings" onclick="mobileResultsTab('clasif')">Clasificación</button>
+  <button class="mob-sub-tab" id="mrst-bracket" role="tab" aria-selected="false" aria-controls="panel-standings" onclick="mobileResultsTab('bracket')">Bracket</button>
 </div>
 
 <div id="canvas">
@@ -434,8 +435,8 @@ i[data-lucide]{display:inline-block;}
       <span class="panel-new-badge" id="pnb-wire"></span>
       <span class="panel-badge" id="badge-wire">—</span>
       <span class="panel-updated" id="upd-wire"></span>
-      <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('wire')">↺</button>
-      <span class="panel-collapse-btn">▾</span>
+      <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('wire')" aria-label="Actualizar noticias"><i data-lucide="refresh-cw"></i></button>
+      <span class="panel-collapse-btn" aria-hidden="true"><i data-lucide="chevron-down"></i></span>
     </div>
     <div class="filter-bar">
       <button class="filter-btn" onclick="toggleFilterDropdown('wire')"><span>Fuentes</span><span class="filter-count" id="filter-count-wire"></span></button>
@@ -453,16 +454,16 @@ i[data-lucide]{display:inline-block;}
       <span class="panel-new-badge" id="pnb-youtube"></span>
       <span class="panel-badge" id="badge-youtube">—</span>
       <span class="panel-updated" id="upd-youtube"></span>
-      <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('youtube')">↺</button>
-      <span class="panel-collapse-btn">▾</span>
+      <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('youtube')" aria-label="Actualizar YouTube"><i data-lucide="refresh-cw"></i></button>
+      <span class="panel-collapse-btn" aria-hidden="true"><i data-lucide="chevron-down"></i></span>
     </div>
     <div class="filter-bar">
       <button class="filter-btn" onclick="toggleFilterDropdown('youtube')"><span>Canales</span><span class="filter-count" id="filter-count-youtube"></span></button>
       <div class="filter-dropdown" id="filter-dd-youtube"></div>
     </div>
-    <div class="yt-subtabs">
-      <button class="yt-sub-btn active" id="ytst-videos" onclick="switchYTSubTab('videos')">Videos<span class="yt-cnt" id="ytst-cnt-videos"></span></button>
-      <button class="yt-sub-btn" id="ytst-shorts" onclick="switchYTSubTab('shorts')">Shorts<span class="yt-cnt" id="ytst-cnt-shorts"></span></button>
+    <div class="yt-subtabs" role="tablist" aria-label="Tipo de vídeo">
+      <button class="yt-sub-btn active" id="ytst-videos" role="tab" aria-selected="true" aria-controls="body-youtube" onclick="switchYTSubTab('videos')">Videos<span class="yt-cnt" id="ytst-cnt-videos"></span></button>
+      <button class="yt-sub-btn" id="ytst-shorts" role="tab" aria-selected="false" aria-controls="body-youtube" onclick="switchYTSubTab('shorts')">Shorts<span class="yt-cnt" id="ytst-cnt-shorts"></span></button>
     </div>
     <div class="panel-body" id="body-youtube"></div>
   </div>
@@ -476,8 +477,8 @@ i[data-lucide]{display:inline-block;}
       <span class="panel-new-badge" id="pnb-podcast"></span>
       <span class="panel-badge" id="badge-podcast">—</span>
       <span class="panel-updated" id="upd-podcast"></span>
-      <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('podcast')">↺</button>
-      <span class="panel-collapse-btn">▾</span>
+      <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('podcast')" aria-label="Actualizar podcast"><i data-lucide="refresh-cw"></i></button>
+      <span class="panel-collapse-btn" aria-hidden="true"><i data-lucide="chevron-down"></i></span>
     </div>
     <div class="filter-bar">
       <button class="filter-btn" onclick="toggleFilterDropdown('podcast')"><span>Programas</span><span class="filter-count" id="filter-count-podcast"></span></button>
@@ -494,9 +495,9 @@ i[data-lucide]{display:inline-block;}
       <span class="panel-title"><i data-lucide="star"></i> Mis Equipos</span>
       <span class="panel-badge" id="badge-teams">—</span>
       <span class="panel-updated" id="upd-teams"></span>
-      <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('teams')">↺</button>
+      <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('teams')" aria-label="Actualizar Mis Equipos"><i data-lucide="refresh-cw"></i></button>
       <button class="panel-btn" onclick="event.stopPropagation();openConfig()" style="font-size:11px;letter-spacing:.4px;padding:2px 6px;border:1px solid var(--border);border-radius:4px;">Elige tus equipos</button>
-      <span class="panel-collapse-btn">▾</span>
+      <span class="panel-collapse-btn" aria-hidden="true"><i data-lucide="chevron-down"></i></span>
     </div>
     <!-- FIX #1: keyword filter bar + FIX #4: YT/pod chips -->
     <div class="team-kw-bar" id="team-kw-bar"></div>
@@ -511,8 +512,8 @@ i[data-lucide]{display:inline-block;}
       <span class="panel-title"><i data-lucide="calendar-days"></i> Partidos</span>
       <span class="panel-badge" id="badge-scorecal">—</span>
       <button class="panel-btn" id="spoiler-btn" onclick="event.stopPropagation();toggleSpoilerMode()" title="Modo sin spoilers" style="font-size:9px;letter-spacing:.4px;display:flex;align-items:center;gap:3px;padding:2px 6px;border:1px solid var(--border);border-radius:4px;"><span id="spoiler-icon"><i data-lucide="eye"></i></span> NO SPOILERS</button>
-      <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('scorecal')">↺</button>
-      <span class="panel-collapse-btn">▾</span>
+      <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('scorecal')" aria-label="Actualizar partidos"><i data-lucide="refresh-cw"></i></button>
+      <span class="panel-collapse-btn" aria-hidden="true"><i data-lucide="chevron-down"></i></span>
     </div>
     <div class="panel-body" id="body-scorecal"></div>
   </div>
@@ -524,37 +525,37 @@ i[data-lucide]{display:inline-block;}
     <div class="panel-header" onclick="togglePanelMobile('panel-standings')">
       <span class="panel-title"><i data-lucide="trophy"></i> Clasificación</span>
       <span class="panel-badge" id="badge-standings">—</span>
-      <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('standings')">↺</button>
-      <span class="panel-collapse-btn">▾</span>
+      <button class="panel-btn" onclick="event.stopPropagation();refreshPanel('standings')" aria-label="Actualizar clasificación"><i data-lucide="refresh-cw"></i></button>
+      <span class="panel-collapse-btn" aria-hidden="true"><i data-lucide="chevron-down"></i></span>
     </div>
-    <div class="panel-tabs">
-      <div class="panel-tab active" id="tab-east" onclick="switchConf('east')">Este</div>
-      <div class="panel-tab" id="tab-west" onclick="switchConf('west')">Oeste</div>
-      <div class="panel-tab" id="tab-bracket" onclick="switchConf('bracket')">Bracket</div>
+    <div class="panel-tabs" role="tablist" aria-label="Conferencia">
+      <div class="panel-tab active" id="tab-east" role="tab" aria-selected="true" aria-controls="body-standings" tabindex="0" onclick="switchConf('east')" onkeydown="if(event.key==='Enter'||event.key===' ')switchConf('east')">Este</div>
+      <div class="panel-tab" id="tab-west" role="tab" aria-selected="false" aria-controls="body-standings" tabindex="0" onclick="switchConf('west')" onkeydown="if(event.key==='Enter'||event.key===' ')switchConf('west')">Oeste</div>
+      <div class="panel-tab" id="tab-bracket" role="tab" aria-selected="false" aria-controls="body-standings" tabindex="0" onclick="switchConf('bracket')" onkeydown="if(event.key==='Enter'||event.key===' ')switchConf('bracket')">Bracket</div>
     </div>
     <div class="panel-body" id="body-standings" style="padding:0;overflow-y:auto;"></div>
   </div>
 </div>
 
 <!-- MOBILE TAB BAR -->
-<nav id="mobile-tabbar">
-  <button class="mob-tab" id="mtab-teams" onclick="mobileTab('teams')">
+<nav id="mobile-tabbar" role="tablist" aria-label="Navegación principal">
+  <button class="mob-tab" id="mtab-teams" role="tab" aria-selected="false" aria-controls="panel-teams" onclick="mobileTab('teams')">
     <span class="mob-tab-icon"><i data-lucide="star"></i></span>
     <span class="mob-tab-label">Mis Equipos</span>
   </button>
-  <button class="mob-tab" id="mtab-youtube" onclick="mobileTab('youtube')">
+  <button class="mob-tab" id="mtab-youtube" role="tab" aria-selected="false" aria-controls="panel-youtube" onclick="mobileTab('youtube')">
     <span class="mob-tab-icon"><i data-lucide="video"></i><span class="mob-tab-badge" id="mtab-badge-youtube"></span></span>
     <span class="mob-tab-label">YouTube</span>
   </button>
-  <button class="mob-tab" id="mtab-wire" onclick="mobileTab('wire')">
+  <button class="mob-tab" id="mtab-wire" role="tab" aria-selected="true" aria-controls="panel-wire" onclick="mobileTab('wire')">
     <span class="mob-tab-icon"><i data-lucide="newspaper"></i><span class="mob-tab-badge" id="mtab-badge-wire"></span></span>
     <span class="mob-tab-label">Noticias</span>
   </button>
-  <button class="mob-tab" id="mtab-podcast" onclick="mobileTab('podcast')">
+  <button class="mob-tab" id="mtab-podcast" role="tab" aria-selected="false" aria-controls="panel-podcast" onclick="mobileTab('podcast')">
     <span class="mob-tab-icon"><i data-lucide="mic"></i><span class="mob-tab-badge" id="mtab-badge-podcast"></span></span>
     <span class="mob-tab-label">Podcast</span>
   </button>
-  <button class="mob-tab" id="mtab-results" onclick="mobileTab('results')">
+  <button class="mob-tab" id="mtab-results" role="tab" aria-selected="false" aria-controls="panel-scorecal" onclick="mobileTab('results')">
     <span class="mob-tab-icon"><i data-lucide="calendar-days"></i></span>
     <span class="mob-tab-label">Resultados</span>
   </button>
@@ -565,7 +566,7 @@ i[data-lucide]{display:inline-block;}
   <div class="config-box">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
       <div class="config-title" style="margin-bottom:0"><i data-lucide="settings"></i> Configuración</div>
-      <button onclick="closeConfig()" style="background:transparent;border:1px solid var(--border);color:var(--text3);font-size:16px;width:28px;height:28px;cursor:pointer;border-radius:4px;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text3)'">✕</button>
+      <button onclick="closeConfig()" aria-label="Cerrar" style="background:transparent;border:1px solid var(--border);color:var(--text3);font-size:16px;width:28px;height:28px;cursor:pointer;border-radius:4px;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text3)'"><i data-lucide="x"></i></button>
     </div>
 
     <div class="config-section">
@@ -774,7 +775,7 @@ let newsData={},ytData={},podData={};
 let newsHealth={},ytHealth={},podHealth={};
 let newsExcluded=[],ytExcluded=[],podExcluded=[];
 let ytSubTab='videos';
-function switchYTSubTab(sub){ytSubTab=sub;document.querySelectorAll('.yt-sub-btn').forEach(b=>b.classList.remove('active'));document.getElementById('ytst-'+sub)?.classList.add('active');renderYT();}
+function switchYTSubTab(sub){ytSubTab=sub;document.querySelectorAll('.yt-sub-btn').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-selected','false');});const a=document.getElementById('ytst-'+sub);a?.classList.add('active');a?.setAttribute('aria-selected','true');renderYT();}
 let searchQuery='';
 let livePolling=false,liveInterval=null,autoRefreshTimer=null;
 let fetchQueue=[],activeCount=0;
@@ -839,8 +840,8 @@ function attachSeenOnScroll(panel){
 }
 
 function mobileResultsTab(sub){
-  document.querySelectorAll('.mob-sub-tab').forEach(b=>b.classList.remove('active'));
-  document.getElementById('mrst-'+sub)?.classList.add('active');
+  document.querySelectorAll('.mob-sub-tab').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-selected','false');});
+  const ra=document.getElementById('mrst-'+sub);ra?.classList.add('active');ra?.setAttribute('aria-selected','true');
   document.querySelectorAll('#canvas .panel').forEach(p=>p.classList.remove('mob-active','mob-half'));
   if(sub==='partidos'){
     document.getElementById('panel-scorecal')?.classList.add('mob-active');
@@ -853,8 +854,8 @@ function mobileTab(tab){
   if(window.innerWidth>860)return;
   _mobileTab=tab;
   markSeen(tab);
-  document.querySelectorAll('.mob-tab').forEach(b=>b.classList.remove('active'));
-  document.getElementById('mtab-'+tab)?.classList.add('active');
+  document.querySelectorAll('.mob-tab').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-selected','false');});
+  const ma=document.getElementById('mtab-'+tab);ma?.classList.add('active');ma?.setAttribute('aria-selected','true');
   document.querySelectorAll('#canvas .panel').forEach(p=>p.classList.remove('mob-active','mob-half'));
   const subtabs=document.getElementById('mob-results-subtabs');
   const canvas=document.getElementById('canvas');
@@ -1030,9 +1031,9 @@ function buildFilterDropdown(p){
     <div class="filter-all"><button onclick="event.stopPropagation();restoreAllFilter('${p}')">Mostrar todos</button><button onclick="event.stopPropagation();excludeAllFilter('${p}')">Ocultar todos</button></div>`+
     sources.map(s=>{const ex=excl.includes(s.id);
       const logo=getSourceLogo(s.id||'');
-      const logoHtml=logo?`<img src="${escHtml(logo)}" style="width:12px;height:12px;object-fit:contain;border-radius:2px;" onerror="this.style.display='none'"> `:'';
-      return`<div class="filter-option ${ex?'excluded':''}" onclick="event.stopPropagation();toggleExclude('${p}','${s.id}')">
-        <div class="check">${ex?'✕':'✓'}</div>${logoHtml}<span>${escHtml(s.label)}</span>
+      const logoHtml=logo?`<img src="${escHtml(logo)}" alt="" style="width:12px;height:12px;object-fit:contain;border-radius:2px;" onerror="this.style.display='none'"> `:'';
+      return`<div class="filter-option ${ex?'excluded':''}" role="option" aria-selected="${!ex}" onclick="event.stopPropagation();toggleExclude('${p}','${s.id}')">
+        <div class="check" aria-hidden="true">${ex?'✕':'✓'}</div>${logoHtml}<span>${escHtml(s.label)}</span>
       </div>`;
     }).join('');
 }
@@ -1078,7 +1079,7 @@ function removeKeyword(kw){
 function renderKwList(){
   const list=document.getElementById('kw-list');if(!list)return;
   if(!state.teamKeywords.length){list.innerHTML='<span style="font-size:10px;color:var(--text3);font-family:Inter,sans-serif;">Sin palabras clave añadidas</span>';return;}
-  list.innerHTML=state.teamKeywords.map(kw=>`<span style="display:inline-flex;align-items:center;gap:4px;background:var(--bg2);border:1px solid var(--border);padding:2px 8px;border-radius:10px;font-size:10px;color:var(--text2);font-family:Inter,sans-serif;">${escHtml(kw)}<span style="cursor:pointer;color:var(--live-red);font-size:11px;" onclick="removeKeyword('${escHtml(kw)}')">✕</span></span>`).join('');
+  list.innerHTML=state.teamKeywords.map(kw=>`<span style="display:inline-flex;align-items:center;gap:4px;background:var(--bg2);border:1px solid var(--border);padding:2px 8px;border-radius:10px;font-size:10px;color:var(--text2);font-family:Inter,sans-serif;">${escHtml(kw)}<button style="cursor:pointer;color:var(--live-red);font-size:11px;background:none;border:none;padding:0;line-height:1;" aria-label="Eliminar ${escHtml(kw)}" onclick="removeKeyword('${escHtml(kw)}')">✕</button></span>`).join('');
 }
 // Barra de chips dentro del panel Mis Equipos
 function renderTeamKwBar(){
@@ -1092,7 +1093,7 @@ function renderTeamKwBar(){
   });
   // chips de keywords
   kws.forEach(kw=>{
-    html+=`<span class="kw-chip active" style="color:var(--pod-purple);border-color:var(--pod-purple);">${escHtml(kw)}<span style="margin-left:3px;cursor:pointer;opacity:.6" onclick="removeKeyword('${escHtml(kw)}')">✕</span></span>`;
+    html+=`<span class="kw-chip active" style="color:var(--pod-purple);border-color:var(--pod-purple);">${escHtml(kw)}<button style="margin-left:3px;cursor:pointer;opacity:.6;background:none;border:none;padding:0;color:inherit;font-size:inherit;line-height:1;" aria-label="Eliminar ${escHtml(kw)}" onclick="removeKeyword('${escHtml(kw)}')">✕</button></span>`;
   });
   // botón añadir
   html+=`<span class="kw-chip add-kw" onclick="openKwInput(this)">+ kw</span>`;
@@ -1167,25 +1168,25 @@ function isNew(pd,ms=10800000){if(!pd)return false;try{return Date.now()-new Dat
 function thumbOrPlaceholder(src,emoji,logoSrc=''){
   if(src){
     const err=logoSrc?`this.onerror=null;this.src='${escHtml(logoSrc)}';this.style.objectFit='contain';this.style.padding='8px'`:`this.style.display='none'`;
-    return`<img class="article-thumb" src="${escHtml(src)}" onerror="${err}" loading="lazy">`;
+    return`<img class="article-thumb" src="${escHtml(src)}" alt="" onerror="${err}" loading="lazy">`;
   }
-  if(logoSrc)return`<div class="article-thumb-placeholder"><img src="${escHtml(logoSrc)}" style="width:26px;height:26px;object-fit:contain;opacity:.8" onerror="this.style.display='none'"></div>`;
-  return`<div class="article-thumb-placeholder">${emoji}</div>`;
+  if(logoSrc)return`<div class="article-thumb-placeholder"><img src="${escHtml(logoSrc)}" alt="" style="width:26px;height:26px;object-fit:contain;opacity:.8" onerror="this.style.display='none'"></div>`;
+  return`<div class="article-thumb-placeholder" aria-hidden="true">${emoji}</div>`;
 }
 function mediaThumbOrPlaceholder(src,emoji,logoSrc=''){
   if(src){
     const err=logoSrc?`this.onerror=null;this.src='${escHtml(logoSrc)}';this.style.objectFit='contain';this.style.padding='8px'`:`this.style.display='none'`;
-    return`<img class="media-thumb" src="${escHtml(src)}" onerror="${err}" loading="lazy">`;
+    return`<img class="media-thumb" src="${escHtml(src)}" alt="" onerror="${err}" loading="lazy">`;
   }
-  if(logoSrc)return`<div class="media-thumb-placeholder"><img src="${escHtml(logoSrc)}" style="width:26px;height:26px;object-fit:contain;opacity:.8" onerror="this.style.display='none'"></div>`;
-  return`<div class="media-thumb-placeholder">${emoji}</div>`;
+  if(logoSrc)return`<div class="media-thumb-placeholder"><img src="${escHtml(logoSrc)}" alt="" style="width:26px;height:26px;object-fit:contain;opacity:.8" onerror="this.style.display='none'"></div>`;
+  return`<div class="media-thumb-placeholder" aria-hidden="true">${emoji}</div>`;
 }
 
 function newsItemHTML(a){
-  const payB=a.pay?'<span class="badge badge-pay">🔒</span>':'';
-  const newB=isNew(a.pubDate)?'<span class="badge badge-new">🚨</span>':'';
+  const payB=a.pay?'<span class="badge badge-pay">PREM</span>':'';
+  const newB=isNew(a.pubDate)?'<span class="badge badge-new">NEW</span>':'';
   const logo=getSourceLogo(a.feedId||'');
-  const logoHtml=logo?`<img src="${escHtml(logo)}" class="source-logo" onerror="this.style.display='none'">`:'';
+  const logoHtml=logo?`<img src="${escHtml(logo)}" class="source-logo" alt="${escHtml(a.source||'')}" onerror="this.style.display='none'">`:'';
   const thumb=thumbOrPlaceholder(a.thumbnail||'','📰',logo);
   return`<div class="article-item" onclick="openLink('${escHtml(a.link)}','noticia','${escHtml(a.feedId||'')}')">
     ${thumb}
@@ -1235,7 +1236,7 @@ function renderTeams(){
       return`<div class="media-item" onclick="openLink('${escHtml(a.link)}','video','${escHtml(a.channelId||'')}')">
         ${mediaThumbOrPlaceholder(thumb,'🎥',a.logo||getSourceLogo(a.channelId||''))}
         <div class="media-content">
-          <div class="media-source yt"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg> ${escHtml(a.channelName||a.source||'')} ${isNew(a.pubDate,3600000)?'<span class="badge badge-new">🚨</span>':''}</div>
+          <div class="media-source yt"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg> ${escHtml(a.channelName||a.source||'')} ${isNew(a.pubDate,3600000)?'<span class="badge badge-new">NEW</span>':''}</div>
           <div class="media-title">${escHtml(a.title)}</div>
           <div class="media-date">${a.pubDate?formatDate(a.pubDate):''}</div>
         </div>
@@ -1246,7 +1247,7 @@ function renderTeams(){
       return`<div class="media-item" title="${escHtml(_pt)}"${_pl?` onclick="openLink('${escHtml(_pl)}','podcast','${escHtml(a.feedId||'')}')"`:''}>
         ${mediaThumbOrPlaceholder(a.thumbnail||'','🎙',a.logo||getSourceLogo(a.feedId||''))}
         <div class="media-content">
-          <div class="media-source pod"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> ${escHtml(a.source||'')} ${isNew(a.pubDate,3600000)?'<span class="badge badge-new">🚨</span>':''}</div>
+          <div class="media-source pod"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> ${escHtml(a.source||'')} ${isNew(a.pubDate,3600000)?'<span class="badge badge-new">NEW</span>':''}</div>
           <div class="media-title">${escHtml(a.title)}</div>
           <div class="media-date">${a.pubDate?formatDate(a.pubDate):''}</div>
         </div>
@@ -1342,9 +1343,9 @@ function renderPartidos(dY,dT,dM,etHour,ayerStr,todayStr,mananaStr){
         ${gameLabel?`<div class="cal-playoff-label">${gameLabel}</div>`:''}
         <div class="cal-status ${stCls}">${stLabel}</div>${timeLabel}
         <div class="cal-teams">
-          <div class="cal-team"><div class="cal-team-info"><img class="team-logo" src="${logo(away.team?.abbreviation)}" onerror="this.style.display='none'"><span class="cal-team-abbr">${escHtml(away.team?.abbreviation||'')}</span></div>${showScore?`<span class="cal-score${isFinal?' final':''}${aS>hS?' leader':''}">${away.score||0}</span>`:''}</div>
+          <div class="cal-team"><div class="cal-team-info"><img class="team-logo" src="${logo(away.team?.abbreviation)}" alt="${escHtml(away.team?.displayName||away.team?.abbreviation||'')}" onerror="this.style.display='none'"><span class="cal-team-abbr">${escHtml(away.team?.abbreviation||'')}</span></div>${showScore?`<span class="cal-score${isFinal?' final':''}${aS>hS?' leader':''}">${away.score||0}</span>`:''}</div>
           <div class="cal-divider"></div>
-          <div class="cal-team"><div class="cal-team-info"><img class="team-logo" src="${logo(home.team?.abbreviation)}" onerror="this.style.display='none'"><span class="cal-team-abbr">${escHtml(home.team?.abbreviation||'')}</span></div>${showScore?`<span class="cal-score${isFinal?' final':''}${hS>aS?' leader':''}">${home.score||0}</span>`:''}</div>
+          <div class="cal-team"><div class="cal-team-info"><img class="team-logo" src="${logo(home.team?.abbreviation)}" alt="${escHtml(home.team?.displayName||home.team?.abbreviation||'')}" onerror="this.style.display='none'"><span class="cal-team-abbr">${escHtml(home.team?.abbreviation||'')}</span></div>${showScore?`<span class="cal-score${isFinal?' final':''}${hS>aS?' leader':''}">${home.score||0}</span>`:''}</div>
         </div>
       </div>`;
     }).join('');
@@ -1378,9 +1379,7 @@ async function loadStandings(){
 }
 function switchConf(conf){
   standingsConf=conf;
-  document.getElementById('tab-east').classList.toggle('active',conf==='east');
-  document.getElementById('tab-west').classList.toggle('active',conf==='west');
-  document.getElementById('tab-bracket').classList.toggle('active',conf==='bracket');
+  ['east','west','bracket'].forEach(c=>{const el=document.getElementById('tab-'+c);el?.classList.toggle('active',conf===c);el?.setAttribute('aria-selected',String(conf===c));});
   if(conf==='bracket')loadBracket();
   else renderStandingsTable();
 }
@@ -1506,7 +1505,7 @@ function renderStandingsTable(){
     const cls=[i===5?'playoff-line':'',i===9?'playin-line':(i>=6&&i<=9?'playin-row':'')].filter(Boolean).join(' ');
     return`<tr class="${cls}"><td class="rank-num">${i+1}</td><td class="team-td">${t?.abbreviation||t?.shortDisplayName||''}</td><td>${s['wins']||0}-${s['losses']||0}</td><td class="pct-cell">${s['winPercent']||s['pct']||'—'}</td><td>${s['gamesBehind']||s['gamesBack']||'—'}</td><td>${s['Home']||s['homeRecord']||'—'}</td><td>${s['Road']||s['awayRecord']||'—'}</td><td>${s['L10']||s['last10']||'—'}</td></tr>`;
   }).join('');
-  body.innerHTML=`<div style="overflow-y:auto;height:100%;"><table class="standings-table"><thead><tr><th>#</th><th>EQUIPO</th><th>V-D</th><th>PCT</th><th>DIF</th><th>LOCAL</th><th>VISIT.</th><th>ÚLT10</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  body.innerHTML=`<div style="overflow-y:auto;height:100%;"><table class="standings-table"><thead><tr><th scope="col">#</th><th scope="col">EQUIPO</th><th scope="col">V-D</th><th scope="col">PCT</th><th scope="col">DIF</th><th scope="col">LOCAL</th><th scope="col">VISIT.</th><th scope="col">ÚLT10</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
 // ══════════════════════════════════
@@ -1533,7 +1532,7 @@ function renderYT(){
     return`<div class="media-item" onclick="openLink('${escHtml(v.link)}','video','${escHtml(v.channelId||'')}')">
       ${mediaThumbOrPlaceholder(thumb,'🎥',v.logo||getSourceLogo(v.channelId||''))}
       <div class="media-content">
-        <div class="media-source yt"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg> ${escHtml(v.channelName)} ${isNew(v.pubDate,3600000)?'<span class="badge badge-new">🚨</span>':''}</div>
+        <div class="media-source yt"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg> ${escHtml(v.channelName)} ${isNew(v.pubDate,3600000)?'<span class="badge badge-new">NEW</span>':''}</div>
         <div class="media-title">${escHtml(v.title)}</div>
         <div class="media-date">${v.pubDate?formatDate(v.pubDate):''}</div>
       </div>
@@ -1567,7 +1566,7 @@ function renderPod(){
     return`<div class="media-item" title="${escHtml(podTitle)}"${podLink?` onclick="openLink('${escHtml(podLink)}','podcast','${escHtml(v.feedId||'')}')"`:''}>
       ${mediaThumbOrPlaceholder(thumb,'🎙',v.logo||getSourceLogo(v.feedId||''))}
       <div class="media-content">
-        <div class="media-source pod"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> ${escHtml(v.source)} ${isNew(v.pubDate)?'<span class="badge badge-new">🚨</span>':''}</div>
+        <div class="media-source pod"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> ${escHtml(v.source)} ${isNew(v.pubDate)?'<span class="badge badge-new">NEW</span>':''}</div>
         <div class="media-title">${escHtml(v.title)}</div>
         <div class="media-date">${v.pubDate?formatDate(v.pubDate):''}</div>
       </div>
@@ -1617,8 +1616,9 @@ function renderYTConfig(){
   c.innerHTML=[...YT_CHANNELS,...state.customYT].map((ch,i)=>{
     const h=ytHealth[ch.id]||{status:'loading',count:0};const disabled=state.disabledYT.includes(ch.id);const isCustom=i>=YT_CHANNELS.length;
     const logo=getSourceLogo(ch.id);
-    const logoHtml=logo?`<img src="${escHtml(logo)}" class="config-logo-preview" onerror="this.style.display='none'">`:'';
-    return`<div class="health-item">${logoHtml}<div class="dot ${disabled?'err':h.status}"></div><span class="health-name">${escHtml(ch.label)}</span><span class="health-count">${h.count||0} vídeos</span><button class="toggle-btn ${disabled?'':'on'}" onclick="toggleYT('${ch.id}',this)">${disabled?'DESACT.':'ACTIVO'}</button>${isCustom?`<span class="del-btn" onclick="removeCustomYT(${i-YT_CHANNELS.length})">✕</span>`:''}</div>`;
+    const logoHtml=logo?`<img src="${escHtml(logo)}" class="config-logo-preview" alt="" onerror="this.style.display='none'">`:'';
+
+    return`<div class="health-item">${logoHtml}<div class="dot ${disabled?'err':h.status}"></div><span class="health-name">${escHtml(ch.label)}</span><span class="health-count">${h.count||0} vídeos</span><button class="toggle-btn ${disabled?'':'on'}" onclick="toggleYT('${ch.id}',this)">${disabled?'DESACT.':'ACTIVO'}</button>${isCustom?`<button class="del-btn" onclick="removeCustomYT(${i-YT_CHANNELS.length})" aria-label="Eliminar canal">✕</button>`:''}</div>`;
   }).join('');
 }
 function removeCustomYT(i){state.customYT.splice(i,1);localStorage.setItem('nba_yt_extra',JSON.stringify(state.customYT));renderYTConfig();}
@@ -1646,14 +1646,16 @@ function updateHealthUI(){
   document.getElementById('feed-health-news').innerHTML=[...NEWS_FEEDS,...state.customFeeds.map(f=>({...f,id:'c_'+f.label}))].map(f=>{
     const h=newsHealth[f.id]||{status:'loading',count:0};const dis=state.disabledNews.includes(f.id);
     const logo=getSourceLogo(f.id);
-    const logoHtml=logo?`<img src="${escHtml(logo)}" class="config-logo-preview" onerror="this.style.display='none'">`:'';
-    return`<div class="health-item">${logoHtml}<div class="dot ${dis?'err':h.status}"></div><span class="health-name">${f.pay?'🔒 ':''}${escHtml(f.label)}</span><span class="health-count">${h.count||0} art.</span><button class="toggle-btn ${dis?'':'on'}" onclick="toggleNews('${f.id}',this)">${dis?'DESACT.':'ACTIVO'}</button></div>`;
+    const logoHtml=logo?`<img src="${escHtml(logo)}" class="config-logo-preview" alt="" onerror="this.style.display='none'">`:'';
+
+    return`<div class="health-item">${logoHtml}<div class="dot ${dis?'err':h.status}"></div><span class="health-name">${f.pay?'<span class="badge badge-pay" style="font-size:8px;padding:1px 3px;margin-right:3px;">PREM</span>':''}${escHtml(f.label)}</span><span class="health-count">${h.count||0} art.</span><button class="toggle-btn ${dis?'':'on'}" onclick="toggleNews('${f.id}',this)">${dis?'DESACT.':'ACTIVO'}</button></div>`;
   }).join('');
 
   document.getElementById('feed-health-pod').innerHTML=POD_FEEDS.map(f=>{
     const h=podHealth[f.id]||{status:'loading',count:0};const dis=state.disabledPod.includes(f.id);
     const logo=getSourceLogo(f.id);
-    const logoHtml=logo?`<img src="${escHtml(logo)}" class="config-logo-preview" onerror="this.style.display='none'">`:'';
+    const logoHtml=logo?`<img src="${escHtml(logo)}" class="config-logo-preview" alt="" onerror="this.style.display='none'">`:'';
+
     return`<div class="health-item">${logoHtml}<div class="dot ${dis?'err':h.status}"></div><span class="health-name">${escHtml(f.label)}</span><span class="health-count">${h.count||0} ep.</span><button class="toggle-btn ${dis?'':'on'}" onclick="togglePod('${f.id}',this)">${dis?'DESACT.':'ACTIVO'}</button></div>`;
   }).join('');
 
