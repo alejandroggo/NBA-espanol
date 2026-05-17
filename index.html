@@ -34,7 +34,7 @@
   --live-red:#e05050;--live-red-bg:rgba(224,80,80,0.08);
   --yt-red:#ff4444;--pod-purple:#9b6fd4;
   --text:#f0f0f0;--text2:#a0a0b8;--text3:#55556a;--green:#4caf82;
-  --panel-radius:8px;--header-h:44px;--topbar-h:48px;--fs-title:14px;
+  --panel-radius:8px;--header-h:44px;--topbar-h:48px;--fs-title:14px;--footer-h:34px;
   --shadow:0 2px 8px rgba(0,0,0,0.5),0 0 0 1px var(--border);
   --shadow-hover:0 4px 20px rgba(0,0,0,0.6),0 0 0 1px var(--border2);
   --col1:1fr;--col2:1fr;--col3:1fr;--row1:1fr;--row2:1fr;
@@ -81,7 +81,7 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 
 /* CANVAS */
 #canvas{
-  position:fixed;top:var(--topbar-h);left:0;right:0;bottom:0;
+  position:fixed;top:var(--topbar-h);left:0;right:0;bottom:var(--footer-h);
   display:grid;
   grid-template-columns:var(--col1) 6px var(--col2) 6px var(--col3);
   grid-template-rows:var(--row1) 6px var(--row2);
@@ -287,6 +287,7 @@ select.tb-select{background:var(--panel);border:1px solid var(--border);color:va
 @media(max-width:860px){
   body{overflow:hidden;}
   #topbar{overflow-x:auto;}
+  .ag-footer{display:none;}
   .tb-label,.tb-slider,select.tb-select{display:none;}
   /* Botones de acción se mueven a la segunda barra */
   #theme-btn,#live-btn,.tb-btn-action{display:none;}
@@ -351,6 +352,17 @@ i[data-lucide]{display:inline-block;}
 /* Playoff game label */
 .cal-playoff-label{font-size:8px;font-weight:700;letter-spacing:.8px;color:var(--gold);text-align:center;margin-bottom:2px;text-transform:uppercase;}
 .cal-game-time{font-size:9px;font-weight:600;color:var(--live-red);text-align:center;margin-top:3px;letter-spacing:.3px;}
+/* FOOTER */
+.ag-footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer-h);background:var(--panel);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 14px;gap:14px;z-index:999;overflow:hidden;}
+.ag-footer-brand{display:flex;align-items:center;gap:5px;flex-shrink:0;}
+.ag-footer-brand strong{font-size:10px;color:var(--text2);font-weight:600;}
+.ag-footer-brand span{font-size:10px;color:var(--text3);}
+.ag-footer-projects,.ag-footer-pubs{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.ag-footer-projects a,.ag-footer-pubs a{font-size:10px;color:var(--text3);text-decoration:none;transition:color .15s;white-space:nowrap;}
+.ag-footer-projects a:hover,.ag-footer-pubs a:hover{color:var(--gold);}
+.ag-footer-sep{width:1px;height:14px;background:var(--border);flex-shrink:0;}
+.ag-footer-meta{margin-left:auto;display:flex;align-items:center;gap:12px;flex-shrink:0;font-size:10px;color:var(--text3);white-space:nowrap;}
+#ag-last-update{color:var(--text2);}
 </style>
 </head>
 <body>
@@ -1719,5 +1731,31 @@ function init(){
 }
 init();
 </script>
+
+<footer class="ag-footer">
+  <div class="ag-footer-brand">
+    <strong>Alejandro Gaitán</strong>
+    <span>·</span>
+    <span>Periodismo NBA en español</span>
+  </div>
+  <div class="ag-footer-sep"></div>
+  <nav class="ag-footer-projects" aria-label="Otros proyectos">
+    <a href="https://alejandroggo.github.io/portfolio/" target="_blank" rel="noopener noreferrer">Portfolio</a>
+    <a href="https://alejandroggo.github.io/nba-rankings/" target="_blank" rel="noopener noreferrer">Rankings NBA</a>
+    <a href="https://alejandroggo.github.io/nba-offseason-2026/" target="_blank" rel="noopener noreferrer">Off-Season 2026</a>
+    <a href="https://alejandroggo.github.io/espanoles-nba/" target="_blank" rel="noopener noreferrer">Españoles en la NBA</a>
+  </nav>
+  <div class="ag-footer-sep"></div>
+  <nav class="ag-footer-pubs" aria-label="Publicaciones">
+    <a href="https://alejandroggo.substack.com" target="_blank" rel="noopener noreferrer">Substack</a>
+    <a href="https://www.relevo.com/autor/alejandro-gaitan-5475.html" target="_blank" rel="noopener noreferrer">Relevo</a>
+    <a href="https://www.gigantes.com" target="_blank" rel="noopener noreferrer">Gigantes</a>
+    <a href="https://alejandrogaitan.com" target="_blank" rel="noopener noreferrer">alejandrogaitan.com</a>
+  </nav>
+  <div class="ag-footer-meta">
+    <span>© Alejandro Gaitán</span>
+    <span>Última actualización: <time id="ag-last-update" datetime=""></time></span>
+  </div>
+</footer>
 </body>
 </html>
