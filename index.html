@@ -2,6 +2,13 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<script>
+(function(){
+  var t=localStorage.getItem('ag-theme')||localStorage.getItem('nba_theme')||'auto';
+  document.documentElement.dataset.theme=
+    (t==='auto')?(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):t;
+})();
+</script>
 <meta name="description" content="Agrega noticias, vídeos y podcasts de la NBA en español en una sola pantalla. Sin algoritmos, sin registro. Creado por Alejandro Gaitán.">
 <meta name="language" content="es">
 <meta name="author" content="Alejandro Gaitán">
@@ -28,36 +35,42 @@
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <style>
 :root {
-  --bg:#0a0a0f;--bg2:#0f0f16;--panel:#13131a;--panel-header:#16161f;
-  --border:#2a2a3a;--border2:#3a3a50;
-  --gold:#c9a84c;--gold-light:#e0c070;--gold-bg:rgba(201,168,76,0.08);
-  --live-red:#e05050;--live-red-bg:rgba(224,80,80,0.08);
-  --yt-red:#ff4444;--pod-purple:#9b6fd4;
-  --text:#f0f0f0;--text2:#a0a0b8;--text3:#55556a;--green:#4caf82;
-  --panel-radius:8px;--header-h:44px;--topbar-h:48px;--fs-title:14px;--footer-h:34px;
-  --shadow:0 2px 8px rgba(0,0,0,0.5),0 0 0 1px var(--border);
-  --shadow-hover:0 4px 20px rgba(0,0,0,0.6),0 0 0 1px var(--border2);
-  --col1:1fr;--col2:1fr;--col3:1fr;--row1:1fr;--row2:1fr;
-  --item-sep:rgba(255,255,255,0.04);
-  --table-row-sep:rgba(255,255,255,0.03);
-  --topbar-shadow:0 1px 10px rgba(0,0,0,0.6);
-  --modal-overlay:rgba(0,0,0,0.75);
-  --mob-tabbar-shadow:0 -2px 12px rgba(0,0,0,0.5);
-}
-html[data-theme="light"] {
   --bg:#eff1f6;--bg2:#ffffff;--panel:#ffffff;--panel-header:#f5f6fa;
   --border:#dde1ed;--border2:#bec5d6;
   --gold:#b8892a;--gold-light:#c9a84c;--gold-bg:rgba(184,137,42,0.09);
   --live-red:#d63c3c;--live-red-bg:rgba(214,60,60,0.08);
   --yt-red:#cc2222;--pod-purple:#7c4fc0;
   --text:#111827;--text2:#4b5563;--text3:#9ca3af;--green:#2e7d55;
+  --panel-radius:8px;--header-h:44px;--topbar-h:48px;--fs-title:14px;--footer-h:34px;
   --shadow:0 2px 8px rgba(0,0,0,0.10),0 0 0 1px var(--border);
   --shadow-hover:0 4px 20px rgba(0,0,0,0.14),0 0 0 1px var(--border2);
+  --col1:1fr;--col2:1fr;--col3:1fr;--row1:1fr;--row2:1fr;
   --item-sep:rgba(0,0,0,0.06);
   --table-row-sep:rgba(0,0,0,0.03);
   --topbar-shadow:0 1px 10px rgba(0,0,0,0.10);
   --modal-overlay:rgba(0,0,0,0.55);
   --mob-tabbar-shadow:0 -2px 12px rgba(0,0,0,0.12);
+  --surface:var(--panel);--surface-2:var(--panel-header);
+  --accent:var(--gold);--accent-contrast:#ffffff;
+  --danger:var(--live-red);--success:var(--green);
+}
+[data-theme="dark"] {
+  --bg:#0a0a0f;--bg2:#0f0f16;--panel:#13131a;--panel-header:#16161f;
+  --border:#2a2a3a;--border2:#3a3a50;
+  --gold:#c9a84c;--gold-light:#e0c070;--gold-bg:rgba(201,168,76,0.08);
+  --live-red:#e05050;--live-red-bg:rgba(224,80,80,0.08);
+  --yt-red:#ff4444;--pod-purple:#9b6fd4;
+  --text:#f0f0f0;--text2:#a0a0b8;--text3:#55556a;--green:#4caf82;
+  --shadow:0 2px 8px rgba(0,0,0,0.5),0 0 0 1px var(--border);
+  --shadow-hover:0 4px 20px rgba(0,0,0,0.6),0 0 0 1px var(--border2);
+  --item-sep:rgba(255,255,255,0.04);
+  --table-row-sep:rgba(255,255,255,0.03);
+  --topbar-shadow:0 1px 10px rgba(0,0,0,0.6);
+  --modal-overlay:rgba(0,0,0,0.75);
+  --mob-tabbar-shadow:0 -2px 12px rgba(0,0,0,0.5);
+  --surface:var(--panel);--surface-2:var(--panel-header);
+  --accent:var(--gold);--accent-contrast:#000000;
+  --danger:var(--live-red);--success:var(--green);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;height:100vh;width:100vw;overflow:hidden;user-select:none;}
@@ -373,7 +386,7 @@ i[data-lucide]{display:inline-block;}
   <div id="logo">NBA EN ESPAÑOL</div>
   <span id="ag-update-badge" class="ag-update-badge"></span>
   <div class="tb-sep"></div>
-  <button class="tb-btn" id="theme-btn" onclick="toggleTheme()" title="Modo día/noche"><i data-lucide="moon"></i></button>
+  <button class="tb-btn" id="theme-btn" onclick="toggleTheme()" aria-label="Tema: Auto"><i data-lucide="monitor"></i> Auto</button>
   <button class="tb-btn tb-btn-action" onclick="refreshAll()"><i data-lucide="refresh-cw"></i> Actualizar</button>
   <button class="tb-btn tb-btn-action" onclick="openConfig()"><i data-lucide="settings"></i> Config</button>
   <button class="tb-btn tb-btn-action" id="live-btn" onclick="toggleLive()"><i data-lucide="radio"></i> En Vivo</button>
@@ -401,7 +414,7 @@ i[data-lucide]{display:inline-block;}
 
 <!-- SEGUNDA BARRA MÓVIL (solo visible en móvil) -->
 <div id="mobile-actionbar">
-  <button class="tb-btn" id="mob-theme-btn" onclick="toggleTheme()" title="Modo día/noche"><i data-lucide="moon"></i></button>
+  <button class="tb-btn" id="mob-theme-btn" onclick="toggleTheme()" aria-label="Tema: Auto"><i data-lucide="monitor"></i></button>
   <button class="tb-btn" onclick="refreshAll()"><i data-lucide="refresh-cw"></i> Actualizar</button>
   <button class="tb-btn" onclick="openConfig()"><i data-lucide="settings"></i> Config</button>
   <button class="tb-btn" id="mob-live-btn" onclick="toggleLive()"><i data-lucide="radio"></i> En Vivo</button>
@@ -1661,26 +1674,42 @@ function formatDate(d){if(!d)return '';try{const date=new Date(d);if(isNaN(date)
 // INIT
 // ══════════════════════════════════
 // ══════════════════════════════════
-// THEME (día / noche)
+// THEME (auto / claro / oscuro)
 // ══════════════════════════════════
-function applyTheme(theme){
-  document.documentElement.dataset.theme=theme;
-  const icon=`<i data-lucide="${theme==='light'?'moon':'sun'}"></i>`;
+(function(){
+  var old=localStorage.getItem('nba_theme');
+  if(old&&!localStorage.getItem('ag-theme')){localStorage.setItem('ag-theme',old);}
+  localStorage.removeItem('nba_theme');
+})();
+const _themeMQ=window.matchMedia('(prefers-color-scheme: dark)');
+const _themeIcons={auto:'monitor',light:'sun',dark:'moon'};
+const _themeLabels={auto:'Auto',light:'Claro',dark:'Oscuro'};
+function applyTheme(pref){
+  const resolved=(pref==='auto')?(_themeMQ.matches?'dark':'light'):pref;
+  document.documentElement.dataset.theme=resolved;
   ['theme-btn','mob-theme-btn'].forEach(id=>{
-    const btn=document.getElementById(id);
-    if(btn){btn.innerHTML=icon;if(typeof lucide!=='undefined')lucide.createIcons({nodes:[btn]});}
+    const btn=document.getElementById(id);if(!btn)return;
+    const icon=`<i data-lucide="${_themeIcons[pref]||'monitor'}"></i>`;
+    btn.innerHTML=id==='theme-btn'?icon+' '+(_themeLabels[pref]||'Auto'):icon;
+    btn.setAttribute('aria-label','Tema: '+(_themeLabels[pref]||'Auto'));
+    if(typeof lucide!=='undefined')lucide.createIcons({nodes:[btn]});
   });
 }
+function toggleTheme(){
+  const cycle={auto:'light',light:'dark',dark:'auto'};
+  const cur=localStorage.getItem('ag-theme')||'auto';
+  const next=cycle[cur]||'light';
+  localStorage.setItem('ag-theme',next);
+  applyTheme(next);
+}
+_themeMQ.addEventListener('change',function(){
+  if((localStorage.getItem('ag-theme')||'auto')==='auto')applyTheme('auto');
+});
 function openLink(url,type,source){
   if(typeof gtag!=='undefined')gtag('event','content_click',{content_type:type,link_url:url,source:source||''});
   window.open(url,'_blank');
 }
-function toggleTheme(){
-  const next=document.documentElement.dataset.theme==='light'?'dark':'light';
-  localStorage.setItem('nba_theme',next);
-  applyTheme(next);
-}
-(function(){applyTheme(localStorage.getItem('nba_theme')||'dark');})();
+(function(){applyTheme(localStorage.getItem('ag-theme')||'auto');})();
 
 // ══════════════════════════════════
 // ATRIBUCIÓN
