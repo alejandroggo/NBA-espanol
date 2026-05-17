@@ -65,6 +65,8 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;heigh
 /* TOPBAR */
 #topbar{position:fixed;top:0;left:0;right:0;height:var(--topbar-h);background:var(--panel);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 14px;gap:8px;z-index:1000;box-shadow:var(--topbar-shadow);}
 #logo{font-family:'Inter',sans-serif;font-weight:700;font-size:17px;color:var(--gold);letter-spacing:2px;flex-shrink:0;text-transform:uppercase;}
+.ag-update-badge{display:none;font-size:9px;color:var(--text3);letter-spacing:.3px;flex-shrink:0;white-space:nowrap;}
+.ag-update-badge.visible{display:block;}
 .tb-sep{width:1px;height:20px;background:var(--border);margin:0 2px;}
 .tb-btn{background:transparent;border:1px solid var(--border);color:var(--text2);font-family:'Inter',sans-serif;font-weight:600;font-size:11px;padding:4px 10px;cursor:pointer;border-radius:4px;letter-spacing:.5px;transition:all .15s;flex-shrink:0;text-transform:uppercase;}
 .tb-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-bg);}
@@ -369,6 +371,7 @@ i[data-lucide]{display:inline-block;}
 
 <div id="topbar">
   <div id="logo">NBA EN ESPAÑOL</div>
+  <span id="ag-update-badge" class="ag-update-badge"></span>
   <div class="tb-sep"></div>
   <button class="tb-btn" id="theme-btn" onclick="toggleTheme()" title="Modo día/noche"><i data-lucide="moon"></i></button>
   <button class="tb-btn tb-btn-action" onclick="refreshAll()"><i data-lucide="refresh-cw"></i> Actualizar</button>
@@ -948,9 +951,9 @@ async function loadPodFeed(feed){
   try{const {items}=await enqueueFetch(()=>fetchRSS(feed.url));podData[feed.id]=items.map(i=>({...i,source:feed.label,feedId:feed.id,logo:getSourceLogo(feed.id)})).slice(0,20);podHealth[feed.id]={status:'ok',count:items.length};}
   catch(e){podData[feed.id]=[];podHealth[feed.id]={status:'err',count:0};}
 }
-async function loadAllNews(){const active=getActiveNewsFeeds();setLoading('wire');setLoading('teams');await Promise.allSettled(active.map(f=>loadNewsFeed(f)));lastUpdate.news=new Date();fromCache=false;renderWire();renderTeams();updateHealthUI();saveCache();updateTabBadge('wire');attachSeenOnScroll('wire');}
-async function loadAllYT(){const active=getActiveYTChannels();setLoading('youtube');await Promise.allSettled(active.map(c=>loadYTChannel(c)));lastUpdate.yt=new Date();fromCache=false;renderYT();renderTeams();updateHealthUI();saveCache();updateTabBadge('youtube');attachSeenOnScroll('youtube');}
-async function loadAllPod(){const active=getActivePodFeeds();setLoading('podcast');await Promise.allSettled(active.map(f=>loadPodFeed(f)));lastUpdate.pod=new Date();fromCache=false;renderPod();renderTeams();updateHealthUI();saveCache();updateTabBadge('podcast');attachSeenOnScroll('podcast');}
+async function loadAllNews(){const active=getActiveNewsFeeds();setLoading('wire');setLoading('teams');await Promise.allSettled(active.map(f=>loadNewsFeed(f)));lastUpdate.news=new Date();fromCache=false;renderWire();renderTeams();updateHealthUI();saveCache();updateTabBadge('wire');attachSeenOnScroll('wire');updateLastUpdateDisplay();}
+async function loadAllYT(){const active=getActiveYTChannels();setLoading('youtube');await Promise.allSettled(active.map(c=>loadYTChannel(c)));lastUpdate.yt=new Date();fromCache=false;renderYT();renderTeams();updateHealthUI();saveCache();updateTabBadge('youtube');attachSeenOnScroll('youtube');updateLastUpdateDisplay();}
+async function loadAllPod(){const active=getActivePodFeeds();setLoading('podcast');await Promise.allSettled(active.map(f=>loadPodFeed(f)));lastUpdate.pod=new Date();fromCache=false;renderPod();renderTeams();updateHealthUI();saveCache();updateTabBadge('podcast');attachSeenOnScroll('podcast');updateLastUpdateDisplay();}
 function setLoading(id){const b=document.getElementById('body-'+id);if(b)b.innerHTML='<div class="panel-loading">CARGANDO</div>';}
 
 // ══════════════════════════════════
@@ -1714,6 +1717,21 @@ function loadCache(){
   }catch(e){return false;}
 }
 
+function updateLastUpdateDisplay(){
+  try{
+    const ts=[lastUpdate.news,lastUpdate.yt,lastUpdate.pod]
+      .map(d=>d?new Date(d).getTime():0).filter(t=>t>0);
+    if(!ts.length)return;
+    const date=new Date(Math.max(...ts));
+    if(isNaN(date.getTime()))return;
+    const iso=date.toISOString();
+    const label=date.toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'});
+    const timeEl=document.getElementById('ag-last-update');
+    if(timeEl){timeEl.setAttribute('datetime',iso);timeEl.textContent=label;}
+    const badge=document.getElementById('ag-update-badge');
+    if(badge){badge.textContent='Datos a: '+label;badge.classList.add('visible');}
+  }catch(e){}
+}
 function init(){
   const fst=localStorage.getItem('nba_fst');if(fst){document.getElementById('fst-slider').value=fst;updateFontSize(fst);}
   ['wire','youtube','podcast'].forEach(id=>updateFilterCount(id));
@@ -1725,7 +1743,7 @@ function init(){
   lucide.createIcons();
   const si=document.getElementById('spoiler-icon');if(si&&state.noSpoilers){si.innerHTML='<i data-lucide="eye-off"></i>';lucide.createIcons({nodes:[si]});}
   // Mostrar cache inmediatamente si existe y es reciente
-  if(loadCache()){renderWire();renderYT();renderPod();renderTeams();updateHealthUI();}
+  if(loadCache()){renderWire();renderYT();renderPod();renderTeams();updateHealthUI();updateLastUpdateDisplay();}
   // Luego actualizar en segundo plano siempre
   loadAllNews();loadPartidos();loadStandings();loadAllYT();loadAllPod();
 }
